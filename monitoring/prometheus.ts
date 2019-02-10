@@ -1,50 +1,41 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { Cluster } from './cluster';
+import { Cluster } from '../cluster';
 import { codeBlock } from 'common-tags';
 
 export interface PrometheusOptions {
-  cluster: Cluster;
+  provider?: k8s.Provider;
+  namespace?: k8s.core.v1.Namespace;
 }
 
-export class Prometheus extends pulumi.CustomResource {
-  constructor(private name: string, private options: PrometheusOptions) {
-    super('prometheus', name);
+export class Prometheus extends pulumi.ComponentResource {
 
-    const provider = { provider: options.cluster.getKubernetesProvider() };
+  config: k8s.core.v1.ConfigMap;
+  clusterRole: k8s.rbac.v1.ClusterRole;
+  serviceAccount: k8s.core.v1.ServiceAccount;
+  clusterRoleBinding: k8s.rbac.v1.ClusterRoleBinding;
+  pvc: k8s.core.v1.PersistentVolumeClaim;
+  deployment: k8s.apps.v1.Deployment;
+  service: k8s.core.v1.Service;
 
-    const config = this.createConfig();
+  constructor(private name: string, private options: PrometheusOptions = {}) {
+    super('james:monitoring:prometheus', name);
 
-    const serviceAccount = this.createServiceAccount();
+    const provider = {
+      provider: options.provider,
+      parent: this,
+    };
 
-    const deployment = this.createDeployment(config, serviceAccount);
-
-    const service = this.createService(deployment);
-  }
-
-  private getMetadata() {
-    const namespace = new k8s.core.v1.Namespace('monitoring', {
-      metadata: {
-        name: 'monitoring',
-      }
-    }, this.getK8sProvider());
-
-    return {
-      namespace: namespace.metadata.apply(value => value.name),
+    const metadata = {
+      namespace: options.namespace ? options.namespace.metadata.apply(value => value.name) : 'default',
       name: this.name,
       labels: {
         name: this.name,
       },
     };
-  }
 
-  private getK8sProvider() {
-    return { provider: this.options.cluster.getKubernetesProvider() };
-  }
-
-  private createConfig() {
-    return new k8s.core.v1.ConfigMap('prometheus-config', {
-      metadata: this.getMetadata(),
+    this.config = new k8s.core.v1.ConfigMap('prometheus-config', {
+      metadata: metadata,
       data: {
         'prometheus.yaml': codeBlock`
           scrape_configs:
@@ -120,12 +111,10 @@ export class Prometheus extends pulumi.CustomResource {
               target_label: kubernetes_pod_name
         `,
       }
-    }, this.getK8sProvider());
-  }
+    }, provider);
 
-  private createServiceAccount() {
-    const clusterRole = new k8s.rbac.v1.ClusterRole('prometheus-cluster-role', {
-      metadata: this.getMetadata(),
+    this.clusterRole = new k8s.rbac.v1.ClusterRole('prometheus-cluster-role', {
+      metadata: metadata,
       rules: [
         {
           apiGroups: [""],
@@ -144,34 +133,30 @@ export class Prometheus extends pulumi.CustomResource {
           verbs: ['get', 'list', 'watch'],
         }
       ]
-    }, this.getK8sProvider());
+    }, provider);
 
-    const serviceAccount = new k8s.core.v1.ServiceAccount('prometheus-service-account', {
-      metadata: this.getMetadata(),
-    }, this.getK8sProvider());
+    this.serviceAccount = new k8s.core.v1.ServiceAccount('prometheus-service-account', {
+      metadata: metadata,
+    }, provider);
 
-    const clusterRoleBinding = new k8s.rbac.v1.ClusterRoleBinding('prometheus-cluster-role-binding', {
-      metadata: this.getMetadata(),
+    this.clusterRoleBinding = new k8s.rbac.v1.ClusterRoleBinding('prometheus-cluster-role-binding', {
+      metadata: metadata,
       roleRef: {
         apiGroup: 'rbac.authorization.k8s.io',
         kind: 'ClusterRole',
-        name: clusterRole.metadata.apply(value => value.name),
+        name: this.clusterRole.metadata.apply(value => value.name),
       },
       subjects: [
         {
           kind: 'ServiceAccount',
-          name: serviceAccount.metadata.apply(value => value.name),
-          namespace: serviceAccount.metadata.apply(value => value.namespace),
+          name: this.serviceAccount.metadata.apply(value => value.name),
+          namespace: this.serviceAccount.metadata.apply(value => value.namespace),
         }
       ]
-    }, this.getK8sProvider());
+    }, provider);
 
-    return serviceAccount;
-  }
-
-  private createDeployment(config: k8s.core.v1.ConfigMap, serviceAccount: k8s.core.v1.ServiceAccount) {
-    const pvc = new k8s.core.v1.PersistentVolumeClaim('prometheus-storage', {
-      metadata: this.getMetadata(),
+    this.pvc = new k8s.core.v1.PersistentVolumeClaim('prometheus-storage', {
+      metadata: metadata,
       spec: {
         accessModes: ['ReadWriteOnce'],
         resources: {
@@ -180,19 +165,19 @@ export class Prometheus extends pulumi.CustomResource {
           }
         }
       }
-    }, this.getK8sProvider());
+    }, provider);
 
-    return new k8s.apps.v1.Deployment('prometheus', {
-      metadata: this.getMetadata(),
+    this.deployment = new k8s.apps.v1.Deployment('prometheus', {
+      metadata: metadata,
       spec: {
         replicas: 1,
         selector: {
-          matchLabels: this.getMetadata().labels,
+          matchLabels: metadata.labels,
         },
         template: {
-          metadata: this.getMetadata(),
+          metadata: metadata,
           spec: {
-            serviceAccount: serviceAccount.metadata.apply(value => value.name),
+            serviceAccount: this.serviceAccount.metadata.apply(value => value.name),
             containers: [
               {
                 image: 'prom/prometheus:v2.4.3',
@@ -219,13 +204,13 @@ export class Prometheus extends pulumi.CustomResource {
               {
                 name: 'prometheus-data',
                 persistentVolumeClaim: {
-                  claimName: pvc.metadata.apply(value => value.name),
+                  claimName: this.pvc.metadata.apply(value => value.name),
                 }
               },
               {
                 name: 'prometheus-config',
                 configMap: {
-                  name: config.metadata.apply(value => value.name),
+                  name: this.config.metadata.apply(value => value.name),
                 }
               }
             ],
@@ -235,15 +220,13 @@ export class Prometheus extends pulumi.CustomResource {
           },
         }
       }
-    }, this.getK8sProvider());
-  }
+    }, provider);
 
-  private createService(deployment: k8s.apps.v1.Deployment) {
-    return new k8s.core.v1.Service('prometheus-service', {
-      metadata: this.getMetadata(),
+    this.service = new k8s.core.v1.Service('prometheus-service', {
+      metadata: metadata,
       spec: {
         type: 'ClusterIP',
-        selector: deployment.spec.apply(value => value.selector.matchLabels),
+        selector: this.deployment.spec.apply(value => value.selector.matchLabels),
         ports: [
           {
             targetPort: 9090,
@@ -251,6 +234,6 @@ export class Prometheus extends pulumi.CustomResource {
           }
         ]
       }
-    }, this.getK8sProvider());
+    }, provider);
   }
 }

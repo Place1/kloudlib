@@ -1,0 +1,165 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "stack": "local",
+        "latest": {
+            "manifest": {
+                "time": "2019-02-10T00:34:32.440533265-08:00",
+                "magic": "6c993fb053a6ee3f4c7c224e6d1ad637222b51d655db5305ca412c0ce17b09f3",
+                "version": "v0.16.14",
+                "plugins": [
+                    {
+                        "name": "nodejs",
+                        "path": "/home/james/.pulumi/bin/pulumi-language-nodejs",
+                        "type": "language",
+                        "version": "0.16.14"
+                    },
+                    {
+                        "name": "kubernetes",
+                        "path": "/home/james/.pulumi/plugins/resource-kubernetes-v0.20.1/pulumi-resource-kubernetes",
+                        "type": "resource",
+                        "version": "0.20.1"
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local",
+                    "custom": false,
+                    "type": "pulumi:pulumi:Stack"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "custom": false,
+                    "type": "james:monitoring:prometheus",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
+                    "custom": false,
+                    "type": "james:monitoring:promtail",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki::loki",
+                    "custom": false,
+                    "type": "james:monitoring:loki",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:MonitoringStack::monitoring-stack",
+                    "custom": false,
+                    "type": "james:monitoring:MonitoringStack",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default",
+                    "custom": true,
+                    "id": "bbc65cf2-910a-44f1-b02e-3308a77bc7d0",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "version": "0.20.1"
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:Namespace::monitoring",
+                    "custom": true,
+                    "id": "monitoring",
+                    "type": "kubernetes:core/v1:Namespace",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "name": "monitoring"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Namespace",
+                            "metadata": {
+                                "name": "monitoring"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T08:34:32Z",
+                            "name": "monitoring",
+                            "resourceVersion": "1416",
+                            "selfLink": "/api/v1/namespaces/monitoring",
+                            "uid": "b05d127d-2d0e-11e9-9ae7-000c29997d29"
+                        },
+                        "spec": {
+                            "finalizers": [
+                                "kubernetes"
+                            ]
+                        },
+                        "status": {
+                            "phase": "Active"
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::bbc65cf2-910a-44f1-b02e-3308a77bc7d0",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:Namespace::monitoring",
+                    "custom": true,
+                    "id": "monitoring",
+                    "type": "kubernetes:core/v1:Namespace",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "name": "monitoring"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Namespace",
+                            "metadata": {
+                                "name": "monitoring"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T08:24:33Z",
+                            "name": "monitoring",
+                            "resourceVersion": "687",
+                            "selfLink": "/api/v1/namespaces/monitoring",
+                            "uid": "4bb0d650-2d0d-11e9-9ae7-000c29997d29"
+                        },
+                        "spec": {
+                            "finalizers": [
+                                "kubernetes"
+                            ]
+                        },
+                        "status": {
+                            "phase": "Active"
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::bbc65cf2-910a-44f1-b02e-3308a77bc7d0",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::docker:image:Image::my-container",
+                    "custom": false,
+                    "type": "docker:image:Image",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                }
+            ]
+        }
+    }
+}

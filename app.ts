@@ -7,7 +7,7 @@ import { DatabaseServer } from "./database";
 export interface AppOptions {
   src: string;
   namespace?: string;
-  cluster: Cluster;
+  provider: k8s.Provider;
   replicas?: number;
   database?: DatabaseServer;
   port?: number;
@@ -18,7 +18,10 @@ export class App extends pulumi.ComponentResource {
   constructor(private name: string, private options: AppOptions) {
     super('app', name);
 
-    const provider = { provider: options.cluster.getKubernetesProvider() };
+    const provider = {
+      provider: options.provider,
+      parent: this,
+    };
 
     const namespace = new k8s.core.v1.Namespace(options.namespace || 'default', {
       metadata: {

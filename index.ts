@@ -5,14 +5,17 @@ import * as path from 'path';
 import { Cluster } from './cluster';
 import { DatabaseServer } from './database';
 import { App } from './app';
+import { MonitoringStack } from './monitoring/monitoring-stack';
 
-const cluster = new Cluster('my-cluster');
+// export const cluster = new Cluster('my-cluster');
 
-const database = new DatabaseServer('my-database');
+export const monitoringStack = new MonitoringStack('monitoring-stack');
 
-const app = new App('my-app', {
-  src: path.join(__dirname, 'app/'),
-  cluster: cluster,
-  database: database,
-  domain: 'www.myapp.com',
-});
+// export const database = new DatabaseServer('my-database');
+
+// export const app = new App('my-app', {
+//   src: path.join(__dirname, 'app/'),
+//   cluster: cluster,
+//   database: database,
+//   domain: 'www.myapp.com',
+// });
