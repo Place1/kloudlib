@@ -1,0 +1,27 @@
+{
+    "kind": "update",
+    "startTime": 1549796610,
+    "message": "wip",
+    "environment": {
+        "git.author": "James Batt",
+        "git.author.email": "getjamesbatt@gmail.com",
+        "git.committer": "James Batt",
+        "git.committer.email": "getjamesbatt@gmail.com",
+        "git.dirty": "true",
+        "git.head": "e5d389068f7c647e9643f979e7cd516990300b36",
+        "git.headName": "refs/heads/master",
+        "github.login": "Place1",
+        "github.repo": "pulumi-example",
+        "vcs.kind": "github.com",
+        "vcs.owner": "Place1",
+        "vcs.repo": "pulumi-example"
+    },
+    "config": {},
+    "result": "succeeded",
+    "endTime": 1549796641,
+    "resourceChanges": {
+        "replace": 2,
+        "same": 24,
+        "update": 1
+    }
+}

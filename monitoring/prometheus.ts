@@ -184,7 +184,7 @@ export class Prometheus extends pulumi.ComponentResource {
                 name: 'prometheus',
                 ports: [{ containerPort: 9090 }],
                 args: [
-                  '--config.file=/etc/prometheus/prometheus.yml',
+                  '--config.file=/etc/prometheus/prometheus.yaml',
                   '--storage.tsdb.path=/prometheus',
                   '--storage.tsdb.retention=48h',
                 ],
@@ -202,7 +202,7 @@ export class Prometheus extends pulumi.ComponentResource {
             ],
             volumes: [
               {
-                name: 'prometheus-data',
+                name: 'prometheus-storage',
                 persistentVolumeClaim: {
                   claimName: this.pvc.metadata.apply(value => value.name),
                 }

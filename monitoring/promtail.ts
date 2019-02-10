@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import { Cluster } from '../cluster';
 import { codeBlock } from 'common-tags';
 import { Loki } from './loki';
+import { meta } from '@pulumi/kubernetes';
 
 export interface PromtailOptions {
   loki: Loki;
@@ -53,7 +54,7 @@ export class Promtail extends pulumi.ComponentResource {
       metadata: metadata,
       roleRef: {
         apiGroup: 'rbac.authorization.k8s.io',
-        kind: 'Role',
+        kind: 'ClusterRole',
         name: this.clusterRole.metadata.apply(value => value.name),
       },
       subjects: [
@@ -70,74 +71,146 @@ export class Promtail extends pulumi.ComponentResource {
       data: {
         'promtail.yaml': codeBlock`
           scrape_configs:
-          - job_name: kubernetes-pods
-            kubernetes_sd_configs:
-            - role: pod
-            relabel_configs:
-            - source_labels:
-              - __meta_kubernetes_pod_node_name
-              target_label: __host__
-            - action: drop
-              regex: ^$
-              source_labels:
-              - __meta_kubernetes_pod_label_name
-            - action: replace
-              replacement: $1
-              separator: /
-              source_labels:
-              - __meta_kubernetes_namespace
-              - __meta_kubernetes_pod_label_name
-              target_label: job
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_namespace
-              target_label: namespace
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_pod_name
-              target_label: instance
-            - replacement: /var/log/pods/$1
-              separator: /
-              source_labels:
-              - __meta_kubernetes_pod_uid
-              - __meta_kubernetes_pod_container_name
-              target_label: __path__
-          - job_name: kubernetes-pods-app
-            kubernetes_sd_configs:
-            - role: pod
-            relabel_configs:
-            - source_labels:
-              - __meta_kubernetes_pod_node_name
-              target_label: __host__
-            - action: drop
-              regex: ^$
-              source_labels:
-              - __meta_kubernetes_pod_label_app
-            - action: replace
-              replacement: $1
-              separator: /
-              source_labels:
-              - __meta_kubernetes_namespace
-              - __meta_kubernetes_pod_label_app
-              target_label: job
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_namespace
-              target_label: namespace
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_pod_name
-              target_label: instance
-            - action: labelmap
-              regex: __meta_kubernetes_pod_label_(.+)
-            - replacement: /var/log/pods/$1
-              separator: /
-              source_labels:
-              - __meta_kubernetes_pod_uid
-              - __meta_kubernetes_pod_container_name
-              target_label: __path__
+            - job_name: kubernetes-pods
+              kubernetes_sd_configs:
+              - role: pod
+              relabel_configs:
+              - source_labels:
+                - __meta_kubernetes_pod_node_name
+                target_label: __host__
+              - action: drop
+                regex: ^$
+                source_labels:
+                - __meta_kubernetes_pod_label_name
+              - action: replace
+                replacement: $1
+                separator: /
+                source_labels:
+                - __meta_kubernetes_namespace
+                - __meta_kubernetes_pod_label_name
+                target_label: job
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_namespace
+                target_label: namespace
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_name
+                target_label: instance
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_container_name
+                target_label: container_name
+              - action: labelmap
+                regex: __meta_kubernetes_pod_label_(.+)
+              - replacement: /var/log/pods/$1/*.log
+                separator: /
+                source_labels:
+                - __meta_kubernetes_pod_uid
+                - __meta_kubernetes_pod_container_name
+                target_label: __path__
+            - job_name: kubernetes-pods-app
+              kubernetes_sd_configs:
+              - role: pod
+              relabel_configs:
+              - source_labels:
+                - __meta_kubernetes_pod_node_name
+                target_label: __host__
+              - action: drop
+                regex: ^$
+                source_labels:
+                - __meta_kubernetes_pod_label_app
+              - action: replace
+                replacement: $1
+                separator: /
+                source_labels:
+                - __meta_kubernetes_namespace
+                - __meta_kubernetes_pod_label_app
+                target_label: job
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_namespace
+                target_label: namespace
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_name
+                target_label: instance
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_container_name
+                target_label: container_name
+              - action: labelmap
+                regex: __meta_kubernetes_pod_label_(.+)
+              - replacement: /var/log/pods/$1/*.log
+                separator: /
+                source_labels:
+                - __meta_kubernetes_pod_uid
+                - __meta_kubernetes_pod_container_name
+                target_label: __path__
         `,
       }
+    }, provider);
+
+    const podSecurityPolicy = new k8s.extensions.v1beta1.PodSecurityPolicy('promtail-pod-security-policy', {
+      metadata: metadata,
+      spec: {
+        privileged: true,
+        allowPrivilegeEscalation: true,
+        volumes: [
+          "secret",
+          "configMap",
+          'hostPath'
+        ],
+        hostNetwork: false,
+        hostIPC: false,
+        hostPID: false,
+        runAsUser: {
+          rule: "RunAsAny"
+        },
+        seLinux: {
+          rule: "RunAsAny"
+        },
+        supplementalGroups: {
+          rule: "RunAsAny"
+        },
+        fsGroup: {
+          rule: "RunAsAny",
+          readOnlyRootFilesystem: false
+        }
+      },
+    }, provider);
+
+    const role = new k8s.rbac.v1.Role('promtail-role', {
+      metadata: metadata,
+      "rules": [
+        {
+          "apiGroups": [
+            "extensions"
+          ],
+          "resources": [
+            "podsecuritypolicies"
+          ],
+          "verbs": [
+            "use"
+          ],
+          "resourceNames": [metadata.name]
+        }
+      ]
+    }, provider)
+
+    const roleBinding = new k8s.rbac.v1.RoleBinding('promtail-role-binding', {
+      metadata: metadata,
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": role.metadata.apply(value => value.name),
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": this.serviceAccount.metadata.apply(value => value.name),
+        }
+      ],
     }, provider);
 
     this.daemonset = new k8s.apps.v1.DaemonSet('promtail-daemonset', {
@@ -153,12 +226,12 @@ export class Promtail extends pulumi.ComponentResource {
             containers: [
               {
                 name: 'promtail',
-                image: 'grafana/promtail:master',
+                image: 'grafana/promtail:master-ffe1093',
                 args: pulumi
                   .all([options.loki.service.metadata, options.loki.service.spec])
                   .apply(([metadata, spec]) => [
                     '-config.file=/etc/promtail/promtail.yaml',
-                    `-client.url=${metadata.name}:${spec.ports[0].port}/api/prom/push`,
+                    `-client.url=http://${metadata.name}:${spec.ports[0].port}/api/prom/push`,
                   ]),
                 ports: [{ containerPort: 3100 }],
                 env: [
@@ -184,7 +257,11 @@ export class Promtail extends pulumi.ComponentResource {
                     name: 'varlibdockercontainers',
                     mountPath: '/var/lib/docker/containers',
                   }
-                ]
+                ],
+                securityContext: {
+                  privileged: true,
+                  runAsUser: 0,
+                }
               }
             ],
             volumes: [

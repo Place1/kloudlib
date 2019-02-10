@@ -11,6 +11,7 @@ export interface LokiOptions {
 export class Loki extends pulumi.ComponentResource {
 
   configMap: k8s.core.v1.ConfigMap;
+  persistentVolumeClaim: k8s.core.v1.PersistentVolumeClaim;
   deployment: k8s.apps.v1.Deployment;
   service: k8s.core.v1.Service;
 
@@ -44,19 +45,31 @@ export class Loki extends pulumi.ComponentResource {
                 replication_factor: 1
           schema_config:
             configs:
-            - from: 0
-              store: boltdb
-              object_store: filesystem
-              schema: v9
-              index:
-                prefix: index_
-                period: 168h
-          storage_configs:
-            - name: boltdb
-              directory: /tmp/loki/index
-            - name: filesystem
-              directory: /tmp/loki/chunks
+              - from: 0
+                store: boltdb
+                object_store: filesystem
+                schema: v9
+                index:
+                  prefix: index_
+                  period: 168h
+          storage_config:
+            boltdb:
+              directory: /var/opt/loki/index
+            filesystem:
+              directory: /var/opt/loki/chunks
         `,
+      }
+    }, provider);
+
+    this.persistentVolumeClaim = new k8s.core.v1.PersistentVolumeClaim('loki-storage', {
+      metadata: metadata,
+      spec: {
+        accessModes: ['ReadWriteOnce'],
+        resources: {
+          requests: {
+            storage: '5Gi'
+          }
+        }
       }
     }, provider);
 
@@ -72,13 +85,20 @@ export class Loki extends pulumi.ComponentResource {
           spec: {
             containers: [
               {
-                image: 'grafana/loki:master',
+                image: 'grafana/loki:master-ffe1093',
                 name: 'loki',
+                args: [
+                  '-config.file=/etc/loki/loki.yaml',
+                ],
                 ports: [{ containerPort: 3100 }],
                 volumeMounts: [
                   {
                     name: 'loki-config',
                     mountPath: '/etc/loki',
+                  },
+                  {
+                    name: 'loki-storage',
+                    mountPath: '/var/opt/loki',
                   }
                 ]
               }
@@ -88,6 +108,12 @@ export class Loki extends pulumi.ComponentResource {
                 name: 'loki-config',
                 configMap: {
                   name: this.configMap.metadata.apply(value => value.name),
+                }
+              },
+              {
+                name: 'loki-storage',
+                persistentVolumeClaim: {
+                  claimName: this.persistentVolumeClaim.metadata.apply(value => value.name),
                 }
               }
             ]

@@ -4,7 +4,7 @@
         "stack": "local",
         "latest": {
             "manifest": {
-                "time": "2019-02-10T03:25:57.576479587-08:00",
+                "time": "2019-02-10T03:17:30.892579077-08:00",
                 "magic": "6c993fb053a6ee3f4c7c224e6d1ad637222b51d655db5305ca412c0ce17b09f3",
                 "version": "v0.16.14",
                 "plugins": [
@@ -976,16 +976,16 @@
                                     "kind": "DaemonSet",
                                     "metadata": {
                                         "annotations": {
-                                            "deprecated.daemonset.template.generation": "4"
+                                            "deprecated.daemonset.template.generation": "3"
                                         },
                                         "creationTimestamp": "2019-02-10T10:55:20Z",
-                                        "generation": 4,
+                                        "generation": 3,
                                         "labels": {
                                             "name": "promtail"
                                         },
                                         "name": "promtail",
                                         "namespace": "monitoring",
-                                        "resourceVersion": "3291",
+                                        "resourceVersion": "1793",
                                         "selfLink": "/apis/apps/v1/namespaces/monitoring/daemonsets/promtail",
                                         "uid": "5bd60151-2d22-11e9-8c7b-000c29997d29"
                                     },
@@ -1032,11 +1032,6 @@
                                                             }
                                                         ],
                                                         "resources": {},
-                                                        "securityContext": {
-                                                            "privileged": true,
-                                                            "procMount": "Default",
-                                                            "runAsUser": 0
-                                                        },
                                                         "terminationMessagePath": "/dev/termination-log",
                                                         "terminationMessagePolicy": "File",
                                                         "volumeMounts": [
@@ -1100,7 +1095,7 @@
                                         "numberAvailable": 1,
                                         "numberMisscheduled": 0,
                                         "numberReady": 1,
-                                        "observedGeneration": 3,
+                                        "observedGeneration": 2,
                                         "updatedNumberScheduled": 1
                                     },
                                     "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:apps/v1:DaemonSet::promtail-daemonset"
@@ -1145,9 +1140,9 @@
                     "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:MonitoringStack::monitoring-stack",
                     "custom": false,
-                    "type": "james:monitoring:promtail",
+                    "type": "james:monitoring:MonitoringStack",
                     "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
                 },
                 {
@@ -1157,9 +1152,9 @@
                     "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:MonitoringStack::monitoring-stack",
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
                     "custom": false,
-                    "type": "james:monitoring:MonitoringStack",
+                    "type": "james:monitoring:promtail",
                     "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
                 },
                 {
@@ -1224,66 +1219,6 @@
                     }
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
-                    "custom": true,
-                    "id": "monitoring/prometheus",
-                    "type": "kubernetes:core/v1:ServiceAccount",
-                    "inputs": {
-                        "apiVersion": "v1",
-                        "kind": "ServiceAccount",
-                        "metadata": {
-                            "labels": {
-                                "name": "prometheus"
-                            },
-                            "name": "prometheus",
-                            "namespace": "monitoring"
-                        }
-                    },
-                    "outputs": {
-                        "__inputs": {
-                            "apiVersion": "v1",
-                            "kind": "ServiceAccount",
-                            "metadata": {
-                                "labels": {
-                                    "name": "prometheus"
-                                },
-                                "name": "prometheus",
-                                "namespace": "monitoring"
-                            }
-                        },
-                        "apiVersion": "v1",
-                        "kind": "ServiceAccount",
-                        "metadata": {
-                            "creationTimestamp": "2019-02-10T10:55:09Z",
-                            "labels": {
-                                "name": "prometheus"
-                            },
-                            "name": "prometheus",
-                            "namespace": "monitoring",
-                            "resourceVersion": "590",
-                            "selfLink": "/api/v1/namespaces/monitoring/serviceaccounts/prometheus",
-                            "uid": "5561f001-2d22-11e9-8c7b-000c29997d29"
-                        },
-                        "secrets": [
-                            {
-                                "name": "prometheus-token-669f8"
-                            }
-                        ]
-                    },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
-                    "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                    ],
-                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
-                    "propertyDependencies": {
-                        "apiVersion": null,
-                        "kind": null,
-                        "metadata": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ]
-                    }
-                },
-                {
                     "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:ConfigMap::loki-config",
                     "custom": true,
                     "id": "monitoring/loki",
@@ -1342,6 +1277,66 @@
                     "propertyDependencies": {
                         "apiVersion": null,
                         "data": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
+                    "custom": true,
+                    "id": "monitoring/prometheus",
+                    "type": "kubernetes:core/v1:ServiceAccount",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "ServiceAccount",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "ServiceAccount",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "ServiceAccount",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T10:55:09Z",
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring",
+                            "resourceVersion": "590",
+                            "selfLink": "/api/v1/namespaces/monitoring/serviceaccounts/prometheus",
+                            "uid": "5561f001-2d22-11e9-8c7b-000c29997d29"
+                        },
+                        "secrets": [
+                            {
+                                "name": "prometheus-token-669f8"
+                            }
+                        ]
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
+                    "propertyDependencies": {
+                        "apiVersion": null,
                         "kind": null,
                         "metadata": [
                             "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
@@ -1414,71 +1409,6 @@
                     }
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ConfigMap::promtail-config",
-                    "custom": true,
-                    "id": "monitoring/promtail",
-                    "type": "kubernetes:core/v1:ConfigMap",
-                    "inputs": {
-                        "apiVersion": "v1",
-                        "data": {
-                            "promtail.yaml": "scrape_configs:\n  - job_name: kubernetes-pods\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_name\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_name\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__\n  - job_name: kubernetes-pods-app\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_app\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_app\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__"
-                        },
-                        "kind": "ConfigMap",
-                        "metadata": {
-                            "labels": {
-                                "name": "promtail"
-                            },
-                            "name": "promtail",
-                            "namespace": "monitoring"
-                        }
-                    },
-                    "outputs": {
-                        "__inputs": {
-                            "apiVersion": "v1",
-                            "data": {
-                                "promtail.yaml": "scrape_configs:\n  - job_name: kubernetes-pods\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_name\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_name\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__\n  - job_name: kubernetes-pods-app\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_app\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_app\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__"
-                            },
-                            "kind": "ConfigMap",
-                            "metadata": {
-                                "labels": {
-                                    "name": "promtail"
-                                },
-                                "name": "promtail",
-                                "namespace": "monitoring"
-                            }
-                        },
-                        "apiVersion": "v1",
-                        "data": {
-                            "promtail.yaml": "scrape_configs:\n  - job_name: kubernetes-pods\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_name\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_name\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__\n  - job_name: kubernetes-pods-app\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_app\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_app\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__"
-                        },
-                        "kind": "ConfigMap",
-                        "metadata": {
-                            "creationTimestamp": "2019-02-10T11:17:28Z",
-                            "labels": {
-                                "name": "promtail"
-                            },
-                            "name": "promtail",
-                            "namespace": "monitoring",
-                            "resourceVersion": "2684",
-                            "selfLink": "/api/v1/namespaces/monitoring/configmaps/promtail",
-                            "uid": "739a78ea-2d25-11e9-8c7b-000c29997d29"
-                        }
-                    },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
-                    "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                    ],
-                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
-                    "propertyDependencies": {
-                        "apiVersion": null,
-                        "data": null,
-                        "kind": null,
-                        "metadata": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ]
-                    }
-                },
-                {
                     "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account",
                     "custom": true,
                     "id": "monitoring/promtail",
@@ -1536,6 +1466,113 @@
                         "metadata": [
                             "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
                         ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:Grafana$kubernetes:core/v1:PersistentVolumeClaim::grafana-storage",
+                    "custom": true,
+                    "id": "monitoring/grafana",
+                    "type": "kubernetes:core/v1:PersistentVolumeClaim",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "PersistentVolumeClaim",
+                        "metadata": {
+                            "labels": {
+                                "name": "grafana"
+                            },
+                            "name": "grafana",
+                            "namespace": "monitoring"
+                        },
+                        "spec": {
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "storage": "5Gi"
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "PersistentVolumeClaim",
+                            "metadata": {
+                                "labels": {
+                                    "name": "grafana"
+                                },
+                                "name": "grafana",
+                                "namespace": "monitoring"
+                            },
+                            "spec": {
+                                "accessModes": [
+                                    "ReadWriteOnce"
+                                ],
+                                "resources": {
+                                    "requests": {
+                                        "storage": "5Gi"
+                                    }
+                                }
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "PersistentVolumeClaim",
+                        "metadata": {
+                            "annotations": {
+                                "control-plane.alpha.kubernetes.io/leader": "{\"holderIdentity\":\"0b4a0000-2d22-11e9-b5f5-000c29997d29\",\"leaseDurationSeconds\":15,\"acquireTime\":\"2019-02-10T10:55:09Z\",\"renewTime\":\"2019-02-10T10:55:11Z\",\"leaderTransitions\":0}",
+                                "pv.kubernetes.io/bind-completed": "yes",
+                                "pv.kubernetes.io/bound-by-controller": "yes",
+                                "volume.beta.kubernetes.io/storage-provisioner": "k8s.io/minikube-hostpath"
+                            },
+                            "creationTimestamp": "2019-02-10T10:55:09Z",
+                            "finalizers": [
+                                "kubernetes.io/pvc-protection"
+                            ],
+                            "labels": {
+                                "name": "grafana"
+                            },
+                            "name": "grafana",
+                            "namespace": "monitoring",
+                            "resourceVersion": "628",
+                            "selfLink": "/api/v1/namespaces/monitoring/persistentvolumeclaims/grafana",
+                            "uid": "55808967-2d22-11e9-8c7b-000c29997d29"
+                        },
+                        "spec": {
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "storage": "5Gi"
+                                }
+                            },
+                            "storageClassName": "standard",
+                            "volumeMode": "Filesystem",
+                            "volumeName": "pvc-55808967-2d22-11e9-8c7b-000c29997d29"
+                        },
+                        "status": {
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "capacity": {
+                                "storage": "5Gi"
+                            },
+                            "phase": "Bound"
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:Grafana::grafana",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "spec": null
                     }
                 },
                 {
@@ -1646,94 +1683,55 @@
                     }
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:Role::promtail-role",
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ConfigMap::promtail-config",
                     "custom": true,
                     "id": "monitoring/promtail",
-                    "type": "kubernetes:rbac.authorization.k8s.io/v1:Role",
+                    "type": "kubernetes:core/v1:ConfigMap",
                     "inputs": {
-                        "apiVersion": "rbac.authorization.k8s.io/v1",
-                        "kind": "Role",
+                        "apiVersion": "v1",
+                        "data": {
+                            "promtail.yaml": "scrape_configs:\n  - job_name: kubernetes-pods\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_name\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_name\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__\n  - job_name: kubernetes-pods-app\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_app\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_app\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__"
+                        },
+                        "kind": "ConfigMap",
                         "metadata": {
                             "labels": {
                                 "name": "promtail"
                             },
                             "name": "promtail",
                             "namespace": "monitoring"
-                        },
-                        "rules": [
-                            {
-                                "apiGroups": [
-                                    "extensions"
-                                ],
-                                "resourceNames": [
-                                    "promtail"
-                                ],
-                                "resources": [
-                                    "podsecuritypolicies"
-                                ],
-                                "verbs": [
-                                    "use"
-                                ]
-                            }
-                        ]
+                        }
                     },
                     "outputs": {
                         "__inputs": {
-                            "apiVersion": "rbac.authorization.k8s.io/v1",
-                            "kind": "Role",
+                            "apiVersion": "v1",
+                            "data": {
+                                "promtail.yaml": "scrape_configs:\n  - job_name: kubernetes-pods\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_name\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_name\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__\n  - job_name: kubernetes-pods-app\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_app\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_app\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__"
+                            },
+                            "kind": "ConfigMap",
                             "metadata": {
                                 "labels": {
                                     "name": "promtail"
                                 },
                                 "name": "promtail",
                                 "namespace": "monitoring"
-                            },
-                            "rules": [
-                                {
-                                    "apiGroups": [
-                                        "extensions"
-                                    ],
-                                    "resourceNames": [
-                                        "promtail"
-                                    ],
-                                    "resources": [
-                                        "podsecuritypolicies"
-                                    ],
-                                    "verbs": [
-                                        "use"
-                                    ]
-                                }
-                            ]
+                            }
                         },
-                        "apiVersion": "rbac.authorization.k8s.io/v1",
-                        "kind": "Role",
+                        "apiVersion": "v1",
+                        "data": {
+                            "promtail.yaml": "scrape_configs:\n  - job_name: kubernetes-pods\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_name\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_name\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__\n  - job_name: kubernetes-pods-app\n    kubernetes_sd_configs:\n    - role: pod\n    relabel_configs:\n    - source_labels:\n      - __meta_kubernetes_pod_node_name\n      target_label: __host__\n    - action: drop\n      regex: ^$\n      source_labels:\n      - __meta_kubernetes_pod_label_app\n    - action: replace\n      replacement: $1\n      separator: /\n      source_labels:\n      - __meta_kubernetes_namespace\n      - __meta_kubernetes_pod_label_app\n      target_label: job\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_namespace\n      target_label: namespace\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_name\n      target_label: instance\n    - action: replace\n      source_labels:\n      - __meta_kubernetes_pod_container_name\n      target_label: container_name\n    - action: labelmap\n      regex: __meta_kubernetes_pod_label_(.+)\n    - replacement: /var/log/pods/$1/*.log\n      separator: /\n      source_labels:\n      - __meta_kubernetes_pod_uid\n      - __meta_kubernetes_pod_container_name\n      target_label: __path__"
+                        },
+                        "kind": "ConfigMap",
                         "metadata": {
-                            "creationTimestamp": "2019-02-10T11:25:54Z",
+                            "creationTimestamp": "2019-02-10T11:17:28Z",
                             "labels": {
                                 "name": "promtail"
                             },
                             "name": "promtail",
                             "namespace": "monitoring",
-                            "resourceVersion": "3286",
-                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/namespaces/monitoring/roles/promtail",
-                            "uid": "a135c28f-2d26-11e9-8c7b-000c29997d29"
-                        },
-                        "rules": [
-                            {
-                                "apiGroups": [
-                                    "extensions"
-                                ],
-                                "resourceNames": [
-                                    "promtail"
-                                ],
-                                "resources": [
-                                    "podsecuritypolicies"
-                                ],
-                                "verbs": [
-                                    "use"
-                                ]
-                            }
-                        ]
+                            "resourceVersion": "2684",
+                            "selfLink": "/api/v1/namespaces/monitoring/configmaps/promtail",
+                            "uid": "739a78ea-2d25-11e9-8c7b-000c29997d29"
+                        }
                     },
                     "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
                     "dependencies": [
@@ -1742,376 +1740,11 @@
                     "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
                     "propertyDependencies": {
                         "apiVersion": null,
+                        "data": null,
                         "kind": null,
                         "metadata": [
                             "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ],
-                        "rules": null
-                    }
-                },
-                {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role",
-                    "custom": true,
-                    "id": "prometheus",
-                    "type": "kubernetes:rbac.authorization.k8s.io/v1:ClusterRole",
-                    "inputs": {
-                        "apiVersion": "rbac.authorization.k8s.io/v1",
-                        "kind": "ClusterRole",
-                        "metadata": {
-                            "labels": {
-                                "name": "prometheus"
-                            },
-                            "name": "prometheus",
-                            "namespace": "monitoring"
-                        },
-                        "rules": [
-                            {
-                                "apiGroups": [
-                                    ""
-                                ],
-                                "resources": [
-                                    "nodes",
-                                    "nodes/proxy",
-                                    "services",
-                                    "endpoints",
-                                    "pods"
-                                ],
-                                "verbs": [
-                                    "get",
-                                    "list",
-                                    "watch"
-                                ]
-                            },
-                            {
-                                "apiGroups": [
-                                    "extensions"
-                                ],
-                                "resources": [
-                                    "ingress"
-                                ],
-                                "verbs": [
-                                    "get",
-                                    "list",
-                                    "watch"
-                                ]
-                            }
                         ]
-                    },
-                    "outputs": {
-                        "__inputs": {
-                            "apiVersion": "rbac.authorization.k8s.io/v1",
-                            "kind": "ClusterRole",
-                            "metadata": {
-                                "labels": {
-                                    "name": "prometheus"
-                                },
-                                "name": "prometheus",
-                                "namespace": "monitoring"
-                            },
-                            "rules": [
-                                {
-                                    "apiGroups": [
-                                        ""
-                                    ],
-                                    "resources": [
-                                        "nodes",
-                                        "nodes/proxy",
-                                        "services",
-                                        "endpoints",
-                                        "pods"
-                                    ],
-                                    "verbs": [
-                                        "get",
-                                        "list",
-                                        "watch"
-                                    ]
-                                },
-                                {
-                                    "apiGroups": [
-                                        "extensions"
-                                    ],
-                                    "resources": [
-                                        "ingress"
-                                    ],
-                                    "verbs": [
-                                        "get",
-                                        "list",
-                                        "watch"
-                                    ]
-                                }
-                            ]
-                        },
-                        "apiVersion": "rbac.authorization.k8s.io/v1",
-                        "kind": "ClusterRole",
-                        "metadata": {
-                            "creationTimestamp": "2019-02-10T10:55:08Z",
-                            "labels": {
-                                "name": "prometheus"
-                            },
-                            "name": "prometheus",
-                            "resourceVersion": "568",
-                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterroles/prometheus",
-                            "uid": "54f76f63-2d22-11e9-8c7b-000c29997d29"
-                        },
-                        "rules": [
-                            {
-                                "apiGroups": [
-                                    ""
-                                ],
-                                "resources": [
-                                    "nodes",
-                                    "nodes/proxy",
-                                    "services",
-                                    "endpoints",
-                                    "pods"
-                                ],
-                                "verbs": [
-                                    "get",
-                                    "list",
-                                    "watch"
-                                ]
-                            },
-                            {
-                                "apiGroups": [
-                                    "extensions"
-                                ],
-                                "resources": [
-                                    "ingress"
-                                ],
-                                "verbs": [
-                                    "get",
-                                    "list",
-                                    "watch"
-                                ]
-                            }
-                        ]
-                    },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
-                    "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                    ],
-                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
-                    "propertyDependencies": {
-                        "apiVersion": null,
-                        "kind": null,
-                        "metadata": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ],
-                        "rules": null
-                    }
-                },
-                {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:PersistentVolumeClaim::loki-storage",
-                    "custom": true,
-                    "id": "monitoring/loki",
-                    "type": "kubernetes:core/v1:PersistentVolumeClaim",
-                    "inputs": {
-                        "apiVersion": "v1",
-                        "kind": "PersistentVolumeClaim",
-                        "metadata": {
-                            "labels": {
-                                "name": "loki"
-                            },
-                            "name": "loki",
-                            "namespace": "monitoring"
-                        },
-                        "spec": {
-                            "accessModes": [
-                                "ReadWriteOnce"
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "storage": "5Gi"
-                                }
-                            }
-                        }
-                    },
-                    "outputs": {
-                        "__inputs": {
-                            "apiVersion": "v1",
-                            "kind": "PersistentVolumeClaim",
-                            "metadata": {
-                                "labels": {
-                                    "name": "loki"
-                                },
-                                "name": "loki",
-                                "namespace": "monitoring"
-                            },
-                            "spec": {
-                                "accessModes": [
-                                    "ReadWriteOnce"
-                                ],
-                                "resources": {
-                                    "requests": {
-                                        "storage": "5Gi"
-                                    }
-                                }
-                            }
-                        },
-                        "apiVersion": "v1",
-                        "kind": "PersistentVolumeClaim",
-                        "metadata": {
-                            "annotations": {
-                                "control-plane.alpha.kubernetes.io/leader": "{\"holderIdentity\":\"0b4a0000-2d22-11e9-b5f5-000c29997d29\",\"leaseDurationSeconds\":15,\"acquireTime\":\"2019-02-10T10:55:09Z\",\"renewTime\":\"2019-02-10T10:55:11Z\",\"leaderTransitions\":0}",
-                                "pv.kubernetes.io/bind-completed": "yes",
-                                "pv.kubernetes.io/bound-by-controller": "yes",
-                                "volume.beta.kubernetes.io/storage-provisioner": "k8s.io/minikube-hostpath"
-                            },
-                            "creationTimestamp": "2019-02-10T10:55:09Z",
-                            "finalizers": [
-                                "kubernetes.io/pvc-protection"
-                            ],
-                            "labels": {
-                                "name": "loki"
-                            },
-                            "name": "loki",
-                            "namespace": "monitoring",
-                            "resourceVersion": "626",
-                            "selfLink": "/api/v1/namespaces/monitoring/persistentvolumeclaims/loki",
-                            "uid": "5509ff3e-2d22-11e9-8c7b-000c29997d29"
-                        },
-                        "spec": {
-                            "accessModes": [
-                                "ReadWriteOnce"
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "storage": "5Gi"
-                                }
-                            },
-                            "storageClassName": "standard",
-                            "volumeMode": "Filesystem",
-                            "volumeName": "pvc-5509ff3e-2d22-11e9-8c7b-000c29997d29"
-                        },
-                        "status": {
-                            "accessModes": [
-                                "ReadWriteOnce"
-                            ],
-                            "capacity": {
-                                "storage": "5Gi"
-                            },
-                            "phase": "Bound"
-                        }
-                    },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:loki::loki",
-                    "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                    ],
-                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
-                    "propertyDependencies": {
-                        "apiVersion": null,
-                        "kind": null,
-                        "metadata": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ],
-                        "spec": null
-                    }
-                },
-                {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:Grafana$kubernetes:core/v1:PersistentVolumeClaim::grafana-storage",
-                    "custom": true,
-                    "id": "monitoring/grafana",
-                    "type": "kubernetes:core/v1:PersistentVolumeClaim",
-                    "inputs": {
-                        "apiVersion": "v1",
-                        "kind": "PersistentVolumeClaim",
-                        "metadata": {
-                            "labels": {
-                                "name": "grafana"
-                            },
-                            "name": "grafana",
-                            "namespace": "monitoring"
-                        },
-                        "spec": {
-                            "accessModes": [
-                                "ReadWriteOnce"
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "storage": "5Gi"
-                                }
-                            }
-                        }
-                    },
-                    "outputs": {
-                        "__inputs": {
-                            "apiVersion": "v1",
-                            "kind": "PersistentVolumeClaim",
-                            "metadata": {
-                                "labels": {
-                                    "name": "grafana"
-                                },
-                                "name": "grafana",
-                                "namespace": "monitoring"
-                            },
-                            "spec": {
-                                "accessModes": [
-                                    "ReadWriteOnce"
-                                ],
-                                "resources": {
-                                    "requests": {
-                                        "storage": "5Gi"
-                                    }
-                                }
-                            }
-                        },
-                        "apiVersion": "v1",
-                        "kind": "PersistentVolumeClaim",
-                        "metadata": {
-                            "annotations": {
-                                "control-plane.alpha.kubernetes.io/leader": "{\"holderIdentity\":\"0b4a0000-2d22-11e9-b5f5-000c29997d29\",\"leaseDurationSeconds\":15,\"acquireTime\":\"2019-02-10T10:55:09Z\",\"renewTime\":\"2019-02-10T10:55:11Z\",\"leaderTransitions\":0}",
-                                "pv.kubernetes.io/bind-completed": "yes",
-                                "pv.kubernetes.io/bound-by-controller": "yes",
-                                "volume.beta.kubernetes.io/storage-provisioner": "k8s.io/minikube-hostpath"
-                            },
-                            "creationTimestamp": "2019-02-10T10:55:09Z",
-                            "finalizers": [
-                                "kubernetes.io/pvc-protection"
-                            ],
-                            "labels": {
-                                "name": "grafana"
-                            },
-                            "name": "grafana",
-                            "namespace": "monitoring",
-                            "resourceVersion": "628",
-                            "selfLink": "/api/v1/namespaces/monitoring/persistentvolumeclaims/grafana",
-                            "uid": "55808967-2d22-11e9-8c7b-000c29997d29"
-                        },
-                        "spec": {
-                            "accessModes": [
-                                "ReadWriteOnce"
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "storage": "5Gi"
-                                }
-                            },
-                            "storageClassName": "standard",
-                            "volumeMode": "Filesystem",
-                            "volumeName": "pvc-55808967-2d22-11e9-8c7b-000c29997d29"
-                        },
-                        "status": {
-                            "accessModes": [
-                                "ReadWriteOnce"
-                            ],
-                            "capacity": {
-                                "storage": "5Gi"
-                            },
-                            "phase": "Bound"
-                        }
-                    },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:Grafana::grafana",
-                    "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                    ],
-                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
-                    "propertyDependencies": {
-                        "apiVersion": null,
-                        "kind": null,
-                        "metadata": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ],
-                        "spec": null
                     }
                 },
                 {
@@ -2325,118 +1958,99 @@
                     }
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:extensions/v1beta1:PodSecurityPolicy::promtail-pod-security-policy",
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:PersistentVolumeClaim::loki-storage",
                     "custom": true,
-                    "id": "promtail",
-                    "type": "kubernetes:extensions/v1beta1:PodSecurityPolicy",
+                    "id": "monitoring/loki",
+                    "type": "kubernetes:core/v1:PersistentVolumeClaim",
                     "inputs": {
-                        "apiVersion": "extensions/v1beta1",
-                        "kind": "PodSecurityPolicy",
+                        "apiVersion": "v1",
+                        "kind": "PersistentVolumeClaim",
                         "metadata": {
                             "labels": {
-                                "name": "promtail"
+                                "name": "loki"
                             },
-                            "name": "promtail",
+                            "name": "loki",
                             "namespace": "monitoring"
                         },
                         "spec": {
-                            "allowPrivilegeEscalation": true,
-                            "fsGroup": {
-                                "readOnlyRootFilesystem": false,
-                                "rule": "RunAsAny"
-                            },
-                            "hostIPC": false,
-                            "hostNetwork": false,
-                            "hostPID": false,
-                            "privileged": true,
-                            "runAsUser": {
-                                "rule": "RunAsAny"
-                            },
-                            "seLinux": {
-                                "rule": "RunAsAny"
-                            },
-                            "supplementalGroups": {
-                                "rule": "RunAsAny"
-                            },
-                            "volumes": [
-                                "secret",
-                                "configMap",
-                                "hostPath"
-                            ]
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "storage": "5Gi"
+                                }
+                            }
                         }
                     },
                     "outputs": {
                         "__inputs": {
-                            "apiVersion": "extensions/v1beta1",
-                            "kind": "PodSecurityPolicy",
+                            "apiVersion": "v1",
+                            "kind": "PersistentVolumeClaim",
                             "metadata": {
                                 "labels": {
-                                    "name": "promtail"
+                                    "name": "loki"
                                 },
-                                "name": "promtail",
+                                "name": "loki",
                                 "namespace": "monitoring"
                             },
                             "spec": {
-                                "allowPrivilegeEscalation": true,
-                                "fsGroup": {
-                                    "readOnlyRootFilesystem": false,
-                                    "rule": "RunAsAny"
-                                },
-                                "hostIPC": false,
-                                "hostNetwork": false,
-                                "hostPID": false,
-                                "privileged": true,
-                                "runAsUser": {
-                                    "rule": "RunAsAny"
-                                },
-                                "seLinux": {
-                                    "rule": "RunAsAny"
-                                },
-                                "supplementalGroups": {
-                                    "rule": "RunAsAny"
-                                },
-                                "volumes": [
-                                    "secret",
-                                    "configMap",
-                                    "hostPath"
-                                ]
+                                "accessModes": [
+                                    "ReadWriteOnce"
+                                ],
+                                "resources": {
+                                    "requests": {
+                                        "storage": "5Gi"
+                                    }
+                                }
                             }
                         },
-                        "apiVersion": "extensions/v1beta1",
-                        "kind": "PodSecurityPolicy",
+                        "apiVersion": "v1",
+                        "kind": "PersistentVolumeClaim",
                         "metadata": {
-                            "creationTimestamp": "2019-02-10T11:25:55Z",
-                            "labels": {
-                                "name": "promtail"
+                            "annotations": {
+                                "control-plane.alpha.kubernetes.io/leader": "{\"holderIdentity\":\"0b4a0000-2d22-11e9-b5f5-000c29997d29\",\"leaseDurationSeconds\":15,\"acquireTime\":\"2019-02-10T10:55:09Z\",\"renewTime\":\"2019-02-10T10:55:11Z\",\"leaderTransitions\":0}",
+                                "pv.kubernetes.io/bind-completed": "yes",
+                                "pv.kubernetes.io/bound-by-controller": "yes",
+                                "volume.beta.kubernetes.io/storage-provisioner": "k8s.io/minikube-hostpath"
                             },
-                            "name": "promtail",
-                            "resourceVersion": "3288",
-                            "selfLink": "/apis/extensions/v1beta1/podsecuritypolicies/promtail",
-                            "uid": "a1bd3073-2d26-11e9-8c7b-000c29997d29"
+                            "creationTimestamp": "2019-02-10T10:55:09Z",
+                            "finalizers": [
+                                "kubernetes.io/pvc-protection"
+                            ],
+                            "labels": {
+                                "name": "loki"
+                            },
+                            "name": "loki",
+                            "namespace": "monitoring",
+                            "resourceVersion": "626",
+                            "selfLink": "/api/v1/namespaces/monitoring/persistentvolumeclaims/loki",
+                            "uid": "5509ff3e-2d22-11e9-8c7b-000c29997d29"
                         },
                         "spec": {
-                            "allowPrivilegeEscalation": true,
-                            "fsGroup": {
-                                "rule": "RunAsAny"
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "storage": "5Gi"
+                                }
                             },
-                            "privileged": true,
-                            "runAsUser": {
-                                "rule": "RunAsAny"
+                            "storageClassName": "standard",
+                            "volumeMode": "Filesystem",
+                            "volumeName": "pvc-5509ff3e-2d22-11e9-8c7b-000c29997d29"
+                        },
+                        "status": {
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "capacity": {
+                                "storage": "5Gi"
                             },
-                            "seLinux": {
-                                "rule": "RunAsAny"
-                            },
-                            "supplementalGroups": {
-                                "rule": "RunAsAny"
-                            },
-                            "volumes": [
-                                "secret",
-                                "configMap",
-                                "hostPath"
-                            ]
+                            "phase": "Bound"
                         }
                     },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:loki::loki",
                     "dependencies": [
                         "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
                     ],
@@ -2448,6 +2062,157 @@
                             "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
                         ],
                         "spec": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role",
+                    "custom": true,
+                    "id": "prometheus",
+                    "type": "kubernetes:rbac.authorization.k8s.io/v1:ClusterRole",
+                    "inputs": {
+                        "apiVersion": "rbac.authorization.k8s.io/v1",
+                        "kind": "ClusterRole",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        },
+                        "rules": [
+                            {
+                                "apiGroups": [
+                                    ""
+                                ],
+                                "resources": [
+                                    "nodes",
+                                    "nodes/proxy",
+                                    "services",
+                                    "endpoints",
+                                    "pods"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            },
+                            {
+                                "apiGroups": [
+                                    "extensions"
+                                ],
+                                "resources": [
+                                    "ingress"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            }
+                        ]
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "rbac.authorization.k8s.io/v1",
+                            "kind": "ClusterRole",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            },
+                            "rules": [
+                                {
+                                    "apiGroups": [
+                                        ""
+                                    ],
+                                    "resources": [
+                                        "nodes",
+                                        "nodes/proxy",
+                                        "services",
+                                        "endpoints",
+                                        "pods"
+                                    ],
+                                    "verbs": [
+                                        "get",
+                                        "list",
+                                        "watch"
+                                    ]
+                                },
+                                {
+                                    "apiGroups": [
+                                        "extensions"
+                                    ],
+                                    "resources": [
+                                        "ingress"
+                                    ],
+                                    "verbs": [
+                                        "get",
+                                        "list",
+                                        "watch"
+                                    ]
+                                }
+                            ]
+                        },
+                        "apiVersion": "rbac.authorization.k8s.io/v1",
+                        "kind": "ClusterRole",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T10:55:08Z",
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "resourceVersion": "568",
+                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterroles/prometheus",
+                            "uid": "54f76f63-2d22-11e9-8c7b-000c29997d29"
+                        },
+                        "rules": [
+                            {
+                                "apiGroups": [
+                                    ""
+                                ],
+                                "resources": [
+                                    "nodes",
+                                    "nodes/proxy",
+                                    "services",
+                                    "endpoints",
+                                    "pods"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            },
+                            {
+                                "apiGroups": [
+                                    "extensions"
+                                ],
+                                "resources": [
+                                    "ingress"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            }
+                        ]
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "rules": null
                     }
                 },
                 {
@@ -2753,29 +2518,362 @@
                     }
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding::prometheus-cluster-role-binding",
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:apps/v1:DaemonSet::promtail-daemonset",
                     "custom": true,
-                    "id": "prometheus",
+                    "id": "monitoring/promtail",
+                    "type": "kubernetes:apps/v1:DaemonSet",
+                    "inputs": {
+                        "apiVersion": "apps/v1",
+                        "kind": "DaemonSet",
+                        "metadata": {
+                            "labels": {
+                                "name": "promtail"
+                            },
+                            "name": "promtail",
+                            "namespace": "monitoring"
+                        },
+                        "spec": {
+                            "selector": {
+                                "matchLabels": {
+                                    "name": "promtail"
+                                }
+                            },
+                            "template": {
+                                "metadata": {
+                                    "labels": {
+                                        "name": "promtail"
+                                    },
+                                    "name": "promtail",
+                                    "namespace": "monitoring"
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "args": [
+                                                "-config.file=/etc/promtail/promtail.yaml",
+                                                "-client.url=http://loki:3100/api/prom/push"
+                                            ],
+                                            "env": [
+                                                {
+                                                    "name": "HOSTNAME",
+                                                    "valueFrom": {
+                                                        "fieldRef": {
+                                                            "fieldPath": "spec.nodeName"
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "image": "grafana/promtail:master-ffe1093",
+                                            "name": "promtail",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 3100
+                                                }
+                                            ],
+                                            "volumeMounts": [
+                                                {
+                                                    "mountPath": "/etc/promtail",
+                                                    "name": "promtail-config"
+                                                },
+                                                {
+                                                    "mountPath": "/var/log",
+                                                    "name": "varlog"
+                                                },
+                                                {
+                                                    "mountPath": "/var/lib/docker/containers",
+                                                    "name": "varlibdockercontainers"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "serviceAccount": "promtail",
+                                    "volumes": [
+                                        {
+                                            "configMap": {
+                                                "name": "promtail"
+                                            },
+                                            "name": "promtail-config"
+                                        },
+                                        {
+                                            "hostPath": {
+                                                "path": "/var/log"
+                                            },
+                                            "name": "varlog"
+                                        },
+                                        {
+                                            "hostPath": {
+                                                "path": "/var/lib/docker/containers"
+                                            },
+                                            "name": "varlibdockercontainers"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "apps/v1",
+                            "kind": "DaemonSet",
+                            "metadata": {
+                                "labels": {
+                                    "name": "promtail"
+                                },
+                                "name": "promtail",
+                                "namespace": "monitoring"
+                            },
+                            "spec": {
+                                "selector": {
+                                    "matchLabels": {
+                                        "name": "promtail"
+                                    }
+                                },
+                                "template": {
+                                    "metadata": {
+                                        "labels": {
+                                            "name": "promtail"
+                                        },
+                                        "name": "promtail",
+                                        "namespace": "monitoring"
+                                    },
+                                    "spec": {
+                                        "containers": [
+                                            {
+                                                "args": [
+                                                    "-config.file=/etc/promtail/promtail.yaml",
+                                                    "-client.url=http://loki:3100/api/prom/push"
+                                                ],
+                                                "env": [
+                                                    {
+                                                        "name": "HOSTNAME",
+                                                        "valueFrom": {
+                                                            "fieldRef": {
+                                                                "fieldPath": "spec.nodeName"
+                                                            }
+                                                        }
+                                                    }
+                                                ],
+                                                "image": "grafana/promtail:master-ffe1093",
+                                                "name": "promtail",
+                                                "ports": [
+                                                    {
+                                                        "containerPort": 3100
+                                                    }
+                                                ],
+                                                "volumeMounts": [
+                                                    {
+                                                        "mountPath": "/etc/promtail",
+                                                        "name": "promtail-config"
+                                                    },
+                                                    {
+                                                        "mountPath": "/var/log",
+                                                        "name": "varlog"
+                                                    },
+                                                    {
+                                                        "mountPath": "/var/lib/docker/containers",
+                                                        "name": "varlibdockercontainers"
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "serviceAccount": "promtail",
+                                        "volumes": [
+                                            {
+                                                "configMap": {
+                                                    "name": "promtail"
+                                                },
+                                                "name": "promtail-config"
+                                            },
+                                            {
+                                                "hostPath": {
+                                                    "path": "/var/log"
+                                                },
+                                                "name": "varlog"
+                                            },
+                                            {
+                                                "hostPath": {
+                                                    "path": "/var/lib/docker/containers"
+                                                },
+                                                "name": "varlibdockercontainers"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "apiVersion": "apps/v1",
+                        "kind": "DaemonSet",
+                        "metadata": {
+                            "annotations": {
+                                "deprecated.daemonset.template.generation": "3"
+                            },
+                            "creationTimestamp": "2019-02-10T10:55:20Z",
+                            "generation": 3,
+                            "labels": {
+                                "name": "promtail"
+                            },
+                            "name": "promtail",
+                            "namespace": "monitoring",
+                            "resourceVersion": "1793",
+                            "selfLink": "/apis/apps/v1/namespaces/monitoring/daemonsets/promtail",
+                            "uid": "5bd60151-2d22-11e9-8c7b-000c29997d29"
+                        },
+                        "spec": {
+                            "revisionHistoryLimit": 10,
+                            "selector": {
+                                "matchLabels": {
+                                    "name": "promtail"
+                                }
+                            },
+                            "template": {
+                                "metadata": {
+                                    "labels": {
+                                        "name": "promtail"
+                                    },
+                                    "name": "promtail",
+                                    "namespace": "monitoring"
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "args": [
+                                                "-config.file=/etc/promtail/promtail.yaml",
+                                                "-client.url=http://loki:3100/api/prom/push"
+                                            ],
+                                            "env": [
+                                                {
+                                                    "name": "HOSTNAME",
+                                                    "valueFrom": {
+                                                        "fieldRef": {
+                                                            "apiVersion": "v1",
+                                                            "fieldPath": "spec.nodeName"
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "image": "grafana/promtail:master-ffe1093",
+                                            "imagePullPolicy": "IfNotPresent",
+                                            "name": "promtail",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 3100,
+                                                    "protocol": "TCP"
+                                                }
+                                            ],
+                                            "resources": {},
+                                            "terminationMessagePath": "/dev/termination-log",
+                                            "terminationMessagePolicy": "File",
+                                            "volumeMounts": [
+                                                {
+                                                    "mountPath": "/etc/promtail",
+                                                    "name": "promtail-config"
+                                                },
+                                                {
+                                                    "mountPath": "/var/log",
+                                                    "name": "varlog"
+                                                },
+                                                {
+                                                    "mountPath": "/var/lib/docker/containers",
+                                                    "name": "varlibdockercontainers"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "dnsPolicy": "ClusterFirst",
+                                    "restartPolicy": "Always",
+                                    "schedulerName": "default-scheduler",
+                                    "securityContext": {},
+                                    "serviceAccount": "promtail",
+                                    "serviceAccountName": "promtail",
+                                    "terminationGracePeriodSeconds": 30,
+                                    "volumes": [
+                                        {
+                                            "configMap": {
+                                                "defaultMode": 420,
+                                                "name": "promtail"
+                                            },
+                                            "name": "promtail-config"
+                                        },
+                                        {
+                                            "hostPath": {
+                                                "path": "/var/log",
+                                                "type": ""
+                                            },
+                                            "name": "varlog"
+                                        },
+                                        {
+                                            "hostPath": {
+                                                "path": "/var/lib/docker/containers",
+                                                "type": ""
+                                            },
+                                            "name": "varlibdockercontainers"
+                                        }
+                                    ]
+                                }
+                            },
+                            "updateStrategy": {
+                                "rollingUpdate": {
+                                    "maxUnavailable": 1
+                                },
+                                "type": "RollingUpdate"
+                            }
+                        },
+                        "status": {
+                            "currentNumberScheduled": 1,
+                            "desiredNumberScheduled": 1,
+                            "numberAvailable": 1,
+                            "numberMisscheduled": 0,
+                            "numberReady": 1,
+                            "observedGeneration": 2,
+                            "updatedNumberScheduled": 1
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:Service::loki-service",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ConfigMap::promtail-config",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account",
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "spec": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring",
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account",
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:Service::loki-service",
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ConfigMap::promtail-config"
+                        ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding::promtail-cluster-role-binding",
+                    "custom": true,
+                    "id": "promtail",
                     "type": "kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding",
                     "inputs": {
                         "apiVersion": "rbac.authorization.k8s.io/v1",
                         "kind": "ClusterRoleBinding",
                         "metadata": {
                             "labels": {
-                                "name": "prometheus"
+                                "name": "promtail"
                             },
-                            "name": "prometheus",
+                            "name": "promtail",
                             "namespace": "monitoring"
                         },
                         "roleRef": {
                             "apiGroup": "rbac.authorization.k8s.io",
                             "kind": "ClusterRole",
-                            "name": "prometheus"
+                            "name": "promtail"
                         },
                         "subjects": [
                             {
                                 "kind": "ServiceAccount",
-                                "name": "prometheus",
+                                "name": "promtail",
                                 "namespace": "monitoring"
                             }
                         ]
@@ -2786,20 +2884,20 @@
                             "kind": "ClusterRoleBinding",
                             "metadata": {
                                 "labels": {
-                                    "name": "prometheus"
+                                    "name": "promtail"
                                 },
-                                "name": "prometheus",
+                                "name": "promtail",
                                 "namespace": "monitoring"
                             },
                             "roleRef": {
                                 "apiGroup": "rbac.authorization.k8s.io",
                                 "kind": "ClusterRole",
-                                "name": "prometheus"
+                                "name": "promtail"
                             },
                             "subjects": [
                                 {
                                     "kind": "ServiceAccount",
-                                    "name": "prometheus",
+                                    "name": "promtail",
                                     "namespace": "monitoring"
                                 }
                             ]
@@ -2809,30 +2907,30 @@
                         "metadata": {
                             "creationTimestamp": "2019-02-10T10:55:12Z",
                             "labels": {
-                                "name": "prometheus"
+                                "name": "promtail"
                             },
-                            "name": "prometheus",
-                            "resourceVersion": "630",
-                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/prometheus",
-                            "uid": "570d2dcd-2d22-11e9-8c7b-000c29997d29"
+                            "name": "promtail",
+                            "resourceVersion": "645",
+                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/promtail",
+                            "uid": "574a341a-2d22-11e9-8c7b-000c29997d29"
                         },
                         "roleRef": {
                             "apiGroup": "rbac.authorization.k8s.io",
                             "kind": "ClusterRole",
-                            "name": "prometheus"
+                            "name": "promtail"
                         },
                         "subjects": [
                             {
                                 "kind": "ServiceAccount",
-                                "name": "prometheus",
+                                "name": "promtail",
                                 "namespace": "monitoring"
                             }
                         ]
                     },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
                     "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::promtail-cluster-role",
                         "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
                     ],
                     "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
@@ -2843,103 +2941,7 @@
                             "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
                         ],
                         "roleRef": [
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role"
-                        ],
-                        "subjects": [
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account"
-                        ]
-                    }
-                },
-                {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:RoleBinding::promtail-role-binding",
-                    "custom": true,
-                    "id": "monitoring/promtail",
-                    "type": "kubernetes:rbac.authorization.k8s.io/v1:RoleBinding",
-                    "inputs": {
-                        "apiVersion": "rbac.authorization.k8s.io/v1",
-                        "kind": "RoleBinding",
-                        "metadata": {
-                            "labels": {
-                                "name": "promtail"
-                            },
-                            "name": "promtail",
-                            "namespace": "monitoring"
-                        },
-                        "roleRef": {
-                            "apiGroup": "rbac.authorization.k8s.io",
-                            "kind": "Role",
-                            "name": "promtail"
-                        },
-                        "subjects": [
-                            {
-                                "kind": "ServiceAccount",
-                                "name": "promtail"
-                            }
-                        ]
-                    },
-                    "outputs": {
-                        "__inputs": {
-                            "apiVersion": "rbac.authorization.k8s.io/v1",
-                            "kind": "RoleBinding",
-                            "metadata": {
-                                "labels": {
-                                    "name": "promtail"
-                                },
-                                "name": "promtail",
-                                "namespace": "monitoring"
-                            },
-                            "roleRef": {
-                                "apiGroup": "rbac.authorization.k8s.io",
-                                "kind": "Role",
-                                "name": "promtail"
-                            },
-                            "subjects": [
-                                {
-                                    "kind": "ServiceAccount",
-                                    "name": "promtail"
-                                }
-                            ]
-                        },
-                        "apiVersion": "rbac.authorization.k8s.io/v1",
-                        "kind": "RoleBinding",
-                        "metadata": {
-                            "creationTimestamp": "2019-02-10T11:25:56Z",
-                            "labels": {
-                                "name": "promtail"
-                            },
-                            "name": "promtail",
-                            "namespace": "monitoring",
-                            "resourceVersion": "3289",
-                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/namespaces/monitoring/rolebindings/promtail",
-                            "uid": "a2079029-2d26-11e9-8c7b-000c29997d29"
-                        },
-                        "roleRef": {
-                            "apiGroup": "rbac.authorization.k8s.io",
-                            "kind": "Role",
-                            "name": "promtail"
-                        },
-                        "subjects": [
-                            {
-                                "kind": "ServiceAccount",
-                                "name": "promtail"
-                            }
-                        ]
-                    },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
-                    "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring",
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:Role::promtail-role",
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account"
-                    ],
-                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
-                    "propertyDependencies": {
-                        "apiVersion": null,
-                        "kind": null,
-                        "metadata": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ],
-                        "roleRef": [
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:Role::promtail-role"
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::promtail-cluster-role"
                         ],
                         "subjects": [
                             "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account"
@@ -3229,29 +3231,29 @@
                     }
                 },
                 {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding::promtail-cluster-role-binding",
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding::prometheus-cluster-role-binding",
                     "custom": true,
-                    "id": "promtail",
+                    "id": "prometheus",
                     "type": "kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding",
                     "inputs": {
                         "apiVersion": "rbac.authorization.k8s.io/v1",
                         "kind": "ClusterRoleBinding",
                         "metadata": {
                             "labels": {
-                                "name": "promtail"
+                                "name": "prometheus"
                             },
-                            "name": "promtail",
+                            "name": "prometheus",
                             "namespace": "monitoring"
                         },
                         "roleRef": {
                             "apiGroup": "rbac.authorization.k8s.io",
                             "kind": "ClusterRole",
-                            "name": "promtail"
+                            "name": "prometheus"
                         },
                         "subjects": [
                             {
                                 "kind": "ServiceAccount",
-                                "name": "promtail",
+                                "name": "prometheus",
                                 "namespace": "monitoring"
                             }
                         ]
@@ -3262,20 +3264,20 @@
                             "kind": "ClusterRoleBinding",
                             "metadata": {
                                 "labels": {
-                                    "name": "promtail"
+                                    "name": "prometheus"
                                 },
-                                "name": "promtail",
+                                "name": "prometheus",
                                 "namespace": "monitoring"
                             },
                             "roleRef": {
                                 "apiGroup": "rbac.authorization.k8s.io",
                                 "kind": "ClusterRole",
-                                "name": "promtail"
+                                "name": "prometheus"
                             },
                             "subjects": [
                                 {
                                     "kind": "ServiceAccount",
-                                    "name": "promtail",
+                                    "name": "prometheus",
                                     "namespace": "monitoring"
                                 }
                             ]
@@ -3285,30 +3287,30 @@
                         "metadata": {
                             "creationTimestamp": "2019-02-10T10:55:12Z",
                             "labels": {
-                                "name": "promtail"
+                                "name": "prometheus"
                             },
-                            "name": "promtail",
-                            "resourceVersion": "645",
-                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/promtail",
-                            "uid": "574a341a-2d22-11e9-8c7b-000c29997d29"
+                            "name": "prometheus",
+                            "resourceVersion": "630",
+                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/prometheus",
+                            "uid": "570d2dcd-2d22-11e9-8c7b-000c29997d29"
                         },
                         "roleRef": {
                             "apiGroup": "rbac.authorization.k8s.io",
                             "kind": "ClusterRole",
-                            "name": "promtail"
+                            "name": "prometheus"
                         },
                         "subjects": [
                             {
                                 "kind": "ServiceAccount",
-                                "name": "promtail",
+                                "name": "prometheus",
                                 "namespace": "monitoring"
                             }
                         ]
                     },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
                     "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account",
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::promtail-cluster-role",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role",
                         "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
                     ],
                     "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
@@ -3319,356 +3321,10 @@
                             "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
                         ],
                         "roleRef": [
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::promtail-cluster-role"
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role"
                         ],
                         "subjects": [
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account"
-                        ]
-                    }
-                },
-                {
-                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:apps/v1:DaemonSet::promtail-daemonset",
-                    "custom": true,
-                    "id": "monitoring/promtail",
-                    "type": "kubernetes:apps/v1:DaemonSet",
-                    "inputs": {
-                        "apiVersion": "apps/v1",
-                        "kind": "DaemonSet",
-                        "metadata": {
-                            "labels": {
-                                "name": "promtail"
-                            },
-                            "name": "promtail",
-                            "namespace": "monitoring"
-                        },
-                        "spec": {
-                            "selector": {
-                                "matchLabels": {
-                                    "name": "promtail"
-                                }
-                            },
-                            "template": {
-                                "metadata": {
-                                    "labels": {
-                                        "name": "promtail"
-                                    },
-                                    "name": "promtail",
-                                    "namespace": "monitoring"
-                                },
-                                "spec": {
-                                    "containers": [
-                                        {
-                                            "args": [
-                                                "-config.file=/etc/promtail/promtail.yaml",
-                                                "-client.url=http://loki:3100/api/prom/push"
-                                            ],
-                                            "env": [
-                                                {
-                                                    "name": "HOSTNAME",
-                                                    "valueFrom": {
-                                                        "fieldRef": {
-                                                            "fieldPath": "spec.nodeName"
-                                                        }
-                                                    }
-                                                }
-                                            ],
-                                            "image": "grafana/promtail:master-ffe1093",
-                                            "name": "promtail",
-                                            "ports": [
-                                                {
-                                                    "containerPort": 3100
-                                                }
-                                            ],
-                                            "securityContext": {
-                                                "privileged": true,
-                                                "runAsUser": 0
-                                            },
-                                            "volumeMounts": [
-                                                {
-                                                    "mountPath": "/etc/promtail",
-                                                    "name": "promtail-config"
-                                                },
-                                                {
-                                                    "mountPath": "/var/log",
-                                                    "name": "varlog"
-                                                },
-                                                {
-                                                    "mountPath": "/var/lib/docker/containers",
-                                                    "name": "varlibdockercontainers"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "serviceAccount": "promtail",
-                                    "volumes": [
-                                        {
-                                            "configMap": {
-                                                "name": "promtail"
-                                            },
-                                            "name": "promtail-config"
-                                        },
-                                        {
-                                            "hostPath": {
-                                                "path": "/var/log"
-                                            },
-                                            "name": "varlog"
-                                        },
-                                        {
-                                            "hostPath": {
-                                                "path": "/var/lib/docker/containers"
-                                            },
-                                            "name": "varlibdockercontainers"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "outputs": {
-                        "__inputs": {
-                            "apiVersion": "apps/v1",
-                            "kind": "DaemonSet",
-                            "metadata": {
-                                "labels": {
-                                    "name": "promtail"
-                                },
-                                "name": "promtail",
-                                "namespace": "monitoring"
-                            },
-                            "spec": {
-                                "selector": {
-                                    "matchLabels": {
-                                        "name": "promtail"
-                                    }
-                                },
-                                "template": {
-                                    "metadata": {
-                                        "labels": {
-                                            "name": "promtail"
-                                        },
-                                        "name": "promtail",
-                                        "namespace": "monitoring"
-                                    },
-                                    "spec": {
-                                        "containers": [
-                                            {
-                                                "args": [
-                                                    "-config.file=/etc/promtail/promtail.yaml",
-                                                    "-client.url=http://loki:3100/api/prom/push"
-                                                ],
-                                                "env": [
-                                                    {
-                                                        "name": "HOSTNAME",
-                                                        "valueFrom": {
-                                                            "fieldRef": {
-                                                                "fieldPath": "spec.nodeName"
-                                                            }
-                                                        }
-                                                    }
-                                                ],
-                                                "image": "grafana/promtail:master-ffe1093",
-                                                "name": "promtail",
-                                                "ports": [
-                                                    {
-                                                        "containerPort": 3100
-                                                    }
-                                                ],
-                                                "securityContext": {
-                                                    "privileged": true,
-                                                    "runAsUser": 0
-                                                },
-                                                "volumeMounts": [
-                                                    {
-                                                        "mountPath": "/etc/promtail",
-                                                        "name": "promtail-config"
-                                                    },
-                                                    {
-                                                        "mountPath": "/var/log",
-                                                        "name": "varlog"
-                                                    },
-                                                    {
-                                                        "mountPath": "/var/lib/docker/containers",
-                                                        "name": "varlibdockercontainers"
-                                                    }
-                                                ]
-                                            }
-                                        ],
-                                        "serviceAccount": "promtail",
-                                        "volumes": [
-                                            {
-                                                "configMap": {
-                                                    "name": "promtail"
-                                                },
-                                                "name": "promtail-config"
-                                            },
-                                            {
-                                                "hostPath": {
-                                                    "path": "/var/log"
-                                                },
-                                                "name": "varlog"
-                                            },
-                                            {
-                                                "hostPath": {
-                                                    "path": "/var/lib/docker/containers"
-                                                },
-                                                "name": "varlibdockercontainers"
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "apiVersion": "apps/v1",
-                        "kind": "DaemonSet",
-                        "metadata": {
-                            "annotations": {
-                                "deprecated.daemonset.template.generation": "4"
-                            },
-                            "creationTimestamp": "2019-02-10T10:55:20Z",
-                            "generation": 4,
-                            "labels": {
-                                "name": "promtail"
-                            },
-                            "name": "promtail",
-                            "namespace": "monitoring",
-                            "resourceVersion": "3291",
-                            "selfLink": "/apis/apps/v1/namespaces/monitoring/daemonsets/promtail",
-                            "uid": "5bd60151-2d22-11e9-8c7b-000c29997d29"
-                        },
-                        "spec": {
-                            "revisionHistoryLimit": 10,
-                            "selector": {
-                                "matchLabels": {
-                                    "name": "promtail"
-                                }
-                            },
-                            "template": {
-                                "metadata": {
-                                    "labels": {
-                                        "name": "promtail"
-                                    },
-                                    "name": "promtail",
-                                    "namespace": "monitoring"
-                                },
-                                "spec": {
-                                    "containers": [
-                                        {
-                                            "args": [
-                                                "-config.file=/etc/promtail/promtail.yaml",
-                                                "-client.url=http://loki:3100/api/prom/push"
-                                            ],
-                                            "env": [
-                                                {
-                                                    "name": "HOSTNAME",
-                                                    "valueFrom": {
-                                                        "fieldRef": {
-                                                            "apiVersion": "v1",
-                                                            "fieldPath": "spec.nodeName"
-                                                        }
-                                                    }
-                                                }
-                                            ],
-                                            "image": "grafana/promtail:master-ffe1093",
-                                            "imagePullPolicy": "IfNotPresent",
-                                            "name": "promtail",
-                                            "ports": [
-                                                {
-                                                    "containerPort": 3100,
-                                                    "protocol": "TCP"
-                                                }
-                                            ],
-                                            "resources": {},
-                                            "securityContext": {
-                                                "privileged": true,
-                                                "procMount": "Default",
-                                                "runAsUser": 0
-                                            },
-                                            "terminationMessagePath": "/dev/termination-log",
-                                            "terminationMessagePolicy": "File",
-                                            "volumeMounts": [
-                                                {
-                                                    "mountPath": "/etc/promtail",
-                                                    "name": "promtail-config"
-                                                },
-                                                {
-                                                    "mountPath": "/var/log",
-                                                    "name": "varlog"
-                                                },
-                                                {
-                                                    "mountPath": "/var/lib/docker/containers",
-                                                    "name": "varlibdockercontainers"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "dnsPolicy": "ClusterFirst",
-                                    "restartPolicy": "Always",
-                                    "schedulerName": "default-scheduler",
-                                    "securityContext": {},
-                                    "serviceAccount": "promtail",
-                                    "serviceAccountName": "promtail",
-                                    "terminationGracePeriodSeconds": 30,
-                                    "volumes": [
-                                        {
-                                            "configMap": {
-                                                "defaultMode": 420,
-                                                "name": "promtail"
-                                            },
-                                            "name": "promtail-config"
-                                        },
-                                        {
-                                            "hostPath": {
-                                                "path": "/var/log",
-                                                "type": ""
-                                            },
-                                            "name": "varlog"
-                                        },
-                                        {
-                                            "hostPath": {
-                                                "path": "/var/lib/docker/containers",
-                                                "type": ""
-                                            },
-                                            "name": "varlibdockercontainers"
-                                        }
-                                    ]
-                                }
-                            },
-                            "updateStrategy": {
-                                "rollingUpdate": {
-                                    "maxUnavailable": 1
-                                },
-                                "type": "RollingUpdate"
-                            }
-                        },
-                        "status": {
-                            "currentNumberScheduled": 1,
-                            "desiredNumberScheduled": 1,
-                            "numberAvailable": 1,
-                            "numberMisscheduled": 0,
-                            "numberReady": 1,
-                            "observedGeneration": 3,
-                            "updatedNumberScheduled": 1
-                        }
-                    },
-                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:promtail::promtail",
-                    "dependencies": [
-                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring",
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account",
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:Service::loki-service",
-                        "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ConfigMap::promtail-config"
-                    ],
-                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::f7cd9ec7-2898-46a6-9846-dbda4057498a",
-                    "propertyDependencies": {
-                        "apiVersion": null,
-                        "kind": null,
-                        "metadata": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
-                        ],
-                        "spec": [
-                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring",
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ServiceAccount::promtail-service-account",
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:Service::loki-service",
-                            "urn:pulumi:local::pulumi-ts::james:monitoring:promtail$kubernetes:core/v1:ConfigMap::promtail-config"
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account"
                         ]
                     }
                 },

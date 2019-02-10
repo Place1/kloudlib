@@ -1,0 +1,1582 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "stack": "local",
+        "latest": {
+            "manifest": {
+                "time": "2019-02-10T01:40:31.72499903-08:00",
+                "magic": "6c993fb053a6ee3f4c7c224e6d1ad637222b51d655db5305ca412c0ce17b09f3",
+                "version": "v0.16.14",
+                "plugins": [
+                    {
+                        "name": "kubernetes",
+                        "path": "/home/james/.pulumi/plugins/resource-kubernetes-v0.20.1/pulumi-resource-kubernetes",
+                        "type": "resource",
+                        "version": "0.20.1"
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local",
+                    "custom": false,
+                    "type": "pulumi:pulumi:Stack",
+                    "outputs": {
+                        "monitoringStack": {
+                            "loki": {
+                                "configMap": {
+                                    "apiVersion": "v1",
+                                    "data": {
+                                        "loki.yaml": "auth_enabled: false\nserver:\n  http_listen_port: 3100\ningester:\n  lifecycler:\n    ring:\n      store: inmemory\n      replication_factor: 1\nschema_config:\n  configs:\n  - from: 0\n    store: boltdb\n    object_store: filesystem\n    schema: v9\n    index:\n      prefix: index_\n      period: 168h\nstorage_configs:\n  - name: boltdb\n    directory: /tmp/loki/index\n  - name: filesystem\n    directory: /tmp/loki/chunks"
+                                    },
+                                    "id": "monitoring/loki",
+                                    "kind": "ConfigMap",
+                                    "metadata": {
+                                        "creationTimestamp": "2019-02-10T09:32:32Z",
+                                        "labels": {
+                                            "name": "loki"
+                                        },
+                                        "name": "loki",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "1276",
+                                        "selfLink": "/api/v1/namespaces/monitoring/configmaps/loki",
+                                        "uid": "cacbca2a-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:ConfigMap::loki-config"
+                                },
+                                "deployment": {
+                                    "apiVersion": "apps/v1",
+                                    "id": "monitoring/loki",
+                                    "kind": "Deployment",
+                                    "metadata": {
+                                        "annotations": {
+                                            "deployment.kubernetes.io/revision": "1"
+                                        },
+                                        "creationTimestamp": "2019-02-10T09:32:32Z",
+                                        "generation": 1,
+                                        "labels": {
+                                            "name": "loki"
+                                        },
+                                        "name": "loki",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "1447",
+                                        "selfLink": "/apis/apps/v1/namespaces/monitoring/deployments/loki",
+                                        "uid": "cb01c690-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "spec": {
+                                        "progressDeadlineSeconds": 600,
+                                        "replicas": 1,
+                                        "revisionHistoryLimit": 10,
+                                        "selector": {
+                                            "matchLabels": {
+                                                "name": "loki"
+                                            }
+                                        },
+                                        "strategy": {
+                                            "rollingUpdate": {
+                                                "maxSurge": "25%",
+                                                "maxUnavailable": "25%"
+                                            },
+                                            "type": "RollingUpdate"
+                                        },
+                                        "template": {
+                                            "metadata": {
+                                                "labels": {
+                                                    "name": "loki"
+                                                },
+                                                "name": "loki",
+                                                "namespace": "monitoring"
+                                            },
+                                            "spec": {
+                                                "containers": [
+                                                    {
+                                                        "image": "grafana/loki:master",
+                                                        "imagePullPolicy": "IfNotPresent",
+                                                        "name": "loki",
+                                                        "ports": [
+                                                            {
+                                                                "containerPort": 3100,
+                                                                "protocol": "TCP"
+                                                            }
+                                                        ],
+                                                        "resources": {},
+                                                        "terminationMessagePath": "/dev/termination-log",
+                                                        "terminationMessagePolicy": "File",
+                                                        "volumeMounts": [
+                                                            {
+                                                                "mountPath": "/etc/loki",
+                                                                "name": "loki-config"
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                "dnsPolicy": "ClusterFirst",
+                                                "restartPolicy": "Always",
+                                                "schedulerName": "default-scheduler",
+                                                "securityContext": {},
+                                                "terminationGracePeriodSeconds": 30,
+                                                "volumes": [
+                                                    {
+                                                        "configMap": {
+                                                            "defaultMode": 420,
+                                                            "name": "loki"
+                                                        },
+                                                        "name": "loki-config"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "status": {
+                                        "availableReplicas": 1,
+                                        "conditions": [
+                                            {
+                                                "lastTransitionTime": "2019-02-10T09:34:15Z",
+                                                "lastUpdateTime": "2019-02-10T09:34:15Z",
+                                                "message": "Deployment has minimum availability.",
+                                                "reason": "MinimumReplicasAvailable",
+                                                "status": "True",
+                                                "type": "Available"
+                                            },
+                                            {
+                                                "lastTransitionTime": "2019-02-10T09:32:33Z",
+                                                "lastUpdateTime": "2019-02-10T09:34:15Z",
+                                                "message": "ReplicaSet \"loki-7bcb44d55\" has successfully progressed.",
+                                                "reason": "NewReplicaSetAvailable",
+                                                "status": "True",
+                                                "type": "Progressing"
+                                            }
+                                        ],
+                                        "observedGeneration": 1,
+                                        "readyReplicas": 1,
+                                        "replicas": 1,
+                                        "updatedReplicas": 1
+                                    },
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:apps/v1:Deployment::loki-deployment"
+                                },
+                                "name": "loki",
+                                "service": {
+                                    "apiVersion": "v1",
+                                    "id": "monitoring/loki",
+                                    "kind": "Service",
+                                    "metadata": {
+                                        "creationTimestamp": "2019-02-10T09:32:32Z",
+                                        "labels": {
+                                            "name": "loki"
+                                        },
+                                        "name": "loki",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "1274",
+                                        "selfLink": "/api/v1/namespaces/monitoring/services/loki",
+                                        "uid": "cabe1b79-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "spec": {
+                                        "clusterIP": "10.111.233.190",
+                                        "ports": [
+                                            {
+                                                "port": 3100,
+                                                "protocol": "TCP",
+                                                "targetPort": 3100
+                                            }
+                                        ],
+                                        "selector": {
+                                            "name": "loki"
+                                        },
+                                        "sessionAffinity": "None",
+                                        "type": "ClusterIP"
+                                    },
+                                    "status": {
+                                        "loadBalancer": {}
+                                    },
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:Service::loki-service"
+                                },
+                                "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki::loki"
+                            },
+                            "namespace": {
+                                "apiVersion": "v1",
+                                "id": "monitoring",
+                                "kind": "Namespace",
+                                "metadata": {
+                                    "creationTimestamp": "2019-02-10T09:28:06Z",
+                                    "name": "monitoring",
+                                    "resourceVersion": "781",
+                                    "selfLink": "/api/v1/namespaces/monitoring",
+                                    "uid": "2c41c12a-2d16-11e9-b134-000c29997d29"
+                                },
+                                "spec": {
+                                    "finalizers": [
+                                        "kubernetes"
+                                    ]
+                                },
+                                "status": {
+                                    "phase": "Active"
+                                },
+                                "urn": "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                            },
+                            "prometheus": {
+                                "clusterRole": {
+                                    "apiVersion": "rbac.authorization.k8s.io/v1",
+                                    "id": "prometheus",
+                                    "kind": "ClusterRole",
+                                    "metadata": {
+                                        "creationTimestamp": "2019-02-10T09:28:06Z",
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "786",
+                                        "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterroles/prometheus",
+                                        "uid": "2c5aa3be-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "rules": [
+                                        {
+                                            "apiGroups": [
+                                                ""
+                                            ],
+                                            "resources": [
+                                                "nodes",
+                                                "nodes/proxy",
+                                                "services",
+                                                "endpoints",
+                                                "pods"
+                                            ],
+                                            "verbs": [
+                                                "get",
+                                                "list",
+                                                "watch"
+                                            ]
+                                        },
+                                        {
+                                            "apiGroups": [
+                                                "extensions"
+                                            ],
+                                            "resources": [
+                                                "ingress"
+                                            ],
+                                            "verbs": [
+                                                "get",
+                                                "list",
+                                                "watch"
+                                            ]
+                                        }
+                                    ],
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role"
+                                },
+                                "clusterRoleBinding": {
+                                    "apiVersion": "rbac.authorization.k8s.io/v1",
+                                    "id": "prometheus",
+                                    "kind": "ClusterRoleBinding",
+                                    "metadata": {
+                                        "creationTimestamp": "2019-02-10T09:28:07Z",
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "802",
+                                        "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/prometheus",
+                                        "uid": "2cf4330a-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "roleRef": {
+                                        "apiGroup": "rbac.authorization.k8s.io",
+                                        "kind": "ClusterRole",
+                                        "name": "prometheus"
+                                    },
+                                    "subjects": [
+                                        {
+                                            "kind": "ServiceAccount",
+                                            "name": "prometheus",
+                                            "namespace": "monitoring"
+                                        }
+                                    ],
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding::prometheus-cluster-role-binding"
+                                },
+                                "config": {
+                                    "apiVersion": "v1",
+                                    "data": {
+                                        "prometheus.yaml": "scrape_configs:\n- job_name: 'kubernetes-apiservers'\n  kubernetes_sd_configs:\n  - role: endpoints\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]\n    action: keep\n    regex: default;kubernetes;https\n- job_name: 'kubernetes-nodes'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics\n- job_name: 'kubernetes-cadvisor'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor\n- job_name: 'kubernetes-service-endpoints'\n  kubernetes_sd_configs:\n  - role: endpoints\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_service_annotation_example_io_should_be_scraped]\n    action: keep\n    regex: true\n  - action: labelmap\n    regex: __meta_kubernetes_service_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_service_name]\n    action: replace\n    target_label: kubernetes_name\n- job_name: 'kubernetes-pods'\n  kubernetes_sd_configs:\n  - role: pod\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_pod_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_pod_name]\n    action: replace\n    target_label: kubernetes_pod_name"
+                                    },
+                                    "id": "monitoring/prometheus",
+                                    "kind": "ConfigMap",
+                                    "metadata": {
+                                        "creationTimestamp": "2019-02-10T09:28:06Z",
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "787",
+                                        "selfLink": "/api/v1/namespaces/monitoring/configmaps/prometheus",
+                                        "uid": "2c6d8ba3-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ConfigMap::prometheus-config"
+                                },
+                                "deployment": {
+                                    "apiVersion": "apps/v1",
+                                    "id": "monitoring/prometheus",
+                                    "kind": "Deployment",
+                                    "metadata": {
+                                        "annotations": {
+                                            "deployment.kubernetes.io/revision": "3"
+                                        },
+                                        "creationTimestamp": "2019-02-10T09:28:08Z",
+                                        "generation": 3,
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "1185",
+                                        "selfLink": "/apis/apps/v1/namespaces/monitoring/deployments/prometheus",
+                                        "uid": "2d176e6b-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "spec": {
+                                        "progressDeadlineSeconds": 600,
+                                        "replicas": 1,
+                                        "revisionHistoryLimit": 10,
+                                        "selector": {
+                                            "matchLabels": {
+                                                "name": "prometheus"
+                                            }
+                                        },
+                                        "strategy": {
+                                            "rollingUpdate": {
+                                                "maxSurge": "25%",
+                                                "maxUnavailable": "25%"
+                                            },
+                                            "type": "RollingUpdate"
+                                        },
+                                        "template": {
+                                            "metadata": {
+                                                "labels": {
+                                                    "name": "prometheus"
+                                                },
+                                                "name": "prometheus",
+                                                "namespace": "monitoring"
+                                            },
+                                            "spec": {
+                                                "containers": [
+                                                    {
+                                                        "args": [
+                                                            "--config.file=/etc/prometheus/prometheus.yaml",
+                                                            "--storage.tsdb.path=/prometheus",
+                                                            "--storage.tsdb.retention=48h"
+                                                        ],
+                                                        "image": "prom/prometheus:v2.4.3",
+                                                        "imagePullPolicy": "IfNotPresent",
+                                                        "name": "prometheus",
+                                                        "ports": [
+                                                            {
+                                                                "containerPort": 9090,
+                                                                "protocol": "TCP"
+                                                            }
+                                                        ],
+                                                        "resources": {},
+                                                        "terminationMessagePath": "/dev/termination-log",
+                                                        "terminationMessagePolicy": "File",
+                                                        "volumeMounts": [
+                                                            {
+                                                                "mountPath": "/prometheus/",
+                                                                "name": "prometheus-storage"
+                                                            },
+                                                            {
+                                                                "mountPath": "/etc/prometheus/",
+                                                                "name": "prometheus-config"
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                "dnsPolicy": "ClusterFirst",
+                                                "restartPolicy": "Always",
+                                                "schedulerName": "default-scheduler",
+                                                "securityContext": {
+                                                    "fsGroup": 2000
+                                                },
+                                                "serviceAccount": "prometheus",
+                                                "serviceAccountName": "prometheus",
+                                                "terminationGracePeriodSeconds": 30,
+                                                "volumes": [
+                                                    {
+                                                        "name": "prometheus-storage",
+                                                        "persistentVolumeClaim": {
+                                                            "claimName": "prometheus"
+                                                        }
+                                                    },
+                                                    {
+                                                        "configMap": {
+                                                            "defaultMode": 420,
+                                                            "name": "prometheus"
+                                                        },
+                                                        "name": "prometheus-config"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "status": {
+                                        "availableReplicas": 1,
+                                        "conditions": [
+                                            {
+                                                "lastTransitionTime": "2019-02-10T09:31:22Z",
+                                                "lastUpdateTime": "2019-02-10T09:31:22Z",
+                                                "message": "Deployment has minimum availability.",
+                                                "reason": "MinimumReplicasAvailable",
+                                                "status": "True",
+                                                "type": "Available"
+                                            },
+                                            {
+                                                "lastTransitionTime": "2019-02-10T09:28:08Z",
+                                                "lastUpdateTime": "2019-02-10T09:31:22Z",
+                                                "message": "ReplicaSet \"prometheus-5c8679dfb5\" has successfully progressed.",
+                                                "reason": "NewReplicaSetAvailable",
+                                                "status": "True",
+                                                "type": "Progressing"
+                                            }
+                                        ],
+                                        "observedGeneration": 3,
+                                        "readyReplicas": 1,
+                                        "replicas": 1,
+                                        "updatedReplicas": 1
+                                    },
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:apps/v1:Deployment::prometheus"
+                                },
+                                "name": "prometheus",
+                                "options": {
+                                    "namespace": "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                                },
+                                "pvc": {
+                                    "apiVersion": "v1",
+                                    "id": "monitoring/prometheus",
+                                    "kind": "PersistentVolumeClaim",
+                                    "metadata": {
+                                        "annotations": {
+                                            "control-plane.alpha.kubernetes.io/leader": "{\"holderIdentity\":\"a6963c00-2d15-11e9-b834-000c29997d29\",\"leaseDurationSeconds\":15,\"acquireTime\":\"2019-02-10T09:28:07Z\",\"renewTime\":\"2019-02-10T09:28:07Z\",\"leaderTransitions\":1}",
+                                            "pv.kubernetes.io/bind-completed": "yes",
+                                            "pv.kubernetes.io/bound-by-controller": "yes"
+                                        },
+                                        "creationTimestamp": "2019-02-10T09:28:07Z",
+                                        "finalizers": [
+                                            "kubernetes.io/pvc-protection"
+                                        ],
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "800",
+                                        "selfLink": "/api/v1/namespaces/monitoring/persistentvolumeclaims/prometheus",
+                                        "uid": "2c927b8b-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "spec": {
+                                        "accessModes": [
+                                            "ReadWriteOnce"
+                                        ],
+                                        "resources": {
+                                            "requests": {
+                                                "storage": "5Gi"
+                                            }
+                                        },
+                                        "storageClassName": "standard",
+                                        "volumeMode": "Filesystem",
+                                        "volumeName": "pvc-2c927b8b-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "status": {
+                                        "accessModes": [
+                                            "ReadWriteOnce"
+                                        ],
+                                        "capacity": {
+                                            "storage": "5Gi"
+                                        },
+                                        "phase": "Bound"
+                                    },
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:PersistentVolumeClaim::prometheus-storage"
+                                },
+                                "service": {
+                                    "apiVersion": "v1",
+                                    "id": "monitoring/prometheus",
+                                    "kind": "Service",
+                                    "metadata": {
+                                        "creationTimestamp": "2019-02-10T09:29:04Z",
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "925",
+                                        "selfLink": "/api/v1/namespaces/monitoring/services/prometheus",
+                                        "uid": "4f06a94f-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "spec": {
+                                        "clusterIP": "10.96.169.7",
+                                        "ports": [
+                                            {
+                                                "port": 9090,
+                                                "protocol": "TCP",
+                                                "targetPort": 9090
+                                            }
+                                        ],
+                                        "selector": {
+                                            "name": "prometheus"
+                                        },
+                                        "sessionAffinity": "None",
+                                        "type": "ClusterIP"
+                                    },
+                                    "status": {
+                                        "loadBalancer": {}
+                                    },
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:Service::prometheus-service"
+                                },
+                                "serviceAccount": {
+                                    "apiVersion": "v1",
+                                    "id": "monitoring/prometheus",
+                                    "kind": "ServiceAccount",
+                                    "metadata": {
+                                        "creationTimestamp": "2019-02-10T09:28:07Z",
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring",
+                                        "resourceVersion": "790",
+                                        "selfLink": "/api/v1/namespaces/monitoring/serviceaccounts/prometheus",
+                                        "uid": "2c842025-2d16-11e9-b134-000c29997d29"
+                                    },
+                                    "secrets": [
+                                        {
+                                            "name": "prometheus-token-h2dsg"
+                                        }
+                                    ],
+                                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account"
+                                },
+                                "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus"
+                            },
+                            "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:MonitoringStack::monitoring-stack"
+                        }
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "custom": false,
+                    "type": "james:monitoring:prometheus",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:MonitoringStack::monitoring-stack",
+                    "custom": false,
+                    "type": "james:monitoring:MonitoringStack",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default",
+                    "custom": true,
+                    "id": "192fb102-c803-4af3-b663-c52ac51b7577",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "version": "0.20.1"
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki::loki",
+                    "custom": false,
+                    "type": "james:monitoring:loki",
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local"
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring",
+                    "custom": true,
+                    "id": "monitoring",
+                    "type": "kubernetes:core/v1:Namespace",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "name": "monitoring"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Namespace",
+                            "metadata": {
+                                "name": "monitoring"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T09:28:06Z",
+                            "name": "monitoring",
+                            "resourceVersion": "781",
+                            "selfLink": "/api/v1/namespaces/monitoring",
+                            "uid": "2c41c12a-2d16-11e9-b134-000c29997d29"
+                        },
+                        "spec": {
+                            "finalizers": [
+                                "kubernetes"
+                            ]
+                        },
+                        "status": {
+                            "phase": "Active"
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-local",
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ConfigMap::prometheus-config",
+                    "custom": true,
+                    "id": "monitoring/prometheus",
+                    "type": "kubernetes:core/v1:ConfigMap",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "data": {
+                            "prometheus.yaml": "scrape_configs:\n- job_name: 'kubernetes-apiservers'\n  kubernetes_sd_configs:\n  - role: endpoints\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]\n    action: keep\n    regex: default;kubernetes;https\n- job_name: 'kubernetes-nodes'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics\n- job_name: 'kubernetes-cadvisor'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor\n- job_name: 'kubernetes-service-endpoints'\n  kubernetes_sd_configs:\n  - role: endpoints\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_service_annotation_example_io_should_be_scraped]\n    action: keep\n    regex: true\n  - action: labelmap\n    regex: __meta_kubernetes_service_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_service_name]\n    action: replace\n    target_label: kubernetes_name\n- job_name: 'kubernetes-pods'\n  kubernetes_sd_configs:\n  - role: pod\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_pod_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_pod_name]\n    action: replace\n    target_label: kubernetes_pod_name"
+                        },
+                        "kind": "ConfigMap",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "data": {
+                                "prometheus.yaml": "scrape_configs:\n- job_name: 'kubernetes-apiservers'\n  kubernetes_sd_configs:\n  - role: endpoints\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]\n    action: keep\n    regex: default;kubernetes;https\n- job_name: 'kubernetes-nodes'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics\n- job_name: 'kubernetes-cadvisor'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor\n- job_name: 'kubernetes-service-endpoints'\n  kubernetes_sd_configs:\n  - role: endpoints\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_service_annotation_example_io_should_be_scraped]\n    action: keep\n    regex: true\n  - action: labelmap\n    regex: __meta_kubernetes_service_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_service_name]\n    action: replace\n    target_label: kubernetes_name\n- job_name: 'kubernetes-pods'\n  kubernetes_sd_configs:\n  - role: pod\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_pod_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_pod_name]\n    action: replace\n    target_label: kubernetes_pod_name"
+                            },
+                            "kind": "ConfigMap",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "data": {
+                            "prometheus.yaml": "scrape_configs:\n- job_name: 'kubernetes-apiservers'\n  kubernetes_sd_configs:\n  - role: endpoints\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]\n    action: keep\n    regex: default;kubernetes;https\n- job_name: 'kubernetes-nodes'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics\n- job_name: 'kubernetes-cadvisor'\n  scheme: https\n  tls_config:\n    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n  kubernetes_sd_configs:\n  - role: node\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_node_label_(.+)\n  - target_label: __address__\n    replacement: kubernetes.default.svc:443\n  - source_labels: [__meta_kubernetes_node_name]\n    regex: (.+)\n    target_label: __metrics_path__\n    replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor\n- job_name: 'kubernetes-service-endpoints'\n  kubernetes_sd_configs:\n  - role: endpoints\n  relabel_configs:\n  - source_labels: [__meta_kubernetes_service_annotation_example_io_should_be_scraped]\n    action: keep\n    regex: true\n  - action: labelmap\n    regex: __meta_kubernetes_service_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_service_name]\n    action: replace\n    target_label: kubernetes_name\n- job_name: 'kubernetes-pods'\n  kubernetes_sd_configs:\n  - role: pod\n  relabel_configs:\n  - action: labelmap\n    regex: __meta_kubernetes_pod_label_(.+)\n  - source_labels: [__meta_kubernetes_namespace]\n    action: replace\n    target_label: kubernetes_namespace\n  - source_labels: [__meta_kubernetes_pod_name]\n    action: replace\n    target_label: kubernetes_pod_name"
+                        },
+                        "kind": "ConfigMap",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T09:28:06Z",
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring",
+                            "resourceVersion": "787",
+                            "selfLink": "/api/v1/namespaces/monitoring/configmaps/prometheus",
+                            "uid": "2c6d8ba3-2d16-11e9-b134-000c29997d29"
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "data": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:PersistentVolumeClaim::prometheus-storage",
+                    "custom": true,
+                    "id": "monitoring/prometheus",
+                    "type": "kubernetes:core/v1:PersistentVolumeClaim",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "PersistentVolumeClaim",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        },
+                        "spec": {
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "storage": "5Gi"
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "PersistentVolumeClaim",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            },
+                            "spec": {
+                                "accessModes": [
+                                    "ReadWriteOnce"
+                                ],
+                                "resources": {
+                                    "requests": {
+                                        "storage": "5Gi"
+                                    }
+                                }
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "PersistentVolumeClaim",
+                        "metadata": {
+                            "annotations": {
+                                "control-plane.alpha.kubernetes.io/leader": "{\"holderIdentity\":\"a6963c00-2d15-11e9-b834-000c29997d29\",\"leaseDurationSeconds\":15,\"acquireTime\":\"2019-02-10T09:28:07Z\",\"renewTime\":\"2019-02-10T09:28:37Z\",\"leaderTransitions\":0}",
+                                "pv.kubernetes.io/bind-completed": "yes",
+                                "pv.kubernetes.io/bound-by-controller": "yes"
+                            },
+                            "creationTimestamp": "2019-02-10T09:28:07Z",
+                            "finalizers": [
+                                "kubernetes.io/pvc-protection"
+                            ],
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring",
+                            "resourceVersion": "877",
+                            "selfLink": "/api/v1/namespaces/monitoring/persistentvolumeclaims/prometheus",
+                            "uid": "2c927b8b-2d16-11e9-b134-000c29997d29"
+                        },
+                        "spec": {
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "resources": {
+                                "requests": {
+                                    "storage": "5Gi"
+                                }
+                            },
+                            "storageClassName": "standard",
+                            "volumeMode": "Filesystem",
+                            "volumeName": "pvc-2c927b8b-2d16-11e9-b134-000c29997d29"
+                        },
+                        "status": {
+                            "accessModes": [
+                                "ReadWriteOnce"
+                            ],
+                            "capacity": {
+                                "storage": "5Gi"
+                            },
+                            "phase": "Bound"
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "spec": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:loki$kubernetes:core/v1:ConfigMap::loki-config",
+                    "custom": true,
+                    "id": "monitoring/loki",
+                    "type": "kubernetes:core/v1:ConfigMap",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "data": {
+                            "loki.yaml": "auth_enabled: false\nserver:\n  http_listen_port: 3100\ningester:\n  lifecycler:\n    ring:\n      store: inmemory\n      replication_factor: 1\nschema_config:\n  configs:\n  - from: 0\n    store: boltdb\n    object_store: filesystem\n    schema: v9\n    index:\n      prefix: index_\n      period: 168h\nstorage_configs:\n  - name: boltdb\n    directory: /tmp/loki/index\n  - name: filesystem\n    directory: /tmp/loki/chunks"
+                        },
+                        "kind": "ConfigMap",
+                        "metadata": {
+                            "labels": {
+                                "name": "loki"
+                            },
+                            "name": "loki",
+                            "namespace": "monitoring"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "data": {
+                                "loki.yaml": "auth_enabled: false\nserver:\n  http_listen_port: 3100\ningester:\n  lifecycler:\n    ring:\n      store: inmemory\n      replication_factor: 1\nschema_config:\n  configs:\n  - from: 0\n    store: boltdb\n    object_store: filesystem\n    schema: v9\n    index:\n      prefix: index_\n      period: 168h\nstorage_configs:\n  - name: boltdb\n    directory: /tmp/loki/index\n  - name: filesystem\n    directory: /tmp/loki/chunks"
+                            },
+                            "kind": "ConfigMap",
+                            "metadata": {
+                                "labels": {
+                                    "name": "loki"
+                                },
+                                "name": "loki",
+                                "namespace": "monitoring"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "data": {
+                            "loki.yaml": "auth_enabled: false\nserver:\n  http_listen_port: 3100\ningester:\n  lifecycler:\n    ring:\n      store: inmemory\n      replication_factor: 1\nschema_config:\n  configs:\n  - from: 0\n    store: boltdb\n    object_store: filesystem\n    schema: v9\n    index:\n      prefix: index_\n      period: 168h\nstorage_configs:\n  - name: boltdb\n    directory: /tmp/loki/index\n  - name: filesystem\n    directory: /tmp/loki/chunks"
+                        },
+                        "kind": "ConfigMap",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T09:38:31Z",
+                            "labels": {
+                                "name": "loki"
+                            },
+                            "name": "loki",
+                            "namespace": "monitoring",
+                            "resourceVersion": "1834",
+                            "selfLink": "/api/v1/namespaces/monitoring/configmaps/loki",
+                            "uid": "a0c4bcb9-2d17-11e9-b134-000c29997d29"
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:loki::loki",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "data": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role",
+                    "custom": true,
+                    "id": "prometheus",
+                    "type": "kubernetes:rbac.authorization.k8s.io/v1:ClusterRole",
+                    "inputs": {
+                        "apiVersion": "rbac.authorization.k8s.io/v1",
+                        "kind": "ClusterRole",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        },
+                        "rules": [
+                            {
+                                "apiGroups": [
+                                    ""
+                                ],
+                                "resources": [
+                                    "nodes",
+                                    "nodes/proxy",
+                                    "services",
+                                    "endpoints",
+                                    "pods"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            },
+                            {
+                                "apiGroups": [
+                                    "extensions"
+                                ],
+                                "resources": [
+                                    "ingress"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            }
+                        ]
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "rbac.authorization.k8s.io/v1",
+                            "kind": "ClusterRole",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            },
+                            "rules": [
+                                {
+                                    "apiGroups": [
+                                        ""
+                                    ],
+                                    "resources": [
+                                        "nodes",
+                                        "nodes/proxy",
+                                        "services",
+                                        "endpoints",
+                                        "pods"
+                                    ],
+                                    "verbs": [
+                                        "get",
+                                        "list",
+                                        "watch"
+                                    ]
+                                },
+                                {
+                                    "apiGroups": [
+                                        "extensions"
+                                    ],
+                                    "resources": [
+                                        "ingress"
+                                    ],
+                                    "verbs": [
+                                        "get",
+                                        "list",
+                                        "watch"
+                                    ]
+                                }
+                            ]
+                        },
+                        "apiVersion": "rbac.authorization.k8s.io/v1",
+                        "kind": "ClusterRole",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T09:28:06Z",
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "resourceVersion": "786",
+                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterroles/prometheus",
+                            "uid": "2c5aa3be-2d16-11e9-b134-000c29997d29"
+                        },
+                        "rules": [
+                            {
+                                "apiGroups": [
+                                    ""
+                                ],
+                                "resources": [
+                                    "nodes",
+                                    "nodes/proxy",
+                                    "services",
+                                    "endpoints",
+                                    "pods"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            },
+                            {
+                                "apiGroups": [
+                                    "extensions"
+                                ],
+                                "resources": [
+                                    "ingress"
+                                ],
+                                "verbs": [
+                                    "get",
+                                    "list",
+                                    "watch"
+                                ]
+                            }
+                        ]
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "rules": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
+                    "custom": true,
+                    "id": "monitoring/prometheus",
+                    "type": "kubernetes:core/v1:ServiceAccount",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "ServiceAccount",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "ServiceAccount",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "ServiceAccount",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T09:28:07Z",
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring",
+                            "resourceVersion": "790",
+                            "selfLink": "/api/v1/namespaces/monitoring/serviceaccounts/prometheus",
+                            "uid": "2c842025-2d16-11e9-b134-000c29997d29"
+                        },
+                        "secrets": [
+                            {
+                                "name": "prometheus-token-h2dsg"
+                            }
+                        ]
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding::prometheus-cluster-role-binding",
+                    "custom": true,
+                    "id": "prometheus",
+                    "type": "kubernetes:rbac.authorization.k8s.io/v1:ClusterRoleBinding",
+                    "inputs": {
+                        "apiVersion": "rbac.authorization.k8s.io/v1",
+                        "kind": "ClusterRoleBinding",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        },
+                        "roleRef": {
+                            "apiGroup": "rbac.authorization.k8s.io",
+                            "kind": "ClusterRole",
+                            "name": "prometheus"
+                        },
+                        "subjects": [
+                            {
+                                "kind": "ServiceAccount",
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            }
+                        ]
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "rbac.authorization.k8s.io/v1",
+                            "kind": "ClusterRoleBinding",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            },
+                            "roleRef": {
+                                "apiGroup": "rbac.authorization.k8s.io",
+                                "kind": "ClusterRole",
+                                "name": "prometheus"
+                            },
+                            "subjects": [
+                                {
+                                    "kind": "ServiceAccount",
+                                    "name": "prometheus",
+                                    "namespace": "monitoring"
+                                }
+                            ]
+                        },
+                        "apiVersion": "rbac.authorization.k8s.io/v1",
+                        "kind": "ClusterRoleBinding",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T09:28:07Z",
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "resourceVersion": "802",
+                            "selfLink": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/prometheus",
+                            "uid": "2cf4330a-2d16-11e9-b134-000c29997d29"
+                        },
+                        "roleRef": {
+                            "apiGroup": "rbac.authorization.k8s.io",
+                            "kind": "ClusterRole",
+                            "name": "prometheus"
+                        },
+                        "subjects": [
+                            {
+                                "kind": "ServiceAccount",
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            }
+                        ]
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role",
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "roleRef": [
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:rbac.authorization.k8s.io/v1:ClusterRole::prometheus-cluster-role"
+                        ],
+                        "subjects": [
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account"
+                        ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:apps/v1:Deployment::prometheus",
+                    "custom": true,
+                    "id": "monitoring/prometheus",
+                    "type": "kubernetes:apps/v1:Deployment",
+                    "inputs": {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        },
+                        "spec": {
+                            "replicas": 1,
+                            "selector": {
+                                "matchLabels": {
+                                    "name": "prometheus"
+                                }
+                            },
+                            "template": {
+                                "metadata": {
+                                    "labels": {
+                                        "name": "prometheus"
+                                    },
+                                    "name": "prometheus",
+                                    "namespace": "monitoring"
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "args": [
+                                                "--config.file=/etc/prometheus/prometheus.yaml",
+                                                "--storage.tsdb.path=/prometheus",
+                                                "--storage.tsdb.retention=48h"
+                                            ],
+                                            "image": "prom/prometheus:v2.4.3",
+                                            "name": "prometheus",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 9090
+                                                }
+                                            ],
+                                            "volumeMounts": [
+                                                {
+                                                    "mountPath": "/prometheus/",
+                                                    "name": "prometheus-storage"
+                                                },
+                                                {
+                                                    "mountPath": "/etc/prometheus/",
+                                                    "name": "prometheus-config"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "securityContext": {
+                                        "fsGroup": 2000
+                                    },
+                                    "serviceAccount": "prometheus",
+                                    "volumes": [
+                                        {
+                                            "name": "prometheus-storage",
+                                            "persistentVolumeClaim": {
+                                                "claimName": "prometheus"
+                                            }
+                                        },
+                                        {
+                                            "configMap": {
+                                                "name": "prometheus"
+                                            },
+                                            "name": "prometheus-config"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "apps/v1",
+                            "kind": "Deployment",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            },
+                            "spec": {
+                                "replicas": 1,
+                                "selector": {
+                                    "matchLabels": {
+                                        "name": "prometheus"
+                                    }
+                                },
+                                "template": {
+                                    "metadata": {
+                                        "labels": {
+                                            "name": "prometheus"
+                                        },
+                                        "name": "prometheus",
+                                        "namespace": "monitoring"
+                                    },
+                                    "spec": {
+                                        "containers": [
+                                            {
+                                                "args": [
+                                                    "--config.file=/etc/prometheus/prometheus.yaml",
+                                                    "--storage.tsdb.path=/prometheus",
+                                                    "--storage.tsdb.retention=48h"
+                                                ],
+                                                "image": "prom/prometheus:v2.4.3",
+                                                "name": "prometheus",
+                                                "ports": [
+                                                    {
+                                                        "containerPort": 9090
+                                                    }
+                                                ],
+                                                "volumeMounts": [
+                                                    {
+                                                        "mountPath": "/prometheus/",
+                                                        "name": "prometheus-storage"
+                                                    },
+                                                    {
+                                                        "mountPath": "/etc/prometheus/",
+                                                        "name": "prometheus-config"
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "securityContext": {
+                                            "fsGroup": 2000
+                                        },
+                                        "serviceAccount": "prometheus",
+                                        "volumes": [
+                                            {
+                                                "name": "prometheus-storage",
+                                                "persistentVolumeClaim": {
+                                                    "claimName": "prometheus"
+                                                }
+                                            },
+                                            {
+                                                "configMap": {
+                                                    "name": "prometheus"
+                                                },
+                                                "name": "prometheus-config"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "metadata": {
+                            "annotations": {
+                                "deployment.kubernetes.io/revision": "3"
+                            },
+                            "creationTimestamp": "2019-02-10T09:28:08Z",
+                            "generation": 3,
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring",
+                            "resourceVersion": "1185",
+                            "selfLink": "/apis/apps/v1/namespaces/monitoring/deployments/prometheus",
+                            "uid": "2d176e6b-2d16-11e9-b134-000c29997d29"
+                        },
+                        "spec": {
+                            "progressDeadlineSeconds": 600,
+                            "replicas": 1,
+                            "revisionHistoryLimit": 10,
+                            "selector": {
+                                "matchLabels": {
+                                    "name": "prometheus"
+                                }
+                            },
+                            "strategy": {
+                                "rollingUpdate": {
+                                    "maxSurge": "25%",
+                                    "maxUnavailable": "25%"
+                                },
+                                "type": "RollingUpdate"
+                            },
+                            "template": {
+                                "metadata": {
+                                    "labels": {
+                                        "name": "prometheus"
+                                    },
+                                    "name": "prometheus",
+                                    "namespace": "monitoring"
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "args": [
+                                                "--config.file=/etc/prometheus/prometheus.yaml",
+                                                "--storage.tsdb.path=/prometheus",
+                                                "--storage.tsdb.retention=48h"
+                                            ],
+                                            "image": "prom/prometheus:v2.4.3",
+                                            "imagePullPolicy": "IfNotPresent",
+                                            "name": "prometheus",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 9090,
+                                                    "protocol": "TCP"
+                                                }
+                                            ],
+                                            "resources": {},
+                                            "terminationMessagePath": "/dev/termination-log",
+                                            "terminationMessagePolicy": "File",
+                                            "volumeMounts": [
+                                                {
+                                                    "mountPath": "/prometheus/",
+                                                    "name": "prometheus-storage"
+                                                },
+                                                {
+                                                    "mountPath": "/etc/prometheus/",
+                                                    "name": "prometheus-config"
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "dnsPolicy": "ClusterFirst",
+                                    "restartPolicy": "Always",
+                                    "schedulerName": "default-scheduler",
+                                    "securityContext": {
+                                        "fsGroup": 2000
+                                    },
+                                    "serviceAccount": "prometheus",
+                                    "serviceAccountName": "prometheus",
+                                    "terminationGracePeriodSeconds": 30,
+                                    "volumes": [
+                                        {
+                                            "name": "prometheus-storage",
+                                            "persistentVolumeClaim": {
+                                                "claimName": "prometheus"
+                                            }
+                                        },
+                                        {
+                                            "configMap": {
+                                                "defaultMode": 420,
+                                                "name": "prometheus"
+                                            },
+                                            "name": "prometheus-config"
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "status": {
+                            "availableReplicas": 1,
+                            "conditions": [
+                                {
+                                    "lastTransitionTime": "2019-02-10T09:31:22Z",
+                                    "lastUpdateTime": "2019-02-10T09:31:22Z",
+                                    "message": "Deployment has minimum availability.",
+                                    "reason": "MinimumReplicasAvailable",
+                                    "status": "True",
+                                    "type": "Available"
+                                },
+                                {
+                                    "lastTransitionTime": "2019-02-10T09:28:08Z",
+                                    "lastUpdateTime": "2019-02-10T09:31:22Z",
+                                    "message": "ReplicaSet \"prometheus-5c8679dfb5\" has successfully progressed.",
+                                    "reason": "NewReplicaSetAvailable",
+                                    "status": "True",
+                                    "type": "Progressing"
+                                }
+                            ],
+                            "observedGeneration": 3,
+                            "readyReplicas": 1,
+                            "replicas": 1,
+                            "updatedReplicas": 1
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ConfigMap::prometheus-config",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:PersistentVolumeClaim::prometheus-storage",
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "spec": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring",
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ServiceAccount::prometheus-service-account",
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:PersistentVolumeClaim::prometheus-storage",
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:ConfigMap::prometheus-config"
+                        ]
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:core/v1:Service::prometheus-service",
+                    "custom": true,
+                    "id": "monitoring/prometheus",
+                    "type": "kubernetes:core/v1:Service",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring"
+                        },
+                        "spec": {
+                            "ports": [
+                                {
+                                    "port": 9090,
+                                    "targetPort": 9090
+                                }
+                            ],
+                            "selector": {
+                                "name": "prometheus"
+                            },
+                            "type": "ClusterIP"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Service",
+                            "metadata": {
+                                "labels": {
+                                    "name": "prometheus"
+                                },
+                                "name": "prometheus",
+                                "namespace": "monitoring"
+                            },
+                            "spec": {
+                                "ports": [
+                                    {
+                                        "port": 9090,
+                                        "targetPort": 9090
+                                    }
+                                ],
+                                "selector": {
+                                    "name": "prometheus"
+                                },
+                                "type": "ClusterIP"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "creationTimestamp": "2019-02-10T09:29:04Z",
+                            "labels": {
+                                "name": "prometheus"
+                            },
+                            "name": "prometheus",
+                            "namespace": "monitoring",
+                            "resourceVersion": "925",
+                            "selfLink": "/api/v1/namespaces/monitoring/services/prometheus",
+                            "uid": "4f06a94f-2d16-11e9-b134-000c29997d29"
+                        },
+                        "spec": {
+                            "clusterIP": "10.96.169.7",
+                            "ports": [
+                                {
+                                    "port": 9090,
+                                    "protocol": "TCP",
+                                    "targetPort": 9090
+                                }
+                            ],
+                            "selector": {
+                                "name": "prometheus"
+                            },
+                            "sessionAffinity": "None",
+                            "type": "ClusterIP"
+                        },
+                        "status": {
+                            "loadBalancer": {}
+                        }
+                    },
+                    "parent": "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus::prometheus",
+                    "dependencies": [
+                        "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:apps/v1:Deployment::prometheus",
+                        "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                    ],
+                    "provider": "urn:pulumi:local::pulumi-ts::pulumi:providers:kubernetes::default::192fb102-c803-4af3-b663-c52ac51b7577",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:local::pulumi-ts::kubernetes:core/v1:Namespace::monitoring"
+                        ],
+                        "spec": [
+                            "urn:pulumi:local::pulumi-ts::james:monitoring:prometheus$kubernetes:apps/v1:Deployment::prometheus"
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}
