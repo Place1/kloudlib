@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { Cluster } from '../cluster';
+import { Cluster } from '../archetypes/cluster';
 import { codeBlock } from 'common-tags';
 import { Loki } from './loki';
 import { meta } from '@pulumi/kubernetes';

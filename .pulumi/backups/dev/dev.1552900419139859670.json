@@ -1,0 +1,180 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "stack": "dev",
+        "latest": {
+            "manifest": {
+                "time": "2019-03-18T02:13:39.104027868-07:00",
+                "magic": "10484a8cdf491e982db0cd61c77ceebd9db887d282e029dd992b18630a2c5a32",
+                "version": "v0.17.1",
+                "plugins": [
+                    {
+                        "name": "nodejs",
+                        "path": "/home/james/go/bin/pulumi-language-nodejs",
+                        "type": "language",
+                        "version": ""
+                    },
+                    {
+                        "name": "kubernetes",
+                        "path": "/home/james/.pulumi/plugins/resource-kubernetes-v0.20.1/pulumi-resource-kubernetes",
+                        "type": "resource",
+                        "version": "0.20.1"
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "custom": false,
+                    "type": "pulumi:pulumi:Stack",
+                    "outputs": {
+                        "app": {
+                            "name": "my-app",
+                            "options": {
+                                "port": 3000,
+                                "provider": {
+                                    "context": "minikube",
+                                    "id": "dd58aa9d-c102-42af-a1e1-16942bce1bc1",
+                                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube"
+                                },
+                                "src": "/home/james/learning-pulumi/pulumi-ts/app"
+                            },
+                            "urn": "urn:pulumi:dev::pulumi-ts::app::my-app"
+                        }
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::app::my-app",
+                    "custom": false,
+                    "type": "app",
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::docker:image:Image::my-app-image",
+                    "custom": false,
+                    "type": "docker:image:Image",
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default",
+                    "custom": true,
+                    "id": "2d0ffb59-c775-43a1-ab28-c3c490a04fe1",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "version": "0.20.1"
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube",
+                    "custom": true,
+                    "id": "dd58aa9d-c102-42af-a1e1-16942bce1bc1",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "context": "minikube"
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "propertyDependencies": {
+                        "context": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Service::my-app-service",
+                    "custom": true,
+                    "id": "default/my-app",
+                    "type": "kubernetes:core/v1:Service",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "labels": {
+                                "name": "my-app"
+                            },
+                            "name": "my-app",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "ports": [
+                                {
+                                    "port": 3000,
+                                    "targetPort": 3000
+                                }
+                            ],
+                            "selector": {
+                                "name": "my-app"
+                            },
+                            "type": "ClusterIP"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Service",
+                            "metadata": {
+                                "labels": {
+                                    "name": "my-app"
+                                },
+                                "name": "my-app",
+                                "namespace": "default"
+                            },
+                            "spec": {
+                                "ports": [
+                                    {
+                                        "port": 3000,
+                                        "targetPort": 3000
+                                    }
+                                ],
+                                "selector": {
+                                    "name": "my-app"
+                                },
+                                "type": "ClusterIP"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "creationTimestamp": "2019-03-18T09:13:20Z",
+                            "labels": {
+                                "name": "my-app"
+                            },
+                            "name": "my-app",
+                            "namespace": "default",
+                            "resourceVersion": "4069",
+                            "selfLink": "/api/v1/namespaces/default/services/my-app",
+                            "uid": "1318a030-495e-11e9-a8ca-000c29997d29"
+                        },
+                        "spec": {
+                            "clusterIP": "10.98.80.192",
+                            "ports": [
+                                {
+                                    "port": 3000,
+                                    "protocol": "TCP",
+                                    "targetPort": 3000
+                                }
+                            ],
+                            "selector": {
+                                "name": "my-app"
+                            },
+                            "sessionAffinity": "None",
+                            "type": "ClusterIP"
+                        },
+                        "status": {
+                            "loadBalancer": {}
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "initErrors": [
+                        "Resource operation was cancelled for 'my-app'",
+                        "Service does not target any Pods. Selected Pods may not be ready, or field '.spec.selector' may not match labels on any Pods"
+                    ],
+                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default::2d0ffb59-c775-43a1-ab28-c3c490a04fe1",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": null,
+                        "spec": null
+                    }
+                }
+            ]
+        }
+    }
+}

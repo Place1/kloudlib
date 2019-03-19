@@ -1,6 +1,7 @@
 {
     "name": "typescript",
     "devDependencies": {
+        "@types/dockerode": "^2.5.12",
         "@types/node": "latest"
     },
     "dependencies": {
@@ -10,6 +11,7 @@
         "@pulumi/pulumi": "latest",
         "@pulumi/random": "^0.3.0",
         "@types/common-tags": "^1.8.0",
-        "common-tags": "^1.8.0"
+        "common-tags": "^1.8.0",
+        "dockerode": "^2.5.8"
     }
 }

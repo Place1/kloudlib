@@ -1,0 +1,25 @@
+{
+    "kind": "destroy",
+    "startTime": 1552982827,
+    "message": "done",
+    "environment": {
+        "git.author": "James Batt",
+        "git.author.email": "getjamesbatt@gmail.com",
+        "git.committer": "James Batt",
+        "git.committer.email": "getjamesbatt@gmail.com",
+        "git.dirty": "true",
+        "git.head": "9eb14d2ddbbde4c3b5f33f29922235c85d90f33c",
+        "git.headName": "refs/heads/master",
+        "github.login": "Place1",
+        "github.repo": "pulumi-example",
+        "vcs.kind": "github.com",
+        "vcs.owner": "Place1",
+        "vcs.repo": "pulumi-example"
+    },
+    "config": {},
+    "result": "failed",
+    "endTime": 1552982829,
+    "resourceChanges": {
+        "delete": 4
+    }
+}

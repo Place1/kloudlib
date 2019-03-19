@@ -1,0 +1,82 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "stack": "dev",
+        "latest": {
+            "manifest": {
+                "time": "2019-03-18T02:10:34.229396386-07:00",
+                "magic": "10484a8cdf491e982db0cd61c77ceebd9db887d282e029dd992b18630a2c5a32",
+                "version": "v0.17.1",
+                "plugins": [
+                    {
+                        "name": "nodejs",
+                        "path": "/home/james/go/bin/pulumi-language-nodejs",
+                        "type": "language",
+                        "version": ""
+                    },
+                    {
+                        "name": "kubernetes",
+                        "path": "/home/james/.pulumi/plugins/resource-kubernetes-v0.20.1/pulumi-resource-kubernetes",
+                        "type": "resource",
+                        "version": "0.20.1"
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "custom": false,
+                    "type": "pulumi:pulumi:Stack",
+                    "outputs": {
+                        "app": {
+                            "name": "my-app",
+                            "options": {
+                                "provider": {
+                                    "context": "minikube",
+                                    "id": "dd58aa9d-c102-42af-a1e1-16942bce1bc1",
+                                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube"
+                                },
+                                "src": "/home/james/learning-pulumi/pulumi-ts/app"
+                            },
+                            "urn": "urn:pulumi:dev::pulumi-ts::app::my-app"
+                        }
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::app::my-app",
+                    "custom": false,
+                    "type": "app",
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::docker:image:Image::my-app-image",
+                    "custom": false,
+                    "type": "docker:image:Image",
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default",
+                    "custom": true,
+                    "id": "2d0ffb59-c775-43a1-ab28-c3c490a04fe1",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "version": "0.20.1"
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube",
+                    "custom": true,
+                    "id": "dd58aa9d-c102-42af-a1e1-16942bce1bc1",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "context": "minikube"
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "propertyDependencies": {
+                        "context": null
+                    }
+                }
+            ]
+        }
+    }
+}
