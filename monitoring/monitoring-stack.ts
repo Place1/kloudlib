@@ -19,31 +19,27 @@ export class MonitoringStack extends pulumi.ComponentResource {
   grafana: Grafana;
 
   constructor(name: string, options: MonitoringStackOptions = {}) {
-    super('james:monitoring:MonitoringStack', name);
+    super('MonitoringStack', name);
 
-    this.namespace = options.namespace || new k8s.core.v1.Namespace('monitoring', {
-      metadata: {
-        name: 'monitoring',
-      }
-    });
+    this.namespace = options.namespace || k8s.core.v1.Namespace.get(`${name}-namespace`, 'default', { parent: this });
 
     this.prometheus = new Prometheus('prometheus', {
       namespace: this.namespace,
-    });
+    }, { parent: this });
 
     this.loki = new Loki('loki', {
       namespace: this.namespace,
-    });
+    }, { parent: this });
 
     this.promtail = new Promtail('promtail', {
       namespace: this.namespace,
       loki: this.loki,
-    });
+    }, { parent: this });
 
     this.grafana = new Grafana('grafana', {
       namespace: this.namespace,
       prometheus: this.prometheus,
       loki: this.loki,
-    });
+    }, { parent: this });
   }
 }

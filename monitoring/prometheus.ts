@@ -18,8 +18,8 @@ export class Prometheus extends pulumi.ComponentResource {
   deployment: k8s.apps.v1.Deployment;
   service: k8s.core.v1.Service;
 
-  constructor(private name: string, private options: PrometheusOptions = {}) {
-    super('james:monitoring:prometheus', name);
+  constructor(private name: string, private options: PrometheusOptions = {}, opts?: pulumi.ComponentResourceOptions) {
+    super('Prometheus', name);
 
     const provider = {
       provider: options.provider,
@@ -27,7 +27,7 @@ export class Prometheus extends pulumi.ComponentResource {
     };
 
     const metadata = {
-      namespace: options.namespace ? options.namespace.metadata.apply(value => value.name) : 'default',
+      namespace: options.namespace ? options.namespace.metadata.name : undefined,
       name: this.name,
       labels: {
         name: this.name,
@@ -144,13 +144,13 @@ export class Prometheus extends pulumi.ComponentResource {
       roleRef: {
         apiGroup: 'rbac.authorization.k8s.io',
         kind: 'ClusterRole',
-        name: this.clusterRole.metadata.apply(value => value.name),
+        name: this.clusterRole.metadata.name,
       },
       subjects: [
         {
           kind: 'ServiceAccount',
-          name: this.serviceAccount.metadata.apply(value => value.name),
-          namespace: this.serviceAccount.metadata.apply(value => value.namespace),
+          name: this.serviceAccount.metadata.name,
+          namespace: this.serviceAccount.metadata.namespace,
         }
       ]
     }, provider);
@@ -177,7 +177,7 @@ export class Prometheus extends pulumi.ComponentResource {
         template: {
           metadata: metadata,
           spec: {
-            serviceAccount: this.serviceAccount.metadata.apply(value => value.name),
+            serviceAccount: this.serviceAccount.metadata.name,
             containers: [
               {
                 image: 'prom/prometheus:v2.4.3',
@@ -204,13 +204,13 @@ export class Prometheus extends pulumi.ComponentResource {
               {
                 name: 'prometheus-storage',
                 persistentVolumeClaim: {
-                  claimName: this.pvc.metadata.apply(value => value.name),
+                  claimName: this.pvc.metadata.name,
                 }
               },
               {
                 name: 'prometheus-config',
                 configMap: {
-                  name: this.config.metadata.apply(value => value.name),
+                  name: this.config.metadata.name,
                 }
               }
             ],
@@ -226,7 +226,7 @@ export class Prometheus extends pulumi.ComponentResource {
       metadata: metadata,
       spec: {
         type: 'ClusterIP',
-        selector: this.deployment.spec.apply(value => value.selector.matchLabels),
+        selector: this.deployment.spec.selector.matchLabels,
         ports: [
           {
             targetPort: 9090,

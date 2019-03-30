@@ -11,6 +11,7 @@
         "experimentalDecorators": true,
         "pretty": true,
         "strict": true,
-        "forceConsistentCasingInFileNames": true
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true
     }
 }

@@ -1,33 +1,36 @@
 import * as k8s from '@pulumi/kubernetes';
+import * as pulumi from '@pulumi/pulumi';
 import * as path from 'path';
-import { App } from './archetypes/app';
+import { KubernetesApp } from './archetypes/kubernetes-app';
 import { MonitoringStack } from './monitoring/monitoring-stack';
 import { Minikube } from './archetypes/minikube';
-import { DevelopmentDatabaseServer } from './archetypes/k8s-database';
+import { KubernetesDatabase } from './archetypes/k8s-database';
+import { createDatabaseSecret } from './utils/create-db-secret';
+import { portForward } from './utils/port-forward';
 
-// export const cluster = new Cluster('my-cluster');
+export const cluster = new Minikube();
 
-export const provider = Minikube.getProvider();
+// export const monitoringNamespace = new k8s.core.v1.Namespace('monitoring', {
+//   metadata: { name: 'monitoring' },
+// }, { provider: cluster.getKubernetesProvider() });
 
-export const namespace = k8s.core.v1.Namespace.get('monitoring-namespace', 'default');
-
-export const monitoringStack = new MonitoringStack('monitoring-stack', {
-  provider,
-  namespace,
-});
-
-// export const database = new DatabaseServer('my-database');
-
-// export const app = new App('my-app', {
-//   src: path.join(__dirname, 'app/'),
-//   cluster: cluster,
-//   database: database,
-//   domain: 'www.myapp.com',
+// export const monitoring = new MonitoringStack('monitoring', {
+//   provider: cluster.getKubernetesProvider(),
+//   namespace: monitoringNamespace,
 // });
 
-export const app = new App('my-app', {
-  provider: provider,
-  src: path.join(__dirname, 'app'),
-  database: new DevelopmentDatabaseServer('database', { provider, namespace }),
-  port: 8000,
+// export const database = new KubernetesDatabase('database', {
+//   cluster: cluster,
+// });
+
+export const app = new KubernetesApp('my-app', {
+  src: path.join(__dirname, 'app/'),
+  cluster: cluster,
+  // env: createDatabaseSecret('database', database),
+  ports: [
+    {
+      containerPort: 8000,
+      servicePort: 80,
+    },
+  ],
 });

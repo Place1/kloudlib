@@ -1,0 +1,840 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "stack": "dev",
+        "latest": {
+            "manifest": {
+                "time": "2019-03-28T22:27:51.618910735+11:00",
+                "magic": "10484a8cdf491e982db0cd61c77ceebd9db887d282e029dd992b18630a2c5a32",
+                "version": "v0.17.1",
+                "plugins": [
+                    {
+                        "name": "nodejs",
+                        "path": "/home/james/.pulumi/bin/pulumi-language-nodejs",
+                        "type": "language",
+                        "version": "0.17.1"
+                    },
+                    {
+                        "name": "kubernetes",
+                        "path": "/home/james/.pulumi/plugins/resource-kubernetes-v0.22.0/pulumi-resource-kubernetes",
+                        "type": "resource",
+                        "version": "0.22.0"
+                    },
+                    {
+                        "name": "pulumi-nodejs",
+                        "path": "/home/james/.pulumi/bin/pulumi-resource-pulumi-nodejs",
+                        "type": "resource",
+                        "version": "0.17.4"
+                    }
+                ]
+            },
+            "resources": [
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "custom": false,
+                    "type": "pulumi:pulumi:Stack",
+                    "outputs": {
+                        "app": {
+                            "name": "my-app",
+                            "options": {
+                                "domain": "www.myapp.com",
+                                "env": {
+                                    "DB_HOST": "database",
+                                    "DB_NAME": "db",
+                                    "DB_PASSWORD": "password",
+                                    "DB_PORT": "5432",
+                                    "DB_USERNAME": "developer"
+                                },
+                                "ports": [
+                                    {
+                                        "containerPort": 8000,
+                                        "servicePort": 80
+                                    }
+                                ],
+                                "src": "/home/james/pulumi-example/app/"
+                            },
+                            "urn": "urn:pulumi:dev::pulumi-ts::app::my-app"
+                        },
+                        "cluster": {
+                            "provider": {
+                                "context": "minikube",
+                                "id": "c97cf98f-b0f9-481f-a4b7-6de2570c5dbb",
+                                "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube"
+                            }
+                        },
+                        "database": {
+                            "deployment": {
+                                "apiVersion": "apps/v1",
+                                "id": "default/database",
+                                "kind": "Deployment",
+                                "metadata": {
+                                    "annotations": {
+                                        "deployment.kubernetes.io/revision": "1"
+                                    },
+                                    "creationTimestamp": "2019-03-28T11:23:35Z",
+                                    "generation": 1,
+                                    "labels": {
+                                        "app.kubernetes.io/managed-by": "pulumi",
+                                        "name": "database"
+                                    },
+                                    "name": "database",
+                                    "namespace": "default",
+                                    "resourceVersion": "684",
+                                    "selfLink": "/apis/apps/v1/namespaces/default/deployments/database",
+                                    "uid": "ed0e5ced-514b-11e9-bd09-080027d8d11f"
+                                },
+                                "spec": {
+                                    "progressDeadlineSeconds": 600,
+                                    "replicas": 1,
+                                    "revisionHistoryLimit": 10,
+                                    "selector": {
+                                        "matchLabels": {
+                                            "name": "database"
+                                        }
+                                    },
+                                    "strategy": {
+                                        "rollingUpdate": {
+                                            "maxSurge": "25%",
+                                            "maxUnavailable": "25%"
+                                        },
+                                        "type": "RollingUpdate"
+                                    },
+                                    "template": {
+                                        "metadata": {
+                                            "labels": {
+                                                "name": "database"
+                                            }
+                                        },
+                                        "spec": {
+                                            "containers": [
+                                                {
+                                                    "env": [
+                                                        {
+                                                            "name": "POSTGRES_USER",
+                                                            "value": "developer"
+                                                        },
+                                                        {
+                                                            "name": "POSTGRES_PASSWORD",
+                                                            "value": "password"
+                                                        },
+                                                        {
+                                                            "name": "POSTGRES_DB",
+                                                            "value": "db"
+                                                        }
+                                                    ],
+                                                    "image": "postgres:10-alpine",
+                                                    "imagePullPolicy": "IfNotPresent",
+                                                    "name": "database",
+                                                    "ports": [
+                                                        {
+                                                            "containerPort": 5432,
+                                                            "protocol": "TCP"
+                                                        }
+                                                    ],
+                                                    "resources": {},
+                                                    "terminationMessagePath": "/dev/termination-log",
+                                                    "terminationMessagePolicy": "File"
+                                                }
+                                            ],
+                                            "dnsPolicy": "ClusterFirst",
+                                            "restartPolicy": "Always",
+                                            "schedulerName": "default-scheduler",
+                                            "securityContext": {},
+                                            "terminationGracePeriodSeconds": 30
+                                        }
+                                    }
+                                },
+                                "status": {
+                                    "availableReplicas": 1,
+                                    "conditions": [
+                                        {
+                                            "lastTransitionTime": "2019-03-28T11:23:49Z",
+                                            "lastUpdateTime": "2019-03-28T11:23:49Z",
+                                            "message": "Deployment has minimum availability.",
+                                            "reason": "MinimumReplicasAvailable",
+                                            "status": "True",
+                                            "type": "Available"
+                                        },
+                                        {
+                                            "lastTransitionTime": "2019-03-28T11:23:35Z",
+                                            "lastUpdateTime": "2019-03-28T11:23:49Z",
+                                            "message": "ReplicaSet \"database-78dffc\" has successfully progressed.",
+                                            "reason": "NewReplicaSetAvailable",
+                                            "status": "True",
+                                            "type": "Progressing"
+                                        }
+                                    ],
+                                    "observedGeneration": 1,
+                                    "readyReplicas": 1,
+                                    "replicas": 1,
+                                    "updatedReplicas": 1
+                                },
+                                "urn": "urn:pulumi:dev::pulumi-ts::database$kubernetes:apps/v1:Deployment::database-deployment"
+                            },
+                            "name": "database",
+                            "options": {
+                                "cluster": {
+                                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube"
+                                }
+                            },
+                            "service": {
+                                "apiVersion": "v1",
+                                "id": "default/database",
+                                "kind": "Service",
+                                "metadata": {
+                                    "creationTimestamp": "2019-03-28T11:23:35Z",
+                                    "labels": {
+                                        "app.kubernetes.io/managed-by": "pulumi",
+                                        "name": "database"
+                                    },
+                                    "name": "database",
+                                    "namespace": "default",
+                                    "resourceVersion": "649",
+                                    "selfLink": "/api/v1/namespaces/default/services/database",
+                                    "uid": "ed21e37e-514b-11e9-bd09-080027d8d11f"
+                                },
+                                "spec": {
+                                    "clusterIP": "10.111.90.90",
+                                    "ports": [
+                                        {
+                                            "port": 5432,
+                                            "protocol": "TCP",
+                                            "targetPort": 5432
+                                        }
+                                    ],
+                                    "selector": {
+                                        "name": "database"
+                                    },
+                                    "sessionAffinity": "None",
+                                    "type": "ClusterIP"
+                                },
+                                "status": {
+                                    "loadBalancer": {}
+                                },
+                                "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Service::database-service"
+                            },
+                            "urn": "urn:pulumi:dev::pulumi-ts::database::database"
+                        },
+                        "namespace": {
+                            "apiVersion": "v1",
+                            "id": "default",
+                            "kind": "Namespace",
+                            "metadata": {
+                                "creationTimestamp": "2019-03-28T11:19:45Z",
+                                "name": "default",
+                                "resourceVersion": "11",
+                                "selfLink": "/api/v1/namespaces/default",
+                                "uid": "63da5db0-514b-11e9-bd09-080027d8d11f"
+                            },
+                            "spec": {
+                                "finalizers": [
+                                    "kubernetes"
+                                ]
+                            },
+                            "status": {
+                                "phase": "Active"
+                            },
+                            "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::monitoring-namespace"
+                        }
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::database::database",
+                    "custom": false,
+                    "type": "database",
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default",
+                    "custom": true,
+                    "id": "02267239-103f-4720-b865-18620add8153",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "version": "0.22.0"
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::app::my-app",
+                    "custom": false,
+                    "type": "app",
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube",
+                    "custom": true,
+                    "id": "c97cf98f-b0f9-481f-a4b7-6de2570c5dbb",
+                    "type": "pulumi:providers:kubernetes",
+                    "inputs": {
+                        "context": "minikube"
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "propertyDependencies": {
+                        "context": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::pulumi:providers:pulumi-nodejs::default",
+                    "custom": true,
+                    "id": "261db23a-ac2d-4178-9b2b-70c240b52ec2",
+                    "type": "pulumi:providers:pulumi-nodejs"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::database-namespace",
+                    "custom": true,
+                    "id": "default",
+                    "type": "kubernetes:core/v1:Namespace",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Namespace"
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Namespace",
+                            "metadata": {
+                                "name": "default"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "creationTimestamp": "2019-03-28T11:19:45Z",
+                            "name": "default",
+                            "resourceVersion": "11",
+                            "selfLink": "/api/v1/namespaces/default",
+                            "uid": "63da5db0-514b-11e9-bd09-080027d8d11f"
+                        },
+                        "spec": {
+                            "finalizers": [
+                                "kubernetes"
+                            ]
+                        },
+                        "status": {
+                            "phase": "Active"
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "external": true,
+                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default::02267239-103f-4720-b865-18620add8153"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::monitoring-namespace",
+                    "custom": true,
+                    "id": "default",
+                    "type": "kubernetes:core/v1:Namespace",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Namespace"
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Namespace",
+                            "metadata": {
+                                "name": "default"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "creationTimestamp": "2019-03-28T11:19:45Z",
+                            "name": "default",
+                            "resourceVersion": "11",
+                            "selfLink": "/api/v1/namespaces/default",
+                            "uid": "63da5db0-514b-11e9-bd09-080027d8d11f"
+                        },
+                        "spec": {
+                            "finalizers": [
+                                "kubernetes"
+                            ]
+                        },
+                        "status": {
+                            "phase": "Active"
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "external": true,
+                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default::02267239-103f-4720-b865-18620add8153"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::my-app-namespace",
+                    "custom": true,
+                    "id": "default",
+                    "type": "kubernetes:core/v1:Namespace",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Namespace"
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Namespace",
+                            "metadata": {
+                                "name": "default"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Namespace",
+                        "metadata": {
+                            "creationTimestamp": "2019-03-28T11:19:45Z",
+                            "name": "default",
+                            "resourceVersion": "11",
+                            "selfLink": "/api/v1/namespaces/default",
+                            "uid": "63da5db0-514b-11e9-bd09-080027d8d11f"
+                        },
+                        "spec": {
+                            "finalizers": [
+                                "kubernetes"
+                            ]
+                        },
+                        "status": {
+                            "phase": "Active"
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "external": true,
+                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default::02267239-103f-4720-b865-18620add8153"
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::database$kubernetes:apps/v1:Deployment::database-deployment",
+                    "custom": true,
+                    "id": "default/database",
+                    "type": "kubernetes:apps/v1:Deployment",
+                    "inputs": {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "metadata": {
+                            "labels": {
+                                "app.kubernetes.io/managed-by": "pulumi",
+                                "name": "database"
+                            },
+                            "name": "database",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "selector": {
+                                "matchLabels": {
+                                    "name": "database"
+                                }
+                            },
+                            "template": {
+                                "metadata": {
+                                    "labels": {
+                                        "name": "database"
+                                    }
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "env": [
+                                                {
+                                                    "name": "POSTGRES_USER",
+                                                    "value": "developer"
+                                                },
+                                                {
+                                                    "name": "POSTGRES_PASSWORD",
+                                                    "value": "password"
+                                                },
+                                                {
+                                                    "name": "POSTGRES_DB",
+                                                    "value": "db"
+                                                }
+                                            ],
+                                            "image": "postgres:10-alpine",
+                                            "imagePullPolicy": "IfNotPresent",
+                                            "name": "database",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 5432
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "apps/v1",
+                            "kind": "Deployment",
+                            "metadata": {
+                                "labels": {
+                                    "app.kubernetes.io/managed-by": "pulumi",
+                                    "name": "database"
+                                },
+                                "name": "database",
+                                "namespace": "default"
+                            },
+                            "spec": {
+                                "selector": {
+                                    "matchLabels": {
+                                        "name": "database"
+                                    }
+                                },
+                                "template": {
+                                    "metadata": {
+                                        "labels": {
+                                            "name": "database"
+                                        }
+                                    },
+                                    "spec": {
+                                        "containers": [
+                                            {
+                                                "env": [
+                                                    {
+                                                        "name": "POSTGRES_USER",
+                                                        "value": "developer"
+                                                    },
+                                                    {
+                                                        "name": "POSTGRES_PASSWORD",
+                                                        "value": "password"
+                                                    },
+                                                    {
+                                                        "name": "POSTGRES_DB",
+                                                        "value": "db"
+                                                    }
+                                                ],
+                                                "image": "postgres:10-alpine",
+                                                "imagePullPolicy": "IfNotPresent",
+                                                "name": "database",
+                                                "ports": [
+                                                    {
+                                                        "containerPort": 5432
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "metadata": {
+                            "annotations": {
+                                "deployment.kubernetes.io/revision": "1"
+                            },
+                            "creationTimestamp": "2019-03-28T11:23:35Z",
+                            "generation": 1,
+                            "labels": {
+                                "app.kubernetes.io/managed-by": "pulumi",
+                                "name": "database"
+                            },
+                            "name": "database",
+                            "namespace": "default",
+                            "resourceVersion": "684",
+                            "selfLink": "/apis/apps/v1/namespaces/default/deployments/database",
+                            "uid": "ed0e5ced-514b-11e9-bd09-080027d8d11f"
+                        },
+                        "spec": {
+                            "progressDeadlineSeconds": 600,
+                            "replicas": 1,
+                            "revisionHistoryLimit": 10,
+                            "selector": {
+                                "matchLabels": {
+                                    "name": "database"
+                                }
+                            },
+                            "strategy": {
+                                "rollingUpdate": {
+                                    "maxSurge": "25%",
+                                    "maxUnavailable": "25%"
+                                },
+                                "type": "RollingUpdate"
+                            },
+                            "template": {
+                                "metadata": {
+                                    "labels": {
+                                        "name": "database"
+                                    }
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "env": [
+                                                {
+                                                    "name": "POSTGRES_USER",
+                                                    "value": "developer"
+                                                },
+                                                {
+                                                    "name": "POSTGRES_PASSWORD",
+                                                    "value": "password"
+                                                },
+                                                {
+                                                    "name": "POSTGRES_DB",
+                                                    "value": "db"
+                                                }
+                                            ],
+                                            "image": "postgres:10-alpine",
+                                            "imagePullPolicy": "IfNotPresent",
+                                            "name": "database",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 5432,
+                                                    "protocol": "TCP"
+                                                }
+                                            ],
+                                            "resources": {},
+                                            "terminationMessagePath": "/dev/termination-log",
+                                            "terminationMessagePolicy": "File"
+                                        }
+                                    ],
+                                    "dnsPolicy": "ClusterFirst",
+                                    "restartPolicy": "Always",
+                                    "schedulerName": "default-scheduler",
+                                    "securityContext": {},
+                                    "terminationGracePeriodSeconds": 30
+                                }
+                            }
+                        },
+                        "status": {
+                            "availableReplicas": 1,
+                            "conditions": [
+                                {
+                                    "lastTransitionTime": "2019-03-28T11:23:49Z",
+                                    "lastUpdateTime": "2019-03-28T11:23:49Z",
+                                    "message": "Deployment has minimum availability.",
+                                    "reason": "MinimumReplicasAvailable",
+                                    "status": "True",
+                                    "type": "Available"
+                                },
+                                {
+                                    "lastTransitionTime": "2019-03-28T11:23:35Z",
+                                    "lastUpdateTime": "2019-03-28T11:23:49Z",
+                                    "message": "ReplicaSet \"database-78dffc\" has successfully progressed.",
+                                    "reason": "NewReplicaSetAvailable",
+                                    "status": "True",
+                                    "type": "Progressing"
+                                }
+                            ],
+                            "observedGeneration": 1,
+                            "readyReplicas": 1,
+                            "replicas": 1,
+                            "updatedReplicas": 1
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::database::database",
+                    "dependencies": [
+                        "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::database-namespace"
+                    ],
+                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::minikube::c97cf98f-b0f9-481f-a4b7-6de2570c5dbb",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::database-namespace"
+                        ],
+                        "spec": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Service::database-service",
+                    "custom": true,
+                    "id": "default/database",
+                    "type": "kubernetes:core/v1:Service",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "labels": {
+                                "app.kubernetes.io/managed-by": "pulumi",
+                                "name": "database"
+                            },
+                            "name": "database",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "ports": [
+                                {
+                                    "port": 5432,
+                                    "targetPort": 5432
+                                }
+                            ],
+                            "selector": {
+                                "name": "database"
+                            },
+                            "type": "ClusterIP"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Service",
+                            "metadata": {
+                                "labels": {
+                                    "app.kubernetes.io/managed-by": "pulumi",
+                                    "name": "database"
+                                },
+                                "name": "database",
+                                "namespace": "default"
+                            },
+                            "spec": {
+                                "ports": [
+                                    {
+                                        "port": 5432,
+                                        "targetPort": 5432
+                                    }
+                                ],
+                                "selector": {
+                                    "name": "database"
+                                },
+                                "type": "ClusterIP"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "creationTimestamp": "2019-03-28T11:23:35Z",
+                            "labels": {
+                                "app.kubernetes.io/managed-by": "pulumi",
+                                "name": "database"
+                            },
+                            "name": "database",
+                            "namespace": "default",
+                            "resourceVersion": "649",
+                            "selfLink": "/api/v1/namespaces/default/services/database",
+                            "uid": "ed21e37e-514b-11e9-bd09-080027d8d11f"
+                        },
+                        "spec": {
+                            "clusterIP": "10.111.90.90",
+                            "ports": [
+                                {
+                                    "port": 5432,
+                                    "protocol": "TCP",
+                                    "targetPort": 5432
+                                }
+                            ],
+                            "selector": {
+                                "name": "database"
+                            },
+                            "sessionAffinity": "None",
+                            "type": "ClusterIP"
+                        },
+                        "status": {
+                            "loadBalancer": {}
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "dependencies": [
+                        "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::database-namespace"
+                    ],
+                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default::02267239-103f-4720-b865-18620add8153",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::database-namespace"
+                        ],
+                        "spec": null
+                    }
+                },
+                {
+                    "urn": "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Service::my-app-service",
+                    "custom": true,
+                    "id": "default/my-app",
+                    "type": "kubernetes:core/v1:Service",
+                    "inputs": {
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "labels": {
+                                "app.kubernetes.io/managed-by": "pulumi",
+                                "name": "my-app"
+                            },
+                            "name": "my-app",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "ports": [
+                                {
+                                    "port": 80,
+                                    "targetPort": 8000
+                                }
+                            ],
+                            "selector": {
+                                "name": "my-app"
+                            },
+                            "type": "ClusterIP"
+                        }
+                    },
+                    "outputs": {
+                        "__inputs": {
+                            "apiVersion": "v1",
+                            "kind": "Service",
+                            "metadata": {
+                                "labels": {
+                                    "app.kubernetes.io/managed-by": "pulumi",
+                                    "name": "my-app"
+                                },
+                                "name": "my-app",
+                                "namespace": "default"
+                            },
+                            "spec": {
+                                "ports": [
+                                    {
+                                        "port": 80,
+                                        "targetPort": 8000
+                                    }
+                                ],
+                                "selector": {
+                                    "name": "my-app"
+                                },
+                                "type": "ClusterIP"
+                            }
+                        },
+                        "apiVersion": "v1",
+                        "kind": "Service",
+                        "metadata": {
+                            "creationTimestamp": "2019-03-28T11:25:47Z",
+                            "labels": {
+                                "app.kubernetes.io/managed-by": "pulumi",
+                                "name": "my-app"
+                            },
+                            "name": "my-app",
+                            "namespace": "default",
+                            "resourceVersion": "826",
+                            "selfLink": "/api/v1/namespaces/default/services/my-app",
+                            "uid": "3bb0e0b7-514c-11e9-bd09-080027d8d11f"
+                        },
+                        "spec": {
+                            "clusterIP": "10.96.232.248",
+                            "ports": [
+                                {
+                                    "port": 80,
+                                    "protocol": "TCP",
+                                    "targetPort": 8000
+                                }
+                            ],
+                            "selector": {
+                                "name": "my-app"
+                            },
+                            "sessionAffinity": "None",
+                            "type": "ClusterIP"
+                        },
+                        "status": {
+                            "loadBalancer": {}
+                        }
+                    },
+                    "parent": "urn:pulumi:dev::pulumi-ts::pulumi:pulumi:Stack::pulumi-ts-dev",
+                    "dependencies": [
+                        "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::my-app-namespace"
+                    ],
+                    "initErrors": [
+                        "Resource operation was cancelled for 'my-app'",
+                        "Service does not target any Pods. Selected Pods may not be ready, or field '.spec.selector' may not match labels on any Pods"
+                    ],
+                    "provider": "urn:pulumi:dev::pulumi-ts::pulumi:providers:kubernetes::default::02267239-103f-4720-b865-18620add8153",
+                    "propertyDependencies": {
+                        "apiVersion": null,
+                        "kind": null,
+                        "metadata": [
+                            "urn:pulumi:dev::pulumi-ts::kubernetes:core/v1:Namespace::my-app-namespace"
+                        ],
+                        "spec": null
+                    }
+                }
+            ]
+        }
+    }
+}

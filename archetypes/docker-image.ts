@@ -1,23 +1,58 @@
 import * as pulumi from '@pulumi/pulumi';
-import { ImageArgs } from '@pulumi/docker';
-import * as cp from 'child_process';
+import * as docker from '@pulumi/docker';
+import Dockerode from 'dockerode';
+import tar from 'tar-fs';
+import { URL } from 'url';
+import path from 'path';
+import fs from 'fs';
+
+export interface DockerImageResourceArgs extends docker.ImageArgs {
+  push?: boolean;
+  dockerEnv?: pulumi.Input<DockerEnv>;
+}
+
+export interface DockerEnv {
+  host: string;
+  port: number;
+  ca: string;
+  cert: string;
+  key: string;
+}
 
 class DockerImageResourceProvider implements pulumi.dynamic.ResourceProvider {
-  async create(inputs: pulumi.Unwrap<ImageArgs>): Promise<pulumi.dynamic.CreateResult> {
-    const imageName = inputs.localImageName;
-    const context = inputs.build;
-    const { stdout } = await exec(`docker build -q -t ${imageName} ${context}`);
-    const imageId = stdout.trim();
+  async create(inputs: pulumi.Unwrap<DockerImageResourceArgs>): Promise<pulumi.dynamic.CreateResult> {
+    const imageName = inputs.imageName!;
+
+    let build: pulumi.Unwrap<docker.DockerBuild>;
+
+    if (typeof(inputs.build) === 'string') {
+      build = { context: inputs.build };
+    } else {
+      build = inputs.build;
+    }
+
+    const imageId = await buildImage(this.getDockerClient(inputs), imageName, build);
+
     return {
-      id: stdout.trim(),
+      id: imageId,
       outs: {
         sha: imageId,
       }
     }
   }
 
-  async delete(id: pulumi.ID, props: any) {
-    await exec(`docker rmi ${id}`);
+  async update(id: pulumi.ID, olds: any, news: any): Promise<pulumi.dynamic.UpdateResult> {
+    return this.create(news);
+  }
+
+  async delete(id: pulumi.ID, inputs: pulumi.Unwrap<DockerImageResourceArgs>) {
+    try {
+      await this.getDockerClient(inputs).getImage(id).remove();
+    } catch {}
+  }
+
+  private getDockerClient(inputs: pulumi.Unwrap<DockerImageResourceArgs>) {
+    return new Dockerode(inputs.dockerEnv);
   }
 }
 
@@ -27,19 +62,33 @@ export class DockerImageResource extends pulumi.dynamic.Resource {
 
   private static provider = new DockerImageResourceProvider();
 
-  constructor(name: string, props: ImageArgs, opts?: pulumi.CustomResourceOptions) {
+  constructor(name: string, props: DockerImageResourceArgs, opts?: pulumi.CustomResourceOptions) {
     super(DockerImageResource.provider, name, props, opts);
   }
 }
 
-function exec (command: string, options = { cwd: process.cwd() }) {
-  return new Promise<{ stdout: string, stderr: string }>((resolve, reject) => {
-    cp.exec(command, { ...options }, (err, stdout, stderr) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve({ stdout, stderr });
-    });
+export async function buildImage(client: Dockerode, imageName: string, build: pulumi.Unwrap<docker.DockerBuild>): Promise<string> {
+  const tarStream = tar.pack(build.context || process.cwd());
+
+  const options = {
+    t: imageName,
+    // args: build.args,
+    dockerfile: build.dockerfile || 'Dockerfile',
+  };
+
+  const stream = await client.buildImage(tarStream, options);
+
+  // wait for the build to finish.
+  await new Promise((resolve, reject) => {
+    client.modem.followProgress(
+      stream,
+      (err: any, res: any) => err ? reject(err) : resolve(res),
+      (progress: any) => progress.stream && process.stdout.write(progress.stream),
+    );
   });
+
+  // return the image id
+  const dockerImage = await client.getImage(imageName).inspect();
+  return dockerImage.Id;
 }
+

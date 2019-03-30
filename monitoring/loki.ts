@@ -15,8 +15,8 @@ export class Loki extends pulumi.ComponentResource {
   deployment: k8s.apps.v1.Deployment;
   service: k8s.core.v1.Service;
 
-  constructor(private name: string, options: LokiOptions = {}) {
-    super('james:monitoring:loki', name);
+  constructor(private name: string, options: LokiOptions = {}, opts?: pulumi.ComponentResourceOptions) {
+    super('Loki', name);
 
     const provider = {
       provider: options.provider,
@@ -24,7 +24,7 @@ export class Loki extends pulumi.ComponentResource {
     }
 
     const metadata = {
-      namespace: options.namespace ? options.namespace.metadata.apply(value => value.name) : 'default',
+      namespace: options.namespace ? options.namespace.metadata.name : undefined,
       name: this.name,
       labels: {
         name: this.name,
@@ -107,13 +107,13 @@ export class Loki extends pulumi.ComponentResource {
               {
                 name: 'loki-config',
                 configMap: {
-                  name: this.configMap.metadata.apply(value => value.name),
+                  name: this.configMap.metadata.name,
                 }
               },
               {
                 name: 'loki-storage',
                 persistentVolumeClaim: {
-                  claimName: this.persistentVolumeClaim.metadata.apply(value => value.name),
+                  claimName: this.persistentVolumeClaim.metadata.name,
                 }
               }
             ]

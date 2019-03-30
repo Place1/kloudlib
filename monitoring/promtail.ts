@@ -19,8 +19,8 @@ export class Promtail extends pulumi.ComponentResource {
   configMap: k8s.core.v1.ConfigMap;
   daemonset: k8s.apps.v1.DaemonSet;
 
-  constructor(private name: string, private options: PromtailOptions) {
-    super('james:monitoring:promtail', name);
+  constructor(private name: string, private options: PromtailOptions, opts?: pulumi.ComponentResourceOptions) {
+    super('Promtail', name);
 
     const provider = {
       provider: options.provider,
@@ -28,7 +28,7 @@ export class Promtail extends pulumi.ComponentResource {
     }
 
     const metadata = {
-      namespace: options.namespace ? options.namespace.metadata.apply(value => value.name) : 'default',
+      namespace: options.namespace ? options.namespace.metadata.name : undefined,
       name: this.name,
       labels: {
         name: this.name,
@@ -55,13 +55,13 @@ export class Promtail extends pulumi.ComponentResource {
       roleRef: {
         apiGroup: 'rbac.authorization.k8s.io',
         kind: 'ClusterRole',
-        name: this.clusterRole.metadata.apply(value => value.name),
+        name: this.clusterRole.metadata.name,
       },
       subjects: [
         {
           kind: 'ServiceAccount',
-          name: this.serviceAccount.metadata.apply(value => value.name),
-          namespace: this.serviceAccount.metadata.apply(value => value.namespace),
+          name: this.serviceAccount.metadata.name,
+          namespace: this.serviceAccount.metadata.namespace,
         }
       ]
     }, provider);
@@ -203,12 +203,12 @@ export class Promtail extends pulumi.ComponentResource {
       "roleRef": {
         "apiGroup": "rbac.authorization.k8s.io",
         "kind": "Role",
-        "name": role.metadata.apply(value => value.name),
+        "name": role.metadata.name,
       },
       "subjects": [
         {
           "kind": "ServiceAccount",
-          "name": this.serviceAccount.metadata.apply(value => value.name),
+          "name": this.serviceAccount.metadata.name,
         }
       ],
     }, provider);
@@ -222,7 +222,7 @@ export class Promtail extends pulumi.ComponentResource {
         template: {
           metadata: metadata,
           spec: {
-            serviceAccount: this.serviceAccount.metadata.apply(value => value.name),
+            serviceAccount: this.serviceAccount.metadata.name,
             containers: [
               {
                 name: 'promtail',
@@ -268,7 +268,7 @@ export class Promtail extends pulumi.ComponentResource {
               {
                 name: 'promtail-config',
                 configMap: {
-                  name: this.configMap.metadata.apply(value => value.name),
+                  name: this.configMap.metadata.name,
                 }
               },
               {

@@ -3,6 +3,7 @@ import * as k8s from "@pulumi/kubernetes";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import { codeBlock } from "common-tags";
+import { ICluster, DockerEnv } from "./icluster";
 
 export enum NodeMachineTypes {
 	G1Small = 'g1-small',
@@ -16,7 +17,7 @@ export interface ClusterOptions {
 	noIngress?: boolean;
 }
 
-export class Cluster extends pulumi.ComponentResource {
+export class Cluster extends pulumi.ComponentResource implements ICluster {
 
 	private cluster: gcp.container.Cluster;
 	private name: string;
@@ -95,5 +96,13 @@ export class Cluster extends pulumi.ComponentResource {
 						name: gcp
 					`;
 			});
+	}
+
+	isDev() {
+		return false;
+	}
+
+	getDockerEnv(): DockerEnv {
+		throw new Error("Local builds are not supported");
 	}
 }

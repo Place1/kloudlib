@@ -1,13 +1,14 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { IDatabaseServer, IDatabaseUser, IDatabase } from './idatabase';
+import { ICluster } from './icluster';
 
 export interface DatabaseOptions {
   namespace?: k8s.core.v1.Namespace,
-  provider: k8s.Provider;
+  cluster: ICluster;
 }
 
-export class DevelopmentDatabaseServer extends pulumi.ComponentResource implements IDatabaseServer {
+export class KubernetesDatabase extends pulumi.ComponentResource implements IDatabaseServer {
 
   private deployment: k8s.apps.v1.Deployment;
   private service: k8s.core.v1.Service;
@@ -16,14 +17,14 @@ export class DevelopmentDatabaseServer extends pulumi.ComponentResource implemen
     super('database', name);
 
     const provider = {
-      provider: options.provider,
+      provider: options.cluster.getKubernetesProvider(),
       parent: this,
     };
 
-    const namespace = options.namespace || k8s.core.v1.Namespace.get(`${name}-namespace`, 'default');
+    const namespace = options.namespace || k8s.core.v1.Namespace.get(`${name}-namespace`, 'default', { parent: this });
 
     const metadata = {
-      namespace: namespace.metadata.apply((value) => value.name),
+      namespace: namespace.metadata.name,
       name: name,
       labels: {
         name: name,
@@ -84,7 +85,7 @@ export class DevelopmentDatabaseServer extends pulumi.ComponentResource implemen
           targetPort: 5432,
         }],
       },
-    })
+    }, provider);
   }
 
   createUser(username: string): pulumi.Output<IDatabaseUser> {

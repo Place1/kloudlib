@@ -21,8 +21,8 @@ export class Grafana extends pulumi.ComponentResource {
   deployment: k8s.apps.v1.Deployment;
   service: k8s.core.v1.Service;
 
-  constructor(name: string, options: GrafanaOptions = {}) {
-    super('james:monitoring:Grafana', name);
+  constructor(name: string, options: GrafanaOptions = {}, opts?: pulumi.ComponentResourceOptions) {
+    super('Grafana', name);
 
     const provider = {
       provider: options.provider,
@@ -30,7 +30,7 @@ export class Grafana extends pulumi.ComponentResource {
     }
 
     const metadata = {
-      namespace: options.namespace ? options.namespace.metadata.apply(value => value.name) : 'default',
+      namespace: options.namespace ? options.namespace.metadata.name : undefined,
       name: name,
       labels: {
         name: name,
@@ -136,13 +136,13 @@ export class Grafana extends pulumi.ComponentResource {
               {
                 name: 'grafana-storage',
                 persistentVolumeClaim: {
-                  claimName: this.pvc.metadata.apply(value => value.name),
+                  claimName: this.pvc.metadata.name,
                 }
               },
               {
                 name: 'grafana-config',
                 configMap: {
-                  name: this.configMap.metadata.apply(value => value.name),
+                  name: this.configMap.metadata.name,
                   items: [
                     {
                       key: 'grafana.ini',
@@ -162,7 +162,7 @@ export class Grafana extends pulumi.ComponentResource {
               {
                 name: 'grafana-dashboards',
                 configMap: {
-                  name: this.configMap.metadata.apply(value => value.name),
+                  name: this.configMap.metadata.name,
                   items: [
                     {
                       key: 'kubernetes-monitoring.json',
@@ -184,8 +184,8 @@ export class Grafana extends pulumi.ComponentResource {
         selector: metadata.labels,
         ports: [
           {
-            port: this.deployment.spec.apply(value => value.template.spec.containers[0].ports[0].containerPort),
-            targetPort: this.deployment.spec.apply(value => value.template.spec.containers[0].ports[0].containerPort),
+            port: this.deployment.spec.template.spec.containers[0].ports[0].containerPort,
+            targetPort: this.deployment.spec.template.spec.containers[0].ports[0].containerPort,
           }
         ]
       }

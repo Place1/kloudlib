@@ -2,16 +2,22 @@
     "name": "typescript",
     "devDependencies": {
         "@types/dockerode": "^2.5.12",
-        "@types/node": "latest"
+        "@types/lodash-decorators": "^4.0.0",
+        "@types/node": "^11.12.0",
+        "@types/tar-fs": "^1.16.1"
     },
     "dependencies": {
-        "@pulumi/docker": "^0.16.4",
-        "@pulumi/gcp": "^0.16.7",
-        "@pulumi/kubernetes": "^0.20.1",
+        "@pulumi/docker": "^0.17.0",
+        "@pulumi/gcp": "^0.18.0",
+        "@pulumi/kubernetes": "^0.22.0",
         "@pulumi/pulumi": "latest",
-        "@pulumi/random": "^0.3.0",
+        "@pulumi/random": "^0.5.1",
         "@types/common-tags": "^1.8.0",
+        "chokidar": "^2.1.5",
         "common-tags": "^1.8.0",
-        "dockerode": "^2.5.8"
+        "dockerode": "^2.5.8",
+        "lodash": "^4.17.11",
+        "lodash-decorators": "^6.0.1",
+        "tar-fs": "^2.0.0"
     }
 }

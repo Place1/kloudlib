@@ -1,0 +1,21 @@
+{
+    "version": 3,
+    "checkpoint": {
+        "stack": "dev",
+        "latest": {
+            "manifest": {
+                "time": "2019-03-31T00:05:21.881923487+11:00",
+                "magic": "4c9e3af950abf0bb06246576f7dddc0b09f84e5b925a0be3d28d7b943f3cfe41",
+                "version": "v0.17.4",
+                "plugins": [
+                    {
+                        "name": "kubernetes",
+                        "path": "/home/james/.pulumi/plugins/resource-kubernetes-v0.22.0/pulumi-resource-kubernetes",
+                        "type": "resource",
+                        "version": "0.22.0"
+                    }
+                ]
+            }
+        }
+    }
+}
