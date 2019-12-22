@@ -2,9 +2,16 @@ import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
 import * as fs from 'fs';
-import * as basics from './services/basics';
-import { makename } from './pulumi';
+import * as basics from '../services/basics';
+import { makename } from '../pulumi';
 
+/**
+ * TODO:
+ *  - additional ports for things like metrics or health check endpoints
+ *  - readyness checks
+ *  - termination grace period
+ *  - k8s annotations
+ */
 export interface AppInputs {
   provider: k8s.Provider,
   // the path to a folder containing
@@ -202,7 +209,7 @@ export class App extends pulumi.CustomResource implements AppOutputs {
     });
   }
 
-  private createIngress(inputs: AppIngress): k8s.networking.v1beta1.Ingress {
+  private createIngress(inputs: basics.Ingress): k8s.networking.v1beta1.Ingress {
     return new k8s.networking.v1beta1.Ingress('ingress', {
       metadata: {
         name: this.name,

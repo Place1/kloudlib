@@ -1,8 +1,8 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes';
-import * as services from './services';
+import * as services from '../services';
 import merge from 'lodash.merge';
-import { makename } from './pulumi';
+import { makename } from '../pulumi';
 
 interface ServiceInputs { enabled?: boolean }
 

@@ -1,3 +1,3 @@
 export * from './provider';
-export * from './core';
-export * from './app';
+export * from './archetypes/core';
+export * from './archetypes/app';
