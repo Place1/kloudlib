@@ -51,7 +51,7 @@ export class Grafana extends pulumi.CustomResource implements GrafanaOutputs {
         ingress: !props.ingress ? { enabled: false } : {
           enabled: props.ingress.enabled,
           annotations: {
-            'kubernetes.io/ingress.class': props.ingress.class || 'nginx',
+            'kubernetes.io/ingress.class': props.ingress.class ?? 'nginx',
             'kubernetes.io/tls-acme': props.ingress.tls === false ? 'false' : 'true', // "tls" defaults to true, so we'll activate tls for undefined or null values
             ...props.ingress.annotations,
           },

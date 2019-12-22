@@ -3,11 +3,11 @@ import * as k8s from '@pulumi/kubernetes'
 import { makename } from '../pulumi';
 
 export interface CertManagerInputs {
+  provider: k8s.Provider,
   // if true then the staging ACME api will be used
   // rather than the production ACME api.
   // defaults to false
   useStagingACME?: boolean;
-
   // configure acme settings
   acme: {
     // the email that letsencrypt reminders will be sent to
@@ -39,6 +39,7 @@ export class CertManager extends pulumi.CustomResource implements CertManagerOut
       },
     }, {
       parent: this,
+      provider: props.provider,
     });
 
     this.namespace = namespace.metadata.name;
@@ -47,6 +48,7 @@ export class CertManager extends pulumi.CustomResource implements CertManagerOut
       file: 'https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml',
     }, {
       parent: this,
+      provider: props.provider,
     });
 
     const certIssuer = new k8s.apiextensions.CustomResource('cert-issuer', {
@@ -78,6 +80,7 @@ export class CertManager extends pulumi.CustomResource implements CertManagerOut
     }, {
       parent: this,
       dependsOn: crds,
+      provider: props.provider,
     });
 
     // Note: cert manager requires manual installation of
@@ -102,6 +105,9 @@ export class CertManager extends pulumi.CustomResource implements CertManagerOut
     }, {
       parent: this,
       dependsOn: certIssuer,
+      providers: {
+        kubernetes: props.provider,
+      },
     });
   }
 }

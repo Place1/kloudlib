@@ -2,7 +2,6 @@ import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
 import * as fs from 'fs';
-import { PortNumber } from './core';
 import { makename } from './pulumi';
 
 export interface AppInputs {
@@ -24,7 +23,7 @@ export interface AppInputs {
   secrets?: Record<string, pulumi.Input<string>>,
   // the http port your application listens on
   // defaults to 80
-  httpPort?: PortNumber;
+  httpPort?: number;
   // configure ingress traffic for this app
   // defaults to undefined (no ingress)
   ingress?: AppIngress,
@@ -78,15 +77,15 @@ export class App extends pulumi.CustomResource implements AppOutputs {
     if (this.props.ingress) {
       this.ingressHost = this.createIngress(this.props.ingress).spec.rules[0].host;
     }
-    this.portForwardCommand = pulumi.interpolate`kubectl port-forward service/${this.serviceName} 8000:${this.props.httpPort || 80}`;
+    this.portForwardCommand = pulumi.interpolate`kubectl port-forward service/${this.serviceName} 8000:${this.props.httpPort ?? 80}`;
   }
 
   private createDockerImage(): docker.Image {
     const build = fs.statSync(this.props.src).isDirectory() ? {
       context: this.props.src,
     } : {
-        dockerfile: this.props.src,
-      }
+      dockerfile: this.props.src,
+    };
     return new docker.Image('image', {
       imageName: this.props.imageName,
       build: build,
@@ -152,9 +151,9 @@ export class App extends pulumi.CustomResource implements AppOutputs {
               image: this.dockerImage,
               ports: [{
                 name: 'http',
-                containerPort: this.props.httpPort || 80,
+                containerPort: this.props.httpPort ?? 80,
               }],
-              env: !this.props.env ? undefined : Array.from(Object.entries(this.props.env)).map(([key, value]) => ({
+              env: Array.from(Object.entries(this.props.env ?? [])).map(([key, value]) => ({
                 name: key,
                 value: value,
               })),
@@ -198,7 +197,7 @@ export class App extends pulumi.CustomResource implements AppOutputs {
         ports: [{
           name: 'http',
           port: 80,
-          targetPort: this.props.httpPort || 80,
+          targetPort: this.props.httpPort ?? 80,
         }],
       },
     }, {
@@ -214,7 +213,7 @@ export class App extends pulumi.CustomResource implements AppOutputs {
           app: this.name,
         },
         annotations: {
-          'kubernetes.io/ingress.class': inputs.class || 'nginx',
+          'kubernetes.io/ingress.class': inputs.class ?? 'nginx',
           'kubernetes.io/tls-acme': 'true',
         },
       },
@@ -226,7 +225,7 @@ export class App extends pulumi.CustomResource implements AppOutputs {
               path: '/',
               backend: {
                 serviceName: this.serviceName,
-                servicePort: this.props.httpPort || 80,
+                servicePort: this.props.httpPort ?? 80,
               },
             }],
           },
