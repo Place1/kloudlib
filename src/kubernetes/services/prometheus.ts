@@ -47,11 +47,11 @@ export class Prometheus extends pulumi.CustomResource implements PrometheusOutpu
           },
           resources: props.resources ? props.resources : {
             requests: {
-              cpu: '200m',
+              cpu: '300m',
               memory: '1000M',
             },
             limits: {
-              cpu: '4',
+              cpu: '2',
               memory: '1500M',
             },
           },

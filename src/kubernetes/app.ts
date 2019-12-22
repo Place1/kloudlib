@@ -2,6 +2,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
 import * as fs from 'fs';
+import * as basics from './services/basics';
 import { makename } from './pulumi';
 
 export interface AppInputs {
@@ -26,7 +27,10 @@ export interface AppInputs {
   httpPort?: number;
   // configure ingress traffic for this app
   // defaults to undefined (no ingress)
-  ingress?: AppIngress,
+  ingress?: basics.Ingress,
+  // resource requests and limits
+  // defaults to undefined (no requests or limits)
+  resources?: basics.ComputeResources,
 }
 
 export interface AppOutputs {
@@ -43,14 +47,6 @@ export interface AppOutputs {
   // a kubectl command to access this
   // kubernetes service locally for your convinience
   readonly portForwardCommand: pulumi.Output<string>;
-}
-
-interface AppIngress {
-  // the ingress host i.e. www.example.com
-  host: string;
-  // the ingress class
-  // defaults to nginx
-  class?: string;
 }
 
 export class App extends pulumi.CustomResource implements AppOutputs {
@@ -157,6 +153,7 @@ export class App extends pulumi.CustomResource implements AppOutputs {
                 name: key,
                 value: value,
               })),
+              resources: this.props.resources,
             }],
             affinity: {
               podAntiAffinity: {
