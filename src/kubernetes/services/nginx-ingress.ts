@@ -38,7 +38,7 @@ export interface NginxIngressOutputs {
   ingressClass: pulumi.Output<string>;
 }
 
-export class NginxIngress extends pulumi.CustomResource implements NginxIngressOutputs {
+export class NginxIngress extends pulumi.ComponentResource implements NginxIngressOutputs {
   readonly ingressClass: pulumi.Output<string>;
 
   constructor(name: string, props: NginxIngressInputs, opts?: pulumi.CustomResourceOptions) {

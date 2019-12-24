@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes';
 import * as services from '../services';
-import merge from 'lodash.merge';
+import { merge } from 'lodash';
 import { makename } from '../pulumi';
 
 interface ServiceInputs { enabled?: boolean }
@@ -24,7 +24,7 @@ export interface CoreOutputs {
   nginxIngress?: services.NginxIngressOutputs;
 }
 
-export class Core extends pulumi.CustomResource implements CoreOutputs {
+export class Core extends pulumi.ComponentResource implements CoreOutputs {
 
   readonly certManager?: services.CertManagerOutputs;
   readonly grafana?: services.GrafanaOutputs;

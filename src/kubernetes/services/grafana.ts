@@ -18,7 +18,7 @@ export interface GrafanaOutputs {
   persistence: pulumi.Output<basics.Persistence | undefined>;
 }
 
-export class Grafana extends pulumi.CustomResource implements GrafanaOutputs {
+export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs {
 
   readonly adminUsername: pulumi.Output<string>;
   readonly adminPassword: pulumi.Output<string>;

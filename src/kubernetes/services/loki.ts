@@ -16,7 +16,7 @@ export interface LokiOutputs {
   persistence: pulumi.Output<basics.Persistence | undefined>;
 }
 
-export class Loki extends pulumi.CustomResource implements LokiOutputs {
+export class Loki extends pulumi.ComponentResource implements LokiOutputs {
 
   readonly clusterUrl: pulumi.Output<string>;
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;

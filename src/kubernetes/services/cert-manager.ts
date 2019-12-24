@@ -19,7 +19,7 @@ export interface CertManagerOutputs {
   namespace: pulumi.Output<string>
 }
 
-export class CertManager extends pulumi.CustomResource implements CertManagerOutputs {
+export class CertManager extends pulumi.ComponentResource implements CertManagerOutputs {
 
   namespace: pulumi.Output<string>;
 

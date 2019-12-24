@@ -10,7 +10,7 @@ export interface OpenPolicyAgentOutputs {
 
 }
 
-export class OpenPolicyAgent extends pulumi.CustomResource implements OpenPolicyAgentOutputs {
+export class OpenPolicyAgent extends pulumi.ComponentResource implements OpenPolicyAgentOutputs {
   constructor(name: string, props: OpenPolicyAgentInputs, opts?: pulumi.CustomResourceOptions) {
     super(makename('OpenPolicyAgent'), name, props, opts);
   }

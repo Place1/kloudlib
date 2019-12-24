@@ -16,7 +16,7 @@ export interface PrometheusOutputs {
   persistence: pulumi.Output<basics.Persistence | undefined>;
 }
 
-export class Prometheus extends pulumi.CustomResource implements PrometheusOutputs {
+export class Prometheus extends pulumi.ComponentResource implements PrometheusOutputs {
 
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 

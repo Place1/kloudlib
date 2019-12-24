@@ -56,7 +56,7 @@ export interface AppOutputs {
   readonly portForwardCommand: pulumi.Output<string>;
 }
 
-export class App extends pulumi.CustomResource implements AppOutputs {
+export class App extends pulumi.ComponentResource implements AppOutputs {
 
   readonly namespace: pulumi.Output<string>;
   readonly ingressHost?: pulumi.Output<string>;
@@ -65,62 +65,60 @@ export class App extends pulumi.CustomResource implements AppOutputs {
   readonly dockerImage: pulumi.Output<string>;
   readonly portForwardCommand: pulumi.Output<string>;
 
-  private readonly name: string;
-  private readonly props: AppInputs;
-
   constructor(name: string, props: AppInputs, opts?: pulumi.CustomResourceOptions) {
     super(makename('App'), name, props, opts);
-    this.name = name;
-    this.props = props;
-    this.dockerImage = this.createDockerImage().imageName;
-    const deployment = this.createDeployment();
+    this.dockerImage = this.createDockerImage(props).imageName;
+    const deployment = this.createDeployment(name, props);
     this.namespace = deployment.metadata.namespace;
     this.deploymentName = deployment.metadata.namespace;
-    this.serviceName = this.createService().metadata.name;
-    if (this.props.ingress) {
-      this.ingressHost = this.createIngress(this.props.ingress).spec.rules[0].host;
+    this.serviceName = this.createService(name, props).metadata.name;
+    if (props.ingress) {
+      this.ingressHost = this.createIngress(name, props).spec.rules[0].host;
     }
-    this.portForwardCommand = pulumi.interpolate`kubectl port-forward service/${this.serviceName} 8000:${this.props.httpPort ?? 80}`;
+    this.portForwardCommand = pulumi.interpolate`kubectl port-forward service/${this.serviceName} 8000:${props.httpPort ?? 80}`;
   }
 
-  private createDockerImage(): docker.Image {
-    const build = fs.statSync(this.props.src).isDirectory() ? {
-      context: this.props.src,
+  private createDockerImage(props: AppInputs): docker.Image {
+    const build = fs.statSync(props.src).isDirectory() ? {
+      context: props.src,
     } : {
-      dockerfile: this.props.src,
+      dockerfile: props.src,
     };
     return new docker.Image('image', {
-      imageName: this.props.imageName,
+      imageName: props.imageName,
       build: build,
+    }, {
+      parent: this,
     });
   }
 
-  private createDeployment(): k8s.apps.v1.Deployment {
+  private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
     const env = [];
 
-    for (const [name, value] of Object.entries(this.props.src)) {
+    for (const [name, value] of Object.entries(props.src)) {
       env.push({ name, value });
     }
 
-    if (this.props.secrets && Object.keys(this.props.secrets).length > 0) {
+    if (props.secrets && Object.keys(props.secrets).length > 0) {
       new k8s.core.v1.Secret('secrets', {
         metadata: {
-          name: this.name,
+          name: name,
           labels: {
-            app: this.name,
+            app: name,
           },
         },
-        stringData: this.props.secrets,
+        stringData: props.secrets,
       }, {
-        provider: this.props.provider,
+        parent: this,
+        provider: props.provider,
       });
 
-      for (const name of Object.keys(this.props.secrets)) {
+      for (const name of Object.keys(props.secrets)) {
         env.push({
           name,
           valueFrom: {
             secretKeyRef: {
-              name: this.name,
+              name: name,
               key: name,
             },
           },
@@ -130,37 +128,37 @@ export class App extends pulumi.CustomResource implements AppOutputs {
 
     return new k8s.apps.v1.Deployment('deployment', {
       metadata: {
-        name: this.name,
+        name: name,
         labels: {
-          app: this.name,
+          app: name,
         },
       },
       spec: {
-        replicas: this.props.replicas,
+        replicas: props.replicas,
         selector: {
           matchLabels: {
-            app: this.name,
+            app: name,
           },
         },
         template: {
           metadata: {
             labels: {
-              app: this.name,
+              app: name,
             },
           },
           spec: {
             containers: [{
-              name: this.name,
+              name: name,
               image: this.dockerImage,
               ports: [{
                 name: 'http',
-                containerPort: this.props.httpPort ?? 80,
+                containerPort: props.httpPort ?? 80,
               }],
-              env: Array.from(Object.entries(this.props.env ?? [])).map(([key, value]) => ({
+              env: Array.from(Object.entries(props.env ?? [])).map(([key, value]) => ({
                 name: key,
                 value: value,
               })),
-              resources: this.props.resources,
+              resources: props.resources,
             }],
             affinity: {
               podAntiAffinity: {
@@ -169,7 +167,7 @@ export class App extends pulumi.CustomResource implements AppOutputs {
                     topologyKey: 'kubernetes.io/hostname',
                     labelSelector: {
                       matchLabels: {
-                        app: this.name,
+                        app: name,
                       },
                     },
                   },
@@ -181,66 +179,69 @@ export class App extends pulumi.CustomResource implements AppOutputs {
         },
       },
     }, {
-      provider: this.props.provider,
+      parent: this,
+      provider: props.provider,
     });
   }
 
-  private createService(): k8s.core.v1.Service {
+  private createService(name: string, props: AppInputs): k8s.core.v1.Service {
     return new k8s.core.v1.Service('service', {
       metadata: {
-        name: this.name,
+        name: name,
         labels: {
-          app: this.name,
+          app: name,
         },
       },
       spec: {
         type: 'ClusterIP',
         selector: {
-          app: this.name,
+          app: name,
         },
         ports: [{
           name: 'http',
           port: 80,
-          targetPort: this.props.httpPort ?? 80,
+          targetPort: props.httpPort ?? 80,
         }],
       },
     }, {
-      provider: this.props.provider
+      parent: this,
+      provider: props.provider
     });
   }
 
-  private createIngress(inputs: basics.Ingress): k8s.networking.v1beta1.Ingress {
+  private createIngress(name: string, props: AppInputs): k8s.networking.v1beta1.Ingress {
     return new k8s.networking.v1beta1.Ingress('ingress', {
       metadata: {
-        name: this.name,
+        name: name,
         labels: {
-          app: this.name,
+          app: name,
         },
         annotations: {
-          'kubernetes.io/ingress.class': inputs.class ?? 'nginx',
+          'kubernetes.io/ingress.class': props.ingress?.class ?? 'nginx',
           'kubernetes.io/tls-acme': 'true',
         },
       },
       spec: {
         rules: [{
-          host: inputs.host,
+          host: props.ingress?.host,
           http: {
             paths: [{
               path: '/',
               backend: {
                 serviceName: this.serviceName,
-                servicePort: this.props.httpPort ?? 80,
+                servicePort: props.httpPort ?? 80,
               },
             }],
           },
         }],
         tls: [{
-          hosts: [inputs.host],
-          secretName: `tls-${this.name}`,
+          hosts: [props.ingress?.host!],
+          secretName: `tls-${name}`,
         }],
       }
     }, {
-      provider: this.props.provider,
+      parent: this,
+      provider: props.provider,
     });
   }
 
