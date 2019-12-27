@@ -6,52 +6,29 @@ import { makename } from '../pulumi';
 
 interface ServiceInputs { enabled?: boolean }
 
-export interface CoreInputs {
+export interface GrafanaStackInputs {
   provider: k8s.Provider;
-  namespace?: k8s.core.v1.Namespace;
-  certManager?: services.CertManagerInputs & ServiceInputs;
   grafana?: services.GrafanaInputs & ServiceInputs;
   prometheus?: services.PrometheusInputs & ServiceInputs;
   loki?: services.LokiInputs & ServiceInputs;
-  nginxIngress?: services.NginxIngressInputs & ServiceInputs;
 }
 
-export interface CoreOutputs {
-  certManager?: services.CertManagerOutputs;
+export interface GrafanaStackOutputs {
   grafana?: services.GrafanaOutputs;
   prometheus?: services.PrometheusOutputs;
   loki?: services.LokiOutputs;
-  nginxIngress?: services.NginxIngressOutputs;
 }
 
-export class Core extends pulumi.ComponentResource implements CoreOutputs {
+export class GrafanaStack extends pulumi.ComponentResource implements GrafanaStackOutputs {
 
-  readonly certManager?: services.CertManagerOutputs;
   readonly grafana?: services.GrafanaOutputs;
   readonly prometheus?: services.PrometheusOutputs;
   readonly loki?: services.LokiOutputs;
-  readonly nginxIngress?: services.NginxIngressOutputs;
 
-  constructor(name: string, props: CoreInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('Core'), name, props, opts);
+  constructor(name: string, props: GrafanaStackInputs, opts?: pulumi.CustomResourceOptions) {
+    super(makename('GrafanaStack'), name, props, opts);
 
-    const defaults: Partial<CoreInputs> = {
-      certManager: {
-        enabled: true,
-        provider: props.provider,
-        acme: {
-          email: 'admin@example.com',
-        },
-        useStagingACME: false,
-      },
-      nginxIngress: {
-        enabled: true,
-        provider: props.provider,
-        mode: {
-          deployment: true,
-          replicas: 2,
-        },
-      },
+    const defaults: Partial<GrafanaStackInputs> = {
       grafana: {
         enabled: true,
         provider: props.provider,
@@ -85,25 +62,6 @@ export class Core extends pulumi.ComponentResource implements CoreOutputs {
     };
 
     props = merge(defaults, props);
-
-    if (!props.namespace) {
-      props.namespace = new k8s.core.v1.Namespace('namespace', {
-        metadata: {
-          name: 'core',
-        },
-      }, {
-        provider: props.provider,
-        parent: this,
-      });
-    }
-
-    if (props.certManager?.enabled) {
-      this.certManager = new services.CertManager('cert-manager', props.certManager, { parent: this });
-    }
-
-    if (props.nginxIngress?.enabled) {
-      this.nginxIngress = new services.NginxIngress('nginx-ingress', props.nginxIngress, { parent: this });
-    }
 
     if (props.grafana?.enabled) {
       this.grafana = new services.Grafana('grafana', props.grafana, { parent: this });

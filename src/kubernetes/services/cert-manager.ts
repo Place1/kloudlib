@@ -9,9 +9,9 @@ export interface CertManagerInputs {
   // defaults to false
   useStagingACME?: boolean;
   // configure acme settings
-  acme: {
+  acme?: {
     // the email that letsencrypt reminders will be sent to
-    email: string;
+    email?: string;
   };
 }
 
@@ -63,7 +63,7 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
           server: props.useStagingACME === true // undefined or null means to use production
             ? 'https://acme-staging-v02.api.letsencrypt.org/directory'
             : 'https://acme-v02.api.letsencrypt.org/directory',
-          email: props.acme.email,
+          email: props?.acme?.email,
           http01: {},
           privateKeySecretRef: {
             name: 'letsencrypt-production',
