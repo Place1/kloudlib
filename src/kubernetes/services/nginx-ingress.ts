@@ -1,6 +1,5 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
-import { makename } from '../pulumi';
 
 export interface NginxIngressInputs {
   provider: k8s.Provider;
@@ -42,7 +41,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
   readonly ingressClass: pulumi.Output<string>;
 
   constructor(name: string, props: NginxIngressInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('NginxIngress'), name, props, opts);
+    super('NginxIngress', name, props, opts);
 
     this.ingressClass = pulumi.output('nginx');
 

@@ -3,15 +3,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
 import * as fs from 'fs';
 import * as basics from '../services/basics';
-import { makename } from '../pulumi';
 
-/**
- * TODO:
- *  - additional ports for things like metrics or health check endpoints
- *  - readyness checks
- *  - termination grace period
- *  - k8s annotations
- */
 export interface AppInputs {
   provider: k8s.Provider;
   // the path to a folder containing
@@ -75,7 +67,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   readonly portForwardCommand: pulumi.Output<string>;
 
   constructor(name: string, props: AppInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('App'), name, props, opts);
+    super('App', name, props, opts);
     this.dockerImage = this.createDockerImage(props).imageName;
     const deployment = this.createDeployment(name, props);
     this.namespace = deployment.metadata.namespace;
@@ -88,7 +80,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   }
 
   private createDockerImage(props: AppInputs): docker.Image {
-    const build = fs.statSync(props.src).isDirectory() ? {
+    const build: docker.DockerBuild = fs.statSync(props.src).isDirectory() ? {
       context: props.src,
     } : {
       dockerfile: props.src,

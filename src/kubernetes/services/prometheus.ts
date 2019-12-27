@@ -1,7 +1,6 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import * as basics from './basics';
-import { makename } from '../pulumi';
 
 export interface PrometheusInputs {
   provider: k8s.Provider;
@@ -21,7 +20,7 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
   constructor(name: string, props: PrometheusInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('Prometheus'), name, props, opts);
+    super('Prometheus', name, props, opts);
 
     this.persistence = pulumi.output(props.persistence);
 

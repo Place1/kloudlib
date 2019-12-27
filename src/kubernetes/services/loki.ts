@@ -1,7 +1,6 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import * as basics from './basics';
-import { makename } from '../pulumi';
 
 export interface LokiInputs {
   provider: k8s.Provider;
@@ -22,7 +21,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
   constructor(name: string, props: LokiInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('Loki'), name, props, opts);
+    super('Loki', name, props, opts);
 
     this.persistence = pulumi.output(props.persistence);
 

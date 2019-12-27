@@ -2,7 +2,6 @@ import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import * as random from '@pulumi/random';
 import * as basics from './basics';
-import { makename } from '../pulumi';
 
 export interface GrafanaInputs {
   provider: k8s.Provider;
@@ -26,7 +25,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
   constructor(name: string, props: GrafanaInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('Grafana'), name, props, opts);
+    super('Grafana', name, props, opts);
 
     this.ingress = pulumi.output(props.ingress);
     this.persistence = pulumi.output(props.persistence);

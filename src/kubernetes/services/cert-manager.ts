@@ -1,6 +1,5 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
-import { makename } from '../pulumi';
 
 export interface CertManagerInputs {
   provider: k8s.Provider,
@@ -24,7 +23,7 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
   namespace: pulumi.Output<string>;
 
   constructor(name: string, props: CertManagerInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('CertManager'), name, props, opts);
+    super('CertManager', name, props, opts);
 
     // cert-manager must be in its own namespace
     // otherwise it'll shit the bed.

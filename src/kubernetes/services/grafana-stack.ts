@@ -2,7 +2,6 @@ import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes';
 import * as services from '../services';
 import { merge } from 'lodash';
-import { makename } from '../pulumi';
 
 interface ServiceInputs { enabled?: boolean }
 
@@ -26,7 +25,7 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
   readonly loki?: services.LokiOutputs;
 
   constructor(name: string, props: GrafanaStackInputs, opts?: pulumi.CustomResourceOptions) {
-    super(makename('GrafanaStack'), name, props, opts);
+    super('GrafanaStack', name, props, opts);
 
     const defaults: Partial<GrafanaStackInputs> = {
       grafana: {
