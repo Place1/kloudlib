@@ -42,3 +42,14 @@ export interface ComputeResources {
     memory: string,
   },
 }
+
+export interface SimpleHealthProbe {
+  // url is the HTTP url that will be used by
+  // kubernetes to check the readiness of the container.
+  // a 2xx status code indicates the container is ready
+  // to receive traffic
+  path: string;
+  // port configures the HTTP port that the health check
+  // will connect to
+  port?: number;
+}

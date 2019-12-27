@@ -13,7 +13,7 @@ import { makename } from '../pulumi';
  *  - k8s annotations
  */
 export interface AppInputs {
-  provider: k8s.Provider,
+  provider: k8s.Provider;
   // the path to a folder containing
   // a Dockerfile or the path to a docker file
   src: string;
@@ -26,31 +26,40 @@ export interface AppInputs {
   // add configuration via environment variables
   // some default environment variables are added
   // for you, consult the library documentation
-  env?: Record<string, pulumi.Input<string>>,
+  env?: Record<string, pulumi.Input<string>>;
   // add secrets to your environment variables
-  secrets?: Record<string, pulumi.Input<string>>,
+  secrets?: Record<string, pulumi.Input<string>>;
   // the http port your application listens on
   // defaults to 80
   httpPort?: number;
   // configure ingress traffic for this app
   // defaults to undefined (no ingress)
-  ingress?: basics.Ingress,
+  ingress?: basics.Ingress;
   // resource requests and limits
   // defaults to undefined (no requests or limits)
-  resources?: basics.ComputeResources,
+  resources?: basics.ComputeResources;
+  // healthCheck configured a k8s readiness probe
+  // if a URL is configured but no port is given then
+  // the app's httpPort or 80 will be used
+  // defaults to undefined (no health check)
+  healthCheck?: basics.SimpleHealthProbe;
+  // imagePullSecret sets the kubernetes image pull secret
+  // required to pull the app's container image
+  // defaults to undefined
+  imagePullSecret?: k8s.core.v1.Secret;
 }
 
 export interface AppOutputs {
   // the namespace that contains this app
-  readonly namespace: pulumi.Output<string>,
+  readonly namespace: pulumi.Output<string>;
   // the ingress host
-  readonly ingressHost?: pulumi.Output<string>,
+  readonly ingressHost?: pulumi.Output<string>;
   // the internal kubernetes service name
-  readonly serviceName: pulumi.Output<string>,
+  readonly serviceName: pulumi.Output<string>;
   // the internal kubernetes deployment name
-  readonly deploymentName: pulumi.Output<string>,
+  readonly deploymentName: pulumi.Output<string>;
   // the docker image that was build for this app
-  readonly dockerImage: pulumi.Output<string>,
+  readonly dockerImage: pulumi.Output<string>;
   // a kubectl command to access this
   // kubernetes service locally for your convinience
   readonly portForwardCommand: pulumi.Output<string>;
@@ -159,6 +168,20 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                 value: value,
               })),
               resources: props.resources,
+              readinessProbe: !props.healthCheck ? undefined : {
+                httpGet: {
+                  path: props.healthCheck.path,
+                  port: props.healthCheck.port ?? props.httpPort ?? 80,
+                },
+                // the below readiness probe values are explicitly set
+                // to the kubernetes defaults:
+                // https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+                periodSeconds: 10,
+                timeoutSeconds: 1,
+                successThreshold: 1,
+                failureThreshold: 3,
+                initialDelaySeconds: 0,
+              },
             }],
             affinity: {
               podAntiAffinity: {
@@ -175,6 +198,9 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                 }],
               },
             },
+            imagePullSecrets: !props.imagePullSecret ? undefined : [{
+              name: props.imagePullSecret.metadata.name,
+            }],
           },
         },
       },
