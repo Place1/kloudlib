@@ -1,8 +1,11 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
+import * as basics from './basics';
 
 export interface CertManagerInputs {
   provider: k8s.Provider,
+  // the helm chart version
+  version?: string,
   // if true then the staging ACME api will be used
   // rather than the production ACME api.
   // defaults to false
@@ -15,20 +18,18 @@ export interface CertManagerInputs {
 }
 
 export interface CertManagerOutputs {
-  namespace: pulumi.Output<string>
+  meta: pulumi.Output<basics.HelmMeta>;
+  namespace: pulumi.Output<string>;
 }
 
 export class CertManager extends pulumi.ComponentResource implements CertManagerOutputs {
 
-  namespace: pulumi.Output<string>;
+  readonly meta: pulumi.Output<basics.HelmMeta>;
+  readonly namespace: pulumi.Output<string>;
 
   constructor(name: string, props: CertManagerInputs, opts?: pulumi.CustomResourceOptions) {
     super('CertManager', name, props, opts);
 
-    // cert-manager must be in its own namespace
-    // otherwise it'll shit the bed.
-    // cert-manager's namespace must also have a label on it
-    // otherwise it'll also shit the bed.
     const namespace = new k8s.core.v1.Namespace('cert-manager-namespace', {
       metadata: {
         name: 'cert-manager',
@@ -82,6 +83,12 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
       provider: props.provider,
     });
 
+    this.meta = pulumi.output<basics.HelmMeta>({
+      chart: 'cert-manager',
+      version: props.version ?? 'v0.12.0',
+      repo: 'https://charts.jetstack.io',
+    });
+
     // Note: cert manager requires manual installation of
     // custom resource definitions. This has been done above.
     // When upgrading cert manager these CRDs will generally
@@ -90,10 +97,10 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
     // https://github.com/jetstack/cert-manager/tree/master/deploy
     const certManager = new k8s.helm.v2.Chart('cert-manager', {
       namespace: 'cert-manager',
-      version: 'v0.9.1',
-      chart: 'cert-manager',
+      version: this.meta.version,
+      chart: this.meta.chart,
       fetchOpts: {
-        repo: 'https://charts.jetstack.io',
+        repo: this.meta.repo,
       },
       values: {
         ingressShim: {

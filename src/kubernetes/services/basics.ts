@@ -1,5 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 
+export interface HelmMeta {
+  chart: string;
+  version: string;
+  repo: string;
+}
+
 export interface Ingress {
   // if ingress should be enabled or not
   // defaults to true

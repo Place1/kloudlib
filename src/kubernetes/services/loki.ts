@@ -4,6 +4,8 @@ import * as basics from './basics';
 
 export interface LokiInputs {
   provider: k8s.Provider;
+  // the helm chart version
+  version?: string;
   // the retention time for recorded logs in hours
   // defaults to 7 days
   retentionHours?: number;
@@ -11,12 +13,14 @@ export interface LokiInputs {
 }
 
 export interface LokiOutputs {
+  meta: pulumi.Output<basics.HelmMeta>;
   clusterUrl: pulumi.Output<string>;
   persistence: pulumi.Output<basics.Persistence | undefined>;
 }
 
 export class Loki extends pulumi.ComponentResource implements LokiOutputs {
 
+  readonly meta: pulumi.Output<basics.HelmMeta>;
   readonly clusterUrl: pulumi.Output<string>;
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
@@ -27,12 +31,17 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
 
     this.clusterUrl = pulumi.output('http://loki:3100');
 
-    // https://github.com/grafana/loki/tree/master/production/helm/loki-stack
-    const loki = new k8s.helm.v2.Chart('loki', {
+    this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'loki-stack',
-      version: '0.20.0', // app version v1.0.0
+      version: props.version ?? '0.24.0',
+      repo: 'https://grafana.github.io/loki/charts',
+    });
+
+    const loki = new k8s.helm.v2.Chart('loki', {
+      chart: this.meta.chart,
+      version: this.meta.version,
       fetchOpts: {
-        repo: 'https://grafana.github.io/loki/charts',
+        repo: this.meta.repo,
       },
       values: {
         loki: {

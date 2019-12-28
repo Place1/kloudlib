@@ -4,6 +4,8 @@ import * as basics from './basics';
 
 export interface PrometheusInputs {
   provider: k8s.Provider;
+  // the helm chart version
+  version?: string;
   // the retention time for recorded metrics in hours
   // defaults to 7 days
   retentionHours?: number;
@@ -12,11 +14,13 @@ export interface PrometheusInputs {
 }
 
 export interface PrometheusOutputs {
+  meta: pulumi.Output<basics.HelmMeta>;
   persistence: pulumi.Output<basics.Persistence | undefined>;
 }
 
 export class Prometheus extends pulumi.ComponentResource implements PrometheusOutputs {
 
+  readonly meta: pulumi.Output<basics.HelmMeta>;
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
   constructor(name: string, props: PrometheusInputs, opts?: pulumi.CustomResourceOptions) {
@@ -24,12 +28,18 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
 
     this.persistence = pulumi.output(props.persistence);
 
+    this.meta = pulumi.output<basics.HelmMeta>({
+      chart: 'prometheus',
+      version: props.version ?? '9.7.2',
+      repo: 'https://kubernetes-charts.storage.googleapis.com',
+    });
+
     // https://github.com/helm/charts/tree/master/stable/prometheus
     const prometheus = new k8s.helm.v2.Chart('prometheus', {
-      chart: 'prometheus',
-      version: '9.3.1',  // 2.13.1 app version
+      chart: this.meta.chart,
+      version: this.meta.version,
       fetchOpts: {
-        repo: 'https://kubernetes-charts.storage.googleapis.com',
+        repo: this.meta.repo,
       },
       values: {
         // https://github.com/helm/charts/blob/master/stable/prometheus/values.yaml

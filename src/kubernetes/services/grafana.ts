@@ -5,12 +5,20 @@ import * as basics from './basics';
 
 export interface GrafanaInputs {
   provider: k8s.Provider;
+  // the helm chart version
+  version?: string;
+  // grafana datasources
   datasources?: GrafanaDataSource[];
+  // ingress resource configuration
+  // defaults to undefined (no ingress resource will be created)
   ingress?: basics.Ingress;
+  // persistent storage configuration
+  // defaults to undefined (no persistent storage will be used)
   persistence?: basics.Persistence;
 }
 
 export interface GrafanaOutputs {
+  meta: pulumi.Output<basics.HelmMeta>;
   adminUsername: pulumi.Output<string>;
   adminPassword: pulumi.Output<string>;
   ingress: pulumi.Output<basics.Ingress | undefined>;
@@ -19,6 +27,7 @@ export interface GrafanaOutputs {
 
 export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs {
 
+  readonly meta: pulumi.Output<basics.HelmMeta>;
   readonly adminUsername: pulumi.Output<string>;
   readonly adminPassword: pulumi.Output<string>;
   readonly ingress: pulumi.Output<basics.Ingress | undefined>;
@@ -40,12 +49,17 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
     this.adminUsername = pulumi.output('admin');
     this.adminPassword = password.result;
 
-    // https://github.com/helm/charts/tree/master/stable/grafana
-    const grafana = new k8s.helm.v2.Chart('grafana', {
+    this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'grafana',
-      version: '4.0.5', // 6.4.2 app version
+      version: props.version ?? '4.2.2',
+      repo: 'https://kubernetes-charts.storage.googleapis.com',
+    });
+
+    const grafana = new k8s.helm.v2.Chart('grafana', {
+      chart: this.meta.chart,
+      version: this.meta.version,
       fetchOpts: {
-        repo: 'https://kubernetes-charts.storage.googleapis.com',
+        repo: this.meta.repo,
       },
       values: {
         adminUser: this.adminUsername,

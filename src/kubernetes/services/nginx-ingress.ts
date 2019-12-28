@@ -1,9 +1,12 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
+import * as basics from './basics';
 import { merge } from 'lodash';
 
 export interface NginxIngressInputs {
   provider: k8s.Provider;
+  // the helm chart version
+  version?: string;
   // mode configures nginx as either a kubernetes
   // deployment or daemonset.
   // In Deployment mode a kubernetes Deployment will be
@@ -51,12 +54,15 @@ type L4ServiceBackends = Record<number, {
 type NginxL4Backends = Record<number, pulumi.Input<string>>;
 
 export interface NginxIngressOutputs {
+  meta: pulumi.Output<basics.HelmMeta>;
   // the 'kubernetes.io/ingress.class' annotation that this
   // ingress controller will consume
   ingressClass: pulumi.Output<string>;
 }
 
 export class NginxIngress extends pulumi.ComponentResource implements NginxIngressOutputs {
+
+  readonly meta: pulumi.Output<basics.HelmMeta>;
   readonly ingressClass: pulumi.Output<string>;
 
   constructor(name: string, props: NginxIngressInputs, opts?: pulumi.CustomResourceOptions) {
@@ -64,10 +70,17 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
 
     this.ingressClass = pulumi.output('nginx');
 
-    new k8s.helm.v2.Chart('nginx-ingress', {
+    this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'nginx-ingress',
+      version: props.version ?? '1.27.0',
+      repo: 'https://kubernetes-charts.storage.googleapis.com',
+    });
+
+    new k8s.helm.v2.Chart('nginx-ingress', {
+      chart: this.meta.chart,
+      version: this.meta.version,
       fetchOpts: {
-        repo: 'https://kubernetes-charts.storage.googleapis.com',
+        repo: this.meta.repo,
       },
       values: {
         rbac: {
