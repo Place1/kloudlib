@@ -19,7 +19,7 @@ export interface Ingress {
   // defaults to 'nginx'
   class?: pulumi.Input<string>;
   // any additional annotations for the ingress resource
-  annotations?: pulumi.Input<Record<string, string>>;
+  annotations?: pulumi.Input<Record<string, pulumi.Input<string>>>;
 }
 
 export interface Persistence {

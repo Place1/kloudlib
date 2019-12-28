@@ -7,9 +7,9 @@ interface ServiceInputs { enabled?: boolean }
 
 export interface GrafanaStackInputs {
   provider: k8s.Provider;
-  grafana?: services.GrafanaInputs & ServiceInputs;
-  prometheus?: services.PrometheusInputs & ServiceInputs;
-  loki?: services.LokiInputs & ServiceInputs;
+  grafana?: Partial<services.GrafanaInputs> & ServiceInputs;
+  prometheus?: Partial<services.PrometheusInputs> & ServiceInputs;
+  loki?: Partial<services.LokiInputs> & ServiceInputs;
 }
 
 export interface GrafanaStackOutputs {
@@ -27,7 +27,7 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
   constructor(name: string, props: GrafanaStackInputs, opts?: pulumi.CustomResourceOptions) {
     super('GrafanaStack', name, props, opts);
 
-    const defaults: Partial<GrafanaStackInputs> = {
+    const defaults = {
       grafana: {
         enabled: true,
         provider: props.provider,
@@ -60,18 +60,16 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
       },
     };
 
-    props = merge(defaults, props);
-
     if (props.grafana?.enabled) {
-      this.grafana = new services.Grafana('grafana', props.grafana, { parent: this });
+      this.grafana = new services.Grafana('grafana', merge(defaults.grafana, props.grafana), { parent: this });
     }
 
     if (props.loki?.enabled) {
-      this.loki = new services.Loki('loki', props.loki, { parent: this });
+      this.loki = new services.Loki('loki', merge(defaults.loki, props.loki), { parent: this });
     }
 
     if (props.prometheus) {
-      this.prometheus = new services.Prometheus('prometheus', props.prometheus, { parent: this });
+      this.prometheus = new services.Prometheus('prometheus', merge(defaults.prometheus, props.prometheus), { parent: this });
     }
   }
 }

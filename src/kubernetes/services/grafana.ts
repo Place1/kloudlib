@@ -25,6 +25,12 @@ export interface GrafanaOutputs {
   persistence: pulumi.Output<basics.Persistence | undefined>;
 }
 
+export interface GrafanaDataSource {
+  name: string;
+  type: 'prometheus' | 'loki';
+  url: string;
+}
+
 export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs {
 
   readonly meta: pulumi.Output<basics.HelmMeta>;
@@ -122,10 +128,4 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
       },
     });
   }
-}
-
-export interface GrafanaDataSource {
-  name: string;
-  type: 'prometheus' | 'loki';
-  url: string;
 }
