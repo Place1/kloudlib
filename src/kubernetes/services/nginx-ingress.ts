@@ -1,35 +1,54 @@
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
+import { merge } from 'lodash';
 
 export interface NginxIngressInputs {
   provider: k8s.Provider;
-  mode?: {
-    deployment: boolean;
-    // how many nginx ingress controller
-    // replicas should be deployed.
-    // defaults to 2
-    replicas?: number;
-  } | {
-    daemonset: boolean;
-    // configure DaemonSet pods to
-    // listen on hostPorts (80, 443)
-    // or use a Service instead.
-    // defaults to 'hostport'
-    expose?: 'hostport' | 'service';
-  },
+  // mode configures nginx as either a kubernetes
+  // deployment or daemonset.
+  // In Deployment mode a kubernetes Deployment will be
+  // created behind a kubernetes Service of type LoadBalancer.
+  // The Deployment mode is intended to be used in Cloud Environments.
+  // In DaemonSet mode a kubernetes DaemonSet will be created
+  // without a kubernetes Service, instead, hostPorts will be
+  // used by the DaemonSet containers. The DaemonSet mode is intended
+  // to be used in onpremise environments where a LoadBalancer services
+  // may not available.
+  // defaults to Deployment mode.
+  mode?: NginxIngressDeploymentMode | NginxIngressDaemonSetMode,
   // configure any L4 TCP services
-  tcpServices?: L4ServiceBackend[],
+  tcpServices?: L4ServiceBackends,
   // configure any L4 UDP services
-  udpServices?: L4ServiceBackend[],
+  udpServices?: L4ServiceBackends,
 }
 
-type L4ServiceBackend = Record<PortNumber, {
-  namespace: string,
-  serviceName: string,
-  servicePort: PortNumber,
+interface NginxIngressDeploymentMode {
+  kind: 'Deployment';
+  // how many nginx ingress controller
+  // replicas should be deployed.
+  // defaults to 2
+  replicas?: number;
+  // loadBalancerIP configures the cloud loadbalancer
+  // IP address on supported clouds.
+  // This IP will need to be provisioned using the
+  // appropriate cloud resource.
+  // If this in left blank then kubernetes will assign
+  // an IP address to the nginx-ingress LoadBalancer Service
+  // for you (if supported by your cloud provider).
+  loadBalancerIP?: string;
+}
+
+interface NginxIngressDaemonSetMode {
+  kind: 'DaemonSet';
+}
+
+type L4ServiceBackends = Record<number, {
+  namespace: pulumi.Input<string>,
+  serviceName: pulumi.Input<string>,
+  servicePort: pulumi.Input<number>,
 }>;
 
-type PortNumber = number;
+type NginxL4Backends = Record<number, pulumi.Input<string>>;
 
 export interface NginxIngressOutputs {
   // the 'kubernetes.io/ingress.class' annotation that this
@@ -45,6 +64,111 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
 
     this.ingressClass = pulumi.output('nginx');
 
-    // TODO: actually make the thing
+    new k8s.helm.v2.Chart('nginx-ingress', {
+      chart: 'nginx-ingress',
+      fetchOpts: {
+        repo: 'https://kubernetes-charts.storage.googleapis.com',
+      },
+      values: {
+        rbac: {
+          create: true,
+        },
+        defaultBackend: {
+          enabled: false,
+        },
+        controller: merge({}, this.values(props), {
+          metrics: {
+            enabled: true,
+            service: {
+              type: 'ClusterIP',
+              servicePort: 9913,
+              annotations: {
+                'prometheus.io/scrape': 'true',
+                'prometheus.io/port': '9913',
+              },
+            },
+          },
+        }),
+        tcp: this.l4Services(props.tcpServices ?? {}),
+        udp: this.l4Services(props.udpServices ?? {}),
+      }
+    }, {
+      parent: this,
+      providers: {
+        kubernetes: props.provider,
+      },
+    });
   }
+
+  private values(props: NginxIngressInputs) {
+    switch (props.mode?.kind) {
+      case 'DaemonSet':
+        return this.daemonSetValues(props.mode);
+      case 'Deployment':
+        return this.deploymentValues(props.mode);
+      default:
+        return this.deploymentValues({
+          kind: 'Deployment',
+          replicas: 2,
+        });
+    }
+  }
+
+  private daemonSetValues(props: NginxIngressDaemonSetMode) {
+    return {
+      kind: 'DaemonSet',
+      reportNodeInternalIp: true,
+      service: {
+        enabled: false,
+      },
+      daemonset: {
+        useHostPort: true,
+      },
+    };
+  }
+
+  private deploymentValues(props: NginxIngressDeploymentMode) {
+    const replicas = props.replicas ?? 2;
+    return {
+      kind: 'Deployment',
+      replicaCount: replicas,
+      service: {
+        type: 'LoadBalancer',
+        loadBalancerIP: props.loadBalancerIP,
+        externalTrafficPolicy: 'Local',
+      },
+      // we'll only add the antiaffinity policy if
+      // there are more than 1 replicas
+      affinity: replicas <= 1 ? undefined : {
+        podAntiAffinity: {
+          preferredDuringSchedulingIgnoredDuringExecution: [{
+            weight: 1,
+            podAffinityTerm: {
+              topologyKey: 'kubernetes.io/hostname',
+              labelSelector: {
+                matchExpressions: [{
+                  key: 'app',
+                  operator: 'In',
+                  values: ['nginx-ingress'],
+                }, {
+                  key: 'component',
+                  operator: 'In',
+                  values: ['controller']
+                }],
+              },
+            },
+          }],
+        },
+      },
+    };
+  }
+
+  private l4Services(props: L4ServiceBackends): NginxL4Backends {
+    const backends: NginxL4Backends = {};
+    for (const [ key, value ] of Object.entries(props)) {
+      backends[Number(key)] = pulumi.interpolate`${value.namespace}/${value.serviceName}:${value.servicePort}`;
+    }
+    return backends;
+  }
+
 }

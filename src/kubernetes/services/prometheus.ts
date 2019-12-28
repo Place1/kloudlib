@@ -26,8 +26,11 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
 
     // https://github.com/helm/charts/tree/master/stable/prometheus
     const prometheus = new k8s.helm.v2.Chart('prometheus', {
-      chart: 'stable/prometheus',
+      chart: 'prometheus',
       version: '9.3.1',  // 2.13.1 app version
+      fetchOpts: {
+        repo: 'https://kubernetes-charts.storage.googleapis.com',
+      },
       values: {
         // https://github.com/helm/charts/blob/master/stable/prometheus/values.yaml
         server: {

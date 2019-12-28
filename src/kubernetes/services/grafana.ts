@@ -42,8 +42,11 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
 
     // https://github.com/helm/charts/tree/master/stable/grafana
     const grafana = new k8s.helm.v2.Chart('grafana', {
-      chart: 'stable/grafana',
+      chart: 'grafana',
       version: '4.0.5', // 6.4.2 app version
+      fetchOpts: {
+        repo: 'https://kubernetes-charts.storage.googleapis.com',
+      },
       values: {
         adminUser: this.adminUsername,
         adminPassword: this.adminPassword,
