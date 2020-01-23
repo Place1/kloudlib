@@ -91,6 +91,7 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
         },
       },
     }, {
+      parent: this,
       providers: props.provider ? {
         kubernetes: props.provider,
       } : {},

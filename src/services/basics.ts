@@ -9,7 +9,7 @@ export interface HelmMeta {
 export interface Ingress {
   /**
    * If ingress should be enabled or not.
-   * Defaults to true.
+   * Defaults to true if "host" is set.
    */
   enabled?: pulumi.Input<boolean>;
   /**
