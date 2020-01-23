@@ -1,0 +1,31 @@
+{
+    "name": "pulumi-example",
+    "version": "0.1.0",
+    "license": "MIT",
+    "author": "James Batt",
+    "repository": {
+        "type": "git",
+        "url": "github.com/place1/kloudlib"
+    },
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "prepublish": "tsc",
+        "docs": "rm -r docs; typedoc --mode library --out docs ./src/index.ts --excludePrivate --excludeProtected --theme minimal --readme none --entryPoint '\"index\"'"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.14",
+        "@types/common-tags": "^1.8.0",
+        "@types/lodash": "^4.14.149",
+        "typedoc": "^0.17.0-2",
+        "typescript": "^3.8.0-beta"
+    },
+    "dependencies": {
+        "@pulumi/docker": "^1.0.1",
+        "@pulumi/kubernetes": "^1.3.4",
+        "@pulumi/pulumi": "latest",
+        "@pulumi/random": "^1.3.0",
+        "common-tags": "^1.8.0",
+        "lodash": "^4.17.15"
+    }
+}
