@@ -39,7 +39,7 @@ interface NginxIngressDeploymentMode {
   /**
    * how many nginx ingress controller
    * replicas should be deployed.
-   * defaults to 2
+   * defaults to 1
    */
   replicas?: number;
   /**
@@ -80,19 +80,19 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
   readonly meta: pulumi.Output<basics.HelmMeta>;
   readonly ingressClass: pulumi.Output<string>;
 
-  constructor(name: string, props: NginxIngressInputs, opts?: pulumi.CustomResourceOptions) {
+  constructor(name: string, props?: NginxIngressInputs, opts?: pulumi.CustomResourceOptions) {
     super('NginxIngress', name, props, opts);
 
     this.ingressClass = pulumi.output('nginx');
 
     this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'nginx-ingress',
-      version: props.version ?? '1.29.2',
+      version: props?.version ?? '1.29.2',
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
     new k8s.helm.v2.Chart('nginx-ingress', {
-      namespace: props.namespace,
+      namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,
       fetchOpts: {
@@ -118,27 +118,27 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
             },
           },
         }),
-        tcp: this.l4Services(props.tcpServices ?? {}),
-        udp: this.l4Services(props.udpServices ?? {}),
+        tcp: this.l4Services(props?.tcpServices ?? {}),
+        udp: this.l4Services(props?.udpServices ?? {}),
       }
     }, {
       parent: this,
-      providers: props.provider ? {
-        kubernetes: props.provider,
+      providers: props?.provider ? {
+        kubernetes: props?.provider,
       } : {},
     });
   }
 
-  private values(props: NginxIngressInputs) {
-    switch (props.mode?.kind) {
+  private values(props?: NginxIngressInputs) {
+    switch (props?.mode?.kind) {
       case 'DaemonSet':
-        return this.daemonSetValues(props.mode);
+        return this.daemonSetValues(props?.mode);
       case 'Deployment':
-        return this.deploymentValues(props.mode);
+        return this.deploymentValues(props?.mode);
       default:
         return this.deploymentValues({
           kind: 'Deployment',
-          replicas: 2,
+          replicas: 1,
         });
     }
   }
@@ -157,13 +157,13 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
   }
 
   private deploymentValues(props: NginxIngressDeploymentMode) {
-    const replicas = props.replicas ?? 2;
+    const replicas = props?.replicas ?? 1;
     return {
       kind: 'Deployment',
       replicaCount: replicas,
       service: {
         type: 'LoadBalancer',
-        loadBalancerIP: props.loadBalancerIP,
+        loadBalancerIP: props?.loadBalancerIP,
         externalTrafficPolicy: 'Local',
       },
       /**

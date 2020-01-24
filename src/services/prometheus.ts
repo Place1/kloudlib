@@ -28,20 +28,20 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
   readonly meta: pulumi.Output<basics.HelmMeta>;
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
-  constructor(name: string, props: PrometheusInputs, opts?: pulumi.CustomResourceOptions) {
+  constructor(name: string, props?: PrometheusInputs, opts?: pulumi.CustomResourceOptions) {
     super('Prometheus', name, props, opts);
 
-    this.persistence = pulumi.output(props.persistence);
+    this.persistence = pulumi.output(props?.persistence);
 
     this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'prometheus',
-      version: props.version ?? '9.7.2',
+      version: props?.version ?? '9.7.2',
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
     // https://github.com/helm/charts/tree/master/stable/prometheus
     const prometheus = new k8s.helm.v2.Chart('prometheus', {
-      namespace: props.namespace,
+      namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,
       fetchOpts: {
@@ -50,7 +50,7 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
       values: {
         // https://github.com/helm/charts/blob/master/stable/prometheus/values.yaml
         server: {
-          retention: pulumi.interpolate`${props.retentionHours || 168}h`,
+          retention: pulumi.interpolate`${props?.retentionHours || 168}h`,
           strategy: {
             type: 'Recreate'
           },
@@ -58,12 +58,12 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
             'query.max-samples': '5000000',
             'query.timeout': '6s',
           },
-          persistentVolume: !props.persistence ? { enabled : false } : {
-            enabled: props.persistence.enabled,
-            size: pulumi.interpolate`${props.persistence.sizeGB}Gi`,
-            storageClass: props.persistence.storageClass,
+          persistentVolume: !props?.persistence ? { enabled : false } : {
+            enabled: props?.persistence.enabled,
+            size: pulumi.interpolate`${props?.persistence.sizeGB}Gi`,
+            storageClass: props?.persistence.storageClass,
           },
-          resources: props.resources ? props.resources : {
+          resources: props?.resources ? props?.resources : {
             requests: {
               cpu: '300m',
               memory: '1000M',
@@ -92,8 +92,8 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
       },
     }, {
       parent: this,
-      providers: props.provider ? {
-        kubernetes: props.provider,
+      providers: props?.provider ? {
+        kubernetes: props?.provider,
       } : {},
     });
   }

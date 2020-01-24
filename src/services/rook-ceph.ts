@@ -18,16 +18,16 @@ export interface RookCephInputs {
    * Enable a Ceph Cluster
    * Enabled by default.
    */
-  defaultCluster?: CephCluster;
+  cluster?: CephCluster;
   /**
    *
    */
-  defaultBlockPool?: CephBlockPool;
+  blockPool?: CephBlockPool;
   /**
    * Configure a default storage class.
    * Enabled by default.
    */
-  defaultStorageClass?: CephStorageClass;
+  storageClass?: CephStorageClass;
 }
 
 export interface CephCluster {
@@ -49,7 +49,7 @@ export interface CephCluster {
      */
     count?: number;
   },
-  osds?: {
+  storage?: {
     /**
      * Use all cluster nodes for running OSDs.
      * Defaults to false.
@@ -173,67 +173,59 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
 
   readonly meta: pulumi.Output<basics.HelmMeta>;
 
-  constructor(name: string, props: RookCephInputs, opts?: pulumi.CustomResourceOptions) {
+  constructor(name: string, props?: RookCephInputs, opts?: pulumi.CustomResourceOptions) {
     super('RookCeph', name, props, opts);
 
     this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'rook-ceph',
-      version: props.version ?? '1.2.0',
+      version: props?.version ?? '1.2.2',
       repo: 'https://charts.rook.io/release',
     });
 
     const rook = this.createRookOperator(props);
 
-    if (props.toolbox ?? true) {
+    if (props?.toolbox ?? true) {
       this.createToolbox(name, props, rook);
     }
 
-    if (props.defaultCluster?.enabled ?? true) {
+    if (props?.cluster?.enabled ?? true) {
       const cluster = this.createDefaultCluster(name, props, rook);
 
-      if (props.defaultBlockPool?.enabled ?? true) {
+      if (props?.blockPool?.enabled ?? true) {
         const pool = this.createDefaultBlockPool(name, props, cluster);
 
-        if (props.defaultStorageClass?.enabled ?? true) {
+        if (props?.storageClass?.enabled ?? true) {
           this.createDefaultStorageClass(name, props, cluster, pool);
         }
       }
     }
   }
 
-  private createRookOperator(props: RookCephInputs) {
+  private createRookOperator(props?: RookCephInputs) {
     return new k8s.helm.v2.Chart('rook-ceph', {
-      namespace: props.namespace,
+      namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,
       fetchOpts: {
         repo: this.meta.repo,
       },
       values: {
-        values: {
-          enableFlexDriver: false,
-          csi: {
-            enableRbdDriver: true,
-            enableCephfsDriver: true,
-            enableGrpcMetrics: true,
-            enableSnapshotter: true,
-          },
-        },
+        logLevel: 'ERROR',
       },
     }, {
       parent: this,
-      providers: props.provider ? {
-        kubernetes: props.provider,
+      providers: props?.provider ? {
+        kubernetes: props?.provider,
       } : {},
     });
   }
 
-  private createToolbox(name: string, props: RookCephInputs, rook: k8s.helm.v2.Chart) {
+  private createToolbox(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v2.Chart) {
     const toolboxName = `${name}-toolbox`;
     return new k8s.apps.v1.Deployment('rook-toolbox', {
       metadata: {
         name: toolboxName,
-        namespace: props.namespace,
+        namespace: props?.namespace,
       },
       spec: {
         selector: {
@@ -308,33 +300,33 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
       },
     }, {
       parent: this,
-      provider: props.provider,
+      provider: props?.provider,
       dependsOn: rook,
     });
   }
 
-  private createDefaultCluster(name: string, props: RookCephInputs, rook: k8s.helm.v2.Chart) {
+  private createDefaultCluster(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v2.Chart) {
     return new k8s.apiextensions.CustomResource('ceph-cluster', {
       apiVersion: 'ceph.rook.io/v1',
       kind: 'CephCluster',
       metadata: {
         name: `${name}-ceph-cluster`,
-        namespace: props.namespace,
+        namespace: props?.namespace,
       },
       spec: {
         cephVersion: {
-          image: 'ceph/ceph:v14.2.2-20190722',
+          image: 'ceph/ceph:v14.2.6',
         },
         dataDirHostPath: '/var/lib/rook',
         mon: {
-          count: props.defaultCluster?.mons?.count ?? 1,
+          count: props?.cluster?.mons?.count ?? 1,
         },
         storage: {
-          useAllNodes: props.defaultCluster?.osds?.useAllNodes ?? false,
-          useAllDevices: props.defaultCluster?.osds?.useAllDevices ?? false,
-          directories: props.defaultCluster?.osds?.directories?.map(path => ({ path })),
-          devices: props.defaultCluster?.osds?.devices?.map(name => ({ name })),
-          nodes: props.defaultCluster?.osds?.nodes?.map(node => ({
+          useAllNodes: props?.cluster?.storage?.useAllNodes ?? false,
+          useAllDevices: props?.cluster?.storage?.useAllDevices ?? false,
+          directories: props?.cluster?.storage?.directories?.map(path => ({ path })),
+          devices: props?.cluster?.storage?.devices?.map(name => ({ name })),
+          nodes: props?.cluster?.storage?.nodes?.map(node => ({
             name: node.name,
             directories: node.directories?.map(path => ({ path })),
             devices: node.devices?.map(name => ({ name })),
@@ -347,7 +339,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
           }],
         },
         dashboard: {
-          enabled: props.defaultCluster?.dashboard?.enabled ?? true,
+          enabled: props?.cluster?.dashboard?.enabled ?? true,
           port: 8443,
           ssl: false,
         },
@@ -357,55 +349,58 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
       },
     }, {
       parent: this,
-      provider: props.provider,
+      provider: props?.provider,
       dependsOn: rook,
     });
   }
 
-  private createDefaultBlockPool(name: string, props: RookCephInputs, cluster: k8s.apiextensions.CustomResource) {
+  private createDefaultBlockPool(name: string, props: RookCephInputs | undefined, cluster: k8s.apiextensions.CustomResource) {
     return new k8s.apiextensions.CustomResource('storage-pool', {
       apiVersion: 'ceph.rook.io/v1',
       kind: 'CephBlockPool',
       metadata: {
-        name: props.defaultBlockPool?.name ?? `${name}-replicapool`,
-        namespace: props.namespace,
+        name: props?.blockPool?.name ?? `${name}-replicapool`,
+        namespace: props?.namespace,
       },
       spec: {
-        failureDomain: props.defaultBlockPool?.failureDomain ?? 'host',
+        failureDomain: props?.blockPool?.failureDomain ?? 'host',
         replicated: {
-          size: props.defaultBlockPool?.replicas ?? 1,
+          size: props?.blockPool?.replicas ?? 1,
         },
       },
     }, {
       parent: this,
-      provider: props.provider,
+      provider: props?.provider,
       dependsOn: cluster,
     });
   }
 
-  private createDefaultStorageClass(name: string, props: RookCephInputs, cluster: k8s.apiextensions.CustomResource, pool: k8s.apiextensions.CustomResource) {
+  private createDefaultStorageClass(name: string, props: RookCephInputs | undefined, cluster: k8s.apiextensions.CustomResource, pool: k8s.apiextensions.CustomResource) {
     return cluster.metadata.namespace.apply(namespace => {
       namespace = namespace || 'default';
       return new k8s.storage.v1.StorageClass('storage-class', {
         metadata: {
-          name: props.defaultStorageClass?.name ?? name,
+          name: props?.storageClass?.name ?? name,
+          annotations: {
+            'storageclass.kubernetes.io/is-default-class': 'true',
+          },
         },
         provisioner: `${namespace}.rbd.csi.ceph.com`,
-        reclaimPolicy: props.defaultStorageClass?.reclaimPolicy ?? 'Delete',
+        reclaimPolicy: props?.storageClass?.reclaimPolicy ?? 'Delete',
         parameters: {
           clusterID: namespace,
           pool: pool.metadata.name,
-          imageFormat: 'v2',
+          imageFormat: '2',
           imageFeatures: 'layering',
           'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
           'csi.storage.k8s.io/provisioner-secret-namespace': namespace,
           'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
           'csi.storage.k8s.io/node-stage-secret-namespace': namespace,
-          'csi.storage.k8s.io/fstype': props.defaultStorageClass?.fstype ?? 'xfs',
+          'csi.storage.k8s.io/fstype': props?.storageClass?.fstype ?? 'xfs',
         },
       }, {
         parent: this,
-        provider: props.provider,
+        provider: props?.provider,
       });
     });
   }

@@ -7,3 +7,4 @@ export * from './cert-manager';
 export * from './nginx-ingress';
 export * from './oauth-proxy';
 export * from './rook-ceph';
+export * from './metal-lb';

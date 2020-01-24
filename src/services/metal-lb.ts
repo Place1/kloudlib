@@ -2,7 +2,7 @@ import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import * as basics from './basics';
 
-export interface MetallbInputs {
+export interface MetalLBInputs {
   provider?: k8s.Provider;
   namespace?: pulumi.Input<string>;
   /**
@@ -18,25 +18,25 @@ export interface AddressPool {
   addresses: string[];
 }
 
-export interface MetallbOutputs {
+export interface MetalLBOutputs {
   meta: pulumi.Output<basics.HelmMeta>;
 }
 
-export class Metallb extends pulumi.ComponentResource implements MetallbOutputs {
+export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs {
 
   readonly meta: pulumi.Output<basics.HelmMeta>;
 
-  constructor(name: string, props: MetallbInputs, opts?: pulumi.CustomResourceOptions) {
-    super('Metallb', name, props, opts);
+  constructor(name: string, props?: MetalLBInputs, opts?: pulumi.CustomResourceOptions) {
+    super('MetalLB', name, props, opts);
 
     this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'metallb',
-      version: props.version ?? '0.12.0',
+      version: props?.version ?? '0.12.0',
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    const metallb = new k8s.helm.v2.Chart('Metallb', {
-      namespace: props.namespace,
+    const metallb = new k8s.helm.v2.Chart('metallb', {
+      namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,
       fetchOpts: {
@@ -44,7 +44,7 @@ export class Metallb extends pulumi.ComponentResource implements MetallbOutputs 
       },
       values: {
         configInline: {
-          'address-pools': props.addressPools?.map(pool => ({
+          'address-pools': props?.addressPools?.map(pool => ({
             name: pool.name,
             protocol: pool.protocol,
             addresses: pool.addresses,
@@ -57,8 +57,8 @@ export class Metallb extends pulumi.ComponentResource implements MetallbOutputs 
       },
     }, {
       parent: this,
-      providers: props.provider ? {
-        kubernetes: props.provider,
+      providers: props?.provider ? {
+        kubernetes: props?.provider,
       } : {},
     });
   }

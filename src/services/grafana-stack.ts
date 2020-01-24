@@ -25,14 +25,14 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
   readonly prometheus?: services.PrometheusOutputs;
   readonly loki?: services.LokiOutputs;
 
-  constructor(name: string, props: GrafanaStackInputs, opts?: pulumi.CustomResourceOptions) {
+  constructor(name: string, props?: GrafanaStackInputs, opts?: pulumi.CustomResourceOptions) {
     super('GrafanaStack', name, props, opts);
 
     const defaults = {
       grafana: {
         enabled: true,
-        provider: props.provider,
-        namespace: props.namespace,
+        provider: props?.provider,
+        namespace: props?.namespace,
         datasources: [{
           name: 'prometheus',
           type: 'prometheus',
@@ -49,8 +49,8 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
       },
       loki: {
         enabled: true,
-        provider: props.provider,
-        namespace: props.namespace,
+        provider: props?.provider,
+        namespace: props?.namespace,
         persistence: {
           enabled: true,
           sizeGB: 10,
@@ -58,8 +58,8 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
       },
       prometheus: {
         enabled: true,
-        provider: props.provider,
-        namespace: props.namespace,
+        provider: props?.provider,
+        namespace: props?.namespace,
         persistence: {
           enabled: true,
           sizeGB: 10,
@@ -67,16 +67,21 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
       },
     };
 
-    if (props.grafana?.enabled !== false) {
-      this.grafana = new services.Grafana('grafana', merge({}, defaults.grafana, props.grafana), { parent: this });
+    if (props?.grafana?.enabled !== false) {
+      props?.grafana?.dashboards?.forEach((dashboard: any) => {
+        if (dashboard?.gnetId !== undefined && dashboard?.datasource === undefined) {
+          dashboard.datasource = 'prometheus';
+        }
+      });
+      this.grafana = new services.Grafana('grafana', merge({}, defaults.grafana, props?.grafana), { parent: this });
     }
 
-    if (props.loki?.enabled !== false) {
-      this.loki = new services.Loki('loki', merge({}, defaults.loki, props.loki), { parent: this });
+    if (props?.loki?.enabled !== false) {
+      this.loki = new services.Loki('loki', merge({}, defaults.loki, props?.loki), { parent: this });
     }
 
-    if (props.prometheus?.enabled !== false) {
-      this.prometheus = new services.Prometheus('prometheus', merge({}, defaults.prometheus, props.prometheus), { parent: this });
+    if (props?.prometheus?.enabled !== false) {
+      this.prometheus = new services.Prometheus('prometheus', merge({}, defaults.prometheus, props?.prometheus), { parent: this });
     }
   }
 }
