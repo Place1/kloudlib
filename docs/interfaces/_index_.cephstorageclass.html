@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>NginxIngressInputs | kloudlib</title>
+	<title>CephStorageClass | kloudlib</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2366,25 +2366,22 @@ img {
 <nav class="tsd-navigation secondary">
 	<ul>
 		<li class="current tsd-kind-interface tsd-parent-kind-module">
-			<a href="_index_.nginxingressinputs.html" class="tsd-kind-icon">Nginx<wbr>Ingress<wbr>Inputs</a>
+			<a href="_index_.cephstorageclass.html" class="tsd-kind-icon">Ceph<wbr>Storage<wbr>Class</a>
 			<ul>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.nginxingressinputs.html#mode" class="tsd-kind-icon">mode</a>
+					<a href="_index_.cephstorageclass.html#allowvolumeexpansion" class="tsd-kind-icon">allow<wbr>Volume<wbr>Expansion</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.nginxingressinputs.html#namespace" class="tsd-kind-icon">namespace</a>
+					<a href="_index_.cephstorageclass.html#enabled" class="tsd-kind-icon">enabled</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.nginxingressinputs.html#provider" class="tsd-kind-icon">provider</a>
+					<a href="_index_.cephstorageclass.html#fstype" class="tsd-kind-icon">fstype</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.nginxingressinputs.html#tcpservices" class="tsd-kind-icon">tcp<wbr>Services</a>
+					<a href="_index_.cephstorageclass.html#name" class="tsd-kind-icon">name</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.nginxingressinputs.html#udpservices" class="tsd-kind-icon">udp<wbr>Services</a>
-				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.nginxingressinputs.html#version" class="tsd-kind-icon">version</a>
+					<a href="_index_.cephstorageclass.html#reclaimpolicy" class="tsd-kind-icon">reclaim<wbr>Policy</a>
 				</li>
 			</ul>
 		</li>
@@ -2396,7 +2393,7 @@ img {
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">NginxIngressInputs</span>
+					<span class="target">CephStorageClass</span>
 				</li>
 			</ul>
 		</section>
@@ -2407,12 +2404,11 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.nginxingressinputs.html#mode" class="tsd-kind-icon">mode</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.nginxingressinputs.html#namespace" class="tsd-kind-icon">namespace</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.nginxingressinputs.html#provider" class="tsd-kind-icon">provider</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.nginxingressinputs.html#tcpservices" class="tsd-kind-icon">tcp<wbr>Services</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.nginxingressinputs.html#udpservices" class="tsd-kind-icon">udp<wbr>Services</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.nginxingressinputs.html#version" class="tsd-kind-icon">version</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.cephstorageclass.html#allowvolumeexpansion" class="tsd-kind-icon">allow<wbr>Volume<wbr>Expansion</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.cephstorageclass.html#enabled" class="tsd-kind-icon">enabled</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.cephstorageclass.html#fstype" class="tsd-kind-icon">fstype</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.cephstorageclass.html#name" class="tsd-kind-icon">name</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.cephstorageclass.html#reclaimpolicy" class="tsd-kind-icon">reclaim<wbr>Policy</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2421,92 +2417,82 @@ img {
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="mode" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> mode</h3>
-				<div class="tsd-signature tsd-kind-icon">mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">NginxIngressDeploymentMode</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">NginxIngressDaemonSetMode</span></div>
+				<a name="allowvolumeexpansion" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> allow<wbr>Volume<wbr>Expansion</h3>
+				<div class="tsd-signature tsd-kind-icon">allow<wbr>Volume<wbr>Expansion<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/nginx-ingress.ts#L26">src/services/nginx-ingress.ts:26</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/rook-ceph.ts#L165">src/services/rook-ceph.ts:165</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>mode configures nginx as either a kubernetes
-							deployment or daemonset.
-							In Deployment mode a kubernetes Deployment will be
-							created behind a kubernetes Service of type LoadBalancer.
-							The Deployment mode is intended to be used in Cloud Environments.
-							In DaemonSet mode a kubernetes DaemonSet will be created
-							without a kubernetes Service, instead, hostPorts will be
-							used by the DaemonSet containers. The DaemonSet mode is intended
-							to be used in onpremise environments where a LoadBalancer services
-							may not available.
-						defaults to Deployment mode.</p>
+						<p>Enable volume expansion.
+						Defaults to true.</p>
 					</div>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="namespace" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> namespace</h3>
-				<div class="tsd-signature tsd-kind-icon">namespace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">pulumi.Input</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<a name="enabled" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> enabled</h3>
+				<div class="tsd-signature tsd-kind-icon">enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/nginx-ingress.ts#L8">src/services/nginx-ingress.ts:8</a></li>
-					</ul>
-				</aside>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="provider" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> provider</h3>
-				<div class="tsd-signature tsd-kind-icon">provider<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">k8s.Provider</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/nginx-ingress.ts#L7">src/services/nginx-ingress.ts:7</a></li>
-					</ul>
-				</aside>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="tcpservices" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> tcp<wbr>Services</h3>
-				<div class="tsd-signature tsd-kind-icon">tcp<wbr>Services<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">L4ServiceBackends</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/nginx-ingress.ts#L30">src/services/nginx-ingress.ts:30</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/rook-ceph.ts#L145">src/services/rook-ceph.ts:145</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>configure any L4 TCP services</p>
+						<p>Enable the storage class.
+						Defaults to true.</p>
 					</div>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="udpservices" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> udp<wbr>Services</h3>
-				<div class="tsd-signature tsd-kind-icon">udp<wbr>Services<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">L4ServiceBackends</span></div>
+				<a name="fstype" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> fstype</h3>
+				<div class="tsd-signature tsd-kind-icon">fstype<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"xfs"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"ext4"</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/nginx-ingress.ts#L34">src/services/nginx-ingress.ts:34</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/rook-ceph.ts#L160">src/services/rook-ceph.ts:160</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>configure any L4 UDP services</p>
+						<p>Set the file system type for the storage class.
+						Defaults to &#39;xfs&#39;.</p>
 					</div>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="version" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> version</h3>
-				<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+				<a name="name" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> name</h3>
+				<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/nginx-ingress.ts#L12">src/services/nginx-ingress.ts:12</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/rook-ceph.ts#L150">src/services/rook-ceph.ts:150</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>the helm chart version</p>
+						<p>Set a name for the storage class.
+						Defaults to &#39;${resource-name}&#39;.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="reclaimpolicy" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> reclaim<wbr>Policy</h3>
+				<div class="tsd-signature tsd-kind-icon">reclaim<wbr>Policy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/0893130/src/services/rook-ceph.ts#L155">src/services/rook-ceph.ts:155</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Sets the storage class reclaim policy.
+						Defaults to &#39;Delete&#39;.</p>
 					</div>
 				</div>
 			</section>
