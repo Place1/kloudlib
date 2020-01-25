@@ -226,6 +226,9 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
       metadata: {
         name: toolboxName,
         namespace: props?.namespace,
+        annotations: {
+          'pulumi.com/skipAwait': 'true',
+        },
       },
       spec: {
         selector: {
