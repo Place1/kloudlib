@@ -15,7 +15,7 @@ export interface Ingress {
   /**
    * The ingress host i.e. www.example.com.
    */
-  host?: pulumi.Input<string>;
+  hosts?: pulumi.Input<string[]>;
   /**
    * Enable acme tls ('kubernetes.io/tls-acme') for this ingress.
    * Defaults to true.

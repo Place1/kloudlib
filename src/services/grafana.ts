@@ -99,9 +99,9 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
             'kubernetes.io/tls-acme': props?.ingress.tls === false ? 'false' : 'true', // "tls" defaults to true, so we'll activate tls for undefined or null values
             ...props?.ingress.annotations,
           },
-          hosts: [props?.ingress.host],
+          hosts: [props?.ingress.hosts],
           tls: [{
-            hosts: [props?.ingress.host],
+            hosts: [props?.ingress.hosts],
             secretName: `tls-grafana-${name}`,
           }],
         },
@@ -118,7 +118,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
         },
         'grafana.ini': {
           'server': {
-            'root_url': props?.ingress ? props?.ingress.host : undefined,
+            'root_url': props?.ingress ? props?.ingress.hosts : undefined,
           },
           'auth.anonymous': {
             enabled: 'true',

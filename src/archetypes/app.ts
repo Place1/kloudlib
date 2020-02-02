@@ -70,7 +70,7 @@ export interface AppOutputs {
   /**
    * the ingress host
    */
-  readonly ingressHost?: pulumi.Output<string>;
+  readonly ingressHosts?: pulumi.Output<string[]>;
   /**
    * the internal kubernetes service name
    */
@@ -93,7 +93,7 @@ export interface AppOutputs {
 export class App extends pulumi.ComponentResource implements AppOutputs {
 
   readonly namespace: pulumi.Output<string>;
-  readonly ingressHost?: pulumi.Output<string>;
+  readonly ingressHosts?: pulumi.Output<string[]>;
   readonly serviceName: pulumi.Output<string>;
   readonly deploymentName: pulumi.Output<string>;
   readonly dockerImage: pulumi.Output<string>;
@@ -106,8 +106,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     this.namespace = deployment.metadata.namespace;
     this.deploymentName = deployment.metadata.namespace;
     this.serviceName = this.createService(name, props).metadata.name;
-    if (props.ingress) {
-      this.ingressHost = this.createIngress(name, props).spec.rules[0].host;
+    if (props.ingress && props.ingress.enabled !== false) {
+      this.ingressHosts = this.createIngress(name, props).spec.rules.apply(rules => rules.map(r => r.host));
     }
     this.portForwardCommand = pulumi.interpolate`kubectl port-forward service/${this.serviceName} 8000:${props.httpPort ?? 80}`;
   }
@@ -261,6 +261,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   }
 
   private createIngress(name: string, props: AppInputs): k8s.networking.v1beta1.Ingress {
+    const hosts = pulumi.output(props.ingress?.hosts ?? []);
     return new k8s.networking.v1beta1.Ingress('ingress', {
       metadata: {
         name: name,
@@ -273,8 +274,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
         },
       },
       spec: {
-        rules: [{
-          host: props.ingress?.host,
+        rules: hosts.apply((items: string[]) => items.map((host) => ({
+          host: host,
           http: {
             paths: [{
               path: '/',
@@ -284,9 +285,9 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
               },
             }],
           },
-        }],
+        }))),
         tls: [{
-          hosts: [props.ingress?.host!],
+          hosts: hosts,
           secretName: `tls-${name}`,
         }],
       }

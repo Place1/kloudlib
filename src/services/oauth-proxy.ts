@@ -183,9 +183,9 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
             'kubernetes.io/tls-acme': props.ingress.tls === false ? 'false' : 'true', // "tls" defaults to true, so we'll activate tls for undefined or null values
             ...props.ingress.annotations,
           },
-          hosts: [props.ingress.host],
+          hosts: [props.ingress.hosts],
           tls: [{
-            hosts: [props.ingress.host],
+            hosts: [props.ingress.hosts],
             secretName: `tls-oauthproxy-${name}`,
           }],
         },
@@ -205,8 +205,8 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
    */
   nginxAnnotations() {
     return {
-      'nginx.ingress.kubernetes.io/auth-url': pulumi.interpolate`https://${this.ingress.host}/auth`,
-      'nginx.ingress.kubernetes.io/auth-signin': pulumi.interpolate`https://${this.ingress.host}/start?rd=https://$host$request_uri`,
+      'nginx.ingress.kubernetes.io/auth-url': pulumi.interpolate`https://${this.ingress.hosts}/auth`,
+      'nginx.ingress.kubernetes.io/auth-signin': pulumi.interpolate`https://${this.ingress.hosts}/start?rd=https://$host$request_uri`,
     };
   }
 
