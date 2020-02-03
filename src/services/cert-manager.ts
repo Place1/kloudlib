@@ -35,9 +35,9 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
   readonly meta: pulumi.Output<basics.HelmMeta>;
 
   constructor(name: string, props?: CertManagerInputs, opts?: pulumi.CustomResourceOptions) {
-    super('CertManager', name, props, opts);
+    super('kloudlib:CertManager', name, props, opts);
 
-    const crds = new k8s.yaml.ConfigFile('crd', {
+    const crds = new k8s.yaml.ConfigFile(`${name}-crd`, {
       file: 'https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml',
     }, {
       parent: this,

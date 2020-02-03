@@ -29,7 +29,7 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
   constructor(name: string, props?: PrometheusInputs, opts?: pulumi.CustomResourceOptions) {
-    super('Prometheus', name, props, opts);
+    super('kloudlib:Prometheus', name, props, opts);
 
     this.persistence = pulumi.output(props?.persistence);
 
@@ -40,7 +40,7 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
     });
 
     // https://github.com/helm/charts/tree/master/stable/prometheus
-    const prometheus = new k8s.helm.v2.Chart('prometheus', {
+    const prometheus = new k8s.helm.v2.Chart(`${name}-prometheus`, {
       namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,

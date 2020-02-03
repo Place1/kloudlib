@@ -26,7 +26,7 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
   readonly loki?: services.LokiOutputs;
 
   constructor(name: string, props?: GrafanaStackInputs, opts?: pulumi.CustomResourceOptions) {
-    super('GrafanaStack', name, props, opts);
+    super('kloudlib:GrafanaStack', name, props, opts);
 
     const defaults = {
       grafana: {

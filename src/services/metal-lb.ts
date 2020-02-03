@@ -27,7 +27,7 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
   readonly meta: pulumi.Output<basics.HelmMeta>;
 
   constructor(name: string, props?: MetalLBInputs, opts?: pulumi.CustomResourceOptions) {
-    super('MetalLB', name, props, opts);
+    super('kloudlib:MetalLB', name, props, opts);
 
     this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'metallb',
@@ -35,7 +35,7 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    const metallb = new k8s.helm.v2.Chart('metallb', {
+    const metallb = new k8s.helm.v2.Chart(`${name}-metallb`, {
       namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,

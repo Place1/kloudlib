@@ -34,7 +34,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
   constructor(name: string, props?: LokiInputs, opts?: pulumi.CustomResourceOptions) {
-    super('Loki', name, props, opts);
+    super('kloudlib:Loki', name, props, opts);
 
     this.persistence = pulumi.output(props?.persistence);
 
@@ -46,7 +46,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
       repo: 'https://grafana.github.io/loki/charts',
     });
 
-    const loki = new k8s.helm.v2.Chart('loki', {
+    const loki = new k8s.helm.v2.Chart(`${name}-loki`, {
       namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,

@@ -81,7 +81,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
   readonly ingressClass: pulumi.Output<string>;
 
   constructor(name: string, props?: NginxIngressInputs, opts?: pulumi.CustomResourceOptions) {
-    super('NginxIngress', name, props, opts);
+    super('kloudlib:NginxIngress', name, props, opts);
 
     this.ingressClass = pulumi.output('nginx');
 

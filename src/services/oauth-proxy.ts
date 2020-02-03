@@ -132,7 +132,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
   readonly ingress: pulumi.Output<basics.Ingress>;
 
   constructor(name: string, props: OAuthProxyInputs, opts?: pulumi.CustomResourceOptions) {
-    super('OAuthProxy', name, props, opts);
+    super('kloudlib:OAuthProxy', name, props, opts);
 
     const cookieSecret = new random.RandomString('cookie-secret', {
       length: 32,
@@ -148,7 +148,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    new k8s.helm.v2.Chart('OAuthProxy', {
+    new k8s.helm.v2.Chart(`${name}-OAuthProxy`, {
       namespace: props.namespace,
       chart: this.meta.chart,
       version: this.meta.version,
@@ -183,9 +183,9 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
             'kubernetes.io/tls-acme': props.ingress.tls === false ? 'false' : 'true', // "tls" defaults to true, so we'll activate tls for undefined or null values
             ...props.ingress.annotations,
           },
-          hosts: [props.ingress.hosts],
+          hosts: props.ingress.hosts,
           tls: [{
-            hosts: [props.ingress.hosts],
+            hosts: props.ingress.hosts,
             secretName: `tls-oauthproxy-${name}`,
           }],
         },

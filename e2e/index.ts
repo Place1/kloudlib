@@ -4,7 +4,7 @@ import * as kloudlib from '../src';
 
 const config = new pulumi.Config();
 
-const sharedns = new k8s.core.v1.Namespace('shared', {
+const sharedns = new k8s.core.v1.Namespace(`${name}-shared`, {
   metadata: {
     name: 'shared',
   }

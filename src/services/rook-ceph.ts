@@ -174,7 +174,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
   readonly meta: pulumi.Output<basics.HelmMeta>;
 
   constructor(name: string, props?: RookCephInputs, opts?: pulumi.CustomResourceOptions) {
-    super('RookCeph', name, props, opts);
+    super('kloudlib:RookCeph', name, props, opts);
 
     this.meta = pulumi.output<basics.HelmMeta>({
       chart: 'rook-ceph',
@@ -379,7 +379,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
   }
 
   private createDefaultStorageClass(name: string, props: RookCephInputs | undefined, cluster: k8s.apiextensions.CustomResource, pool: k8s.apiextensions.CustomResource) {
-    return cluster.metadata.namespace.apply(namespace => {
+    return cluster.metadata.namespace.apply((namespace) => {
       namespace = namespace || 'default';
       return new k8s.storage.v1.StorageClass('storage-class', {
         metadata: {

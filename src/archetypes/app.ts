@@ -59,7 +59,7 @@ export interface AppInputs {
    * required to pull the app's container image
    * defaults to undefined
    */
-  imagePullSecret?: k8s.core.v1.Secret;
+  imagePullSecret?: pulumi.Input<string>;
 }
 
 export interface AppOutputs {
@@ -100,8 +100,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   readonly portForwardCommand: pulumi.Output<string>;
 
   constructor(name: string, props: AppInputs, opts?: pulumi.CustomResourceOptions) {
-    super('App', name, props, opts);
-    this.dockerImage = this.createDockerImage(props).imageName;
+    super('kloudlib:App', name, props, opts);
+    this.dockerImage = this.createDockerImage(name, props).imageName;
     const deployment = this.createDeployment(name, props);
     this.namespace = deployment.metadata.namespace;
     this.deploymentName = deployment.metadata.namespace;
@@ -109,16 +109,16 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     if (props.ingress && props.ingress.enabled !== false) {
       this.ingressHosts = this.createIngress(name, props).spec.rules.apply(rules => rules.map(r => r.host));
     }
-    this.portForwardCommand = pulumi.interpolate`kubectl port-forward service/${this.serviceName} 8000:${props.httpPort ?? 80}`;
+    this.portForwardCommand = pulumi.interpolate`kubectl -n ${this.namespace} port-forward service/${this.serviceName} 8000:${props.httpPort ?? 80}`;
   }
 
-  private createDockerImage(props: AppInputs): docker.Image {
+  private createDockerImage(name: string, props: AppInputs): docker.Image {
     const build: docker.DockerBuild = fs.statSync(props.src).isDirectory() ? {
       context: props.src,
     } : {
       dockerfile: props.src,
     };
-    return new docker.Image('image', {
+    return new docker.Image(`${name}-image`, {
       imageName: props.imageName,
       build: build,
     }, {
@@ -129,14 +129,17 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
     const env = [];
 
-    for (const [name, value] of Object.entries(props.src)) {
-      env.push({ name, value });
+    if (props.env) {
+      for (const [name, value] of Object.entries(props.env)) {
+        env.push({ name, value });
+      }
     }
 
     if (props.secrets && Object.keys(props.secrets).length > 0) {
-      new k8s.core.v1.Secret('secrets', {
+      new k8s.core.v1.Secret(`${name}-secrets`, {
         metadata: {
           name: name,
+          namespace: props.namespace,
           labels: {
             app: name,
           },
@@ -147,22 +150,23 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
         provider: props.provider,
       });
 
-      for (const name of Object.keys(props.secrets)) {
+      for (const key of Object.keys(props.secrets)) {
         env.push({
-          name,
+          name: key,
           valueFrom: {
             secretKeyRef: {
               name: name,
-              key: name,
+              key: key,
             },
           },
         });
       }
     }
 
-    return new k8s.apps.v1.Deployment('deployment', {
+    return new k8s.apps.v1.Deployment(`${name}-deployment`, {
       metadata: {
         name: name,
+        namespace: props.namespace,
         labels: {
           app: name,
         },
@@ -188,10 +192,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                 name: 'http',
                 containerPort: props.httpPort ?? 80,
               }],
-              env: Array.from(Object.entries(props.env ?? [])).map(([key, value]) => ({
-                name: key,
-                value: value,
-              })),
+              env: env,
               resources: props.resources,
               readinessProbe: !props.healthCheck ? undefined : {
                 httpGet: {
@@ -224,7 +225,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
               },
             },
             imagePullSecrets: !props.imagePullSecret ? undefined : [{
-              name: props.imagePullSecret.metadata.name,
+              name: props.imagePullSecret,
             }],
           },
         },
@@ -236,9 +237,10 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   }
 
   private createService(name: string, props: AppInputs): k8s.core.v1.Service {
-    return new k8s.core.v1.Service('service', {
+    return new k8s.core.v1.Service(`${name}-service`, {
       metadata: {
         name: name,
+        namespace: props.namespace,
         labels: {
           app: name,
         },
@@ -262,9 +264,10 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
 
   private createIngress(name: string, props: AppInputs): k8s.networking.v1beta1.Ingress {
     const hosts = pulumi.output(props.ingress?.hosts ?? []);
-    return new k8s.networking.v1beta1.Ingress('ingress', {
+    return new k8s.networking.v1beta1.Ingress(`${name}-ingress`, {
       metadata: {
         name: name,
+        namespace: props.namespace,
         labels: {
           app: name,
         },

@@ -2,6 +2,7 @@ import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import * as random from '@pulumi/random';
 import * as basics from './basics';
+import { replaceApiVersion } from '../transformations';
 
 export interface GrafanaInputs {
   provider?: k8s.Provider;
@@ -61,7 +62,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
   readonly persistence: pulumi.Output<basics.Persistence | undefined>;
 
   constructor(name: string, props?: GrafanaInputs, opts?: pulumi.CustomResourceOptions) {
-    super('Grafana', name, props, opts);
+    super('kloudlib:Grafana', name, props, opts);
 
     this.ingress = pulumi.output(props?.ingress);
     this.persistence = pulumi.output(props?.persistence);
@@ -82,26 +83,27 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    const grafana = new k8s.helm.v2.Chart('grafana', {
+    const grafana = new k8s.helm.v2.Chart(`${name}-grafana`, {
       namespace: props?.namespace,
       chart: this.meta.chart,
       version: this.meta.version,
       fetchOpts: {
         repo: this.meta.repo,
       },
+      transformations: [replaceApiVersion('Ingress', 'extensions/v1beta1', 'networking.k8s.io/v1beta1')],
       values: {
         adminUser: this.adminUsername,
         adminPassword: this.adminPassword,
         ingress: !props?.ingress ? { enabled: false } : {
-          enabled: props?.ingress.enabled,
+          enabled: props?.ingress.enabled ?? true,
           annotations: {
             'kubernetes.io/ingress.class': props?.ingress.class ?? 'nginx',
             'kubernetes.io/tls-acme': props?.ingress.tls === false ? 'false' : 'true', // "tls" defaults to true, so we'll activate tls for undefined or null values
             ...props?.ingress.annotations,
           },
-          hosts: [props?.ingress.hosts],
+          hosts: props?.ingress.hosts,
           tls: [{
-            hosts: [props?.ingress.hosts],
+            hosts: props?.ingress.hosts,
             secretName: `tls-grafana-${name}`,
           }],
         },

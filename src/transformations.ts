@@ -20,3 +20,16 @@ export function removeHelmTests() {
     return;
   }
 }
+
+export function replaceApiVersion(kind: string, from: string, to: string) {
+  return (obj: any) => {
+    if (!obj) {
+      return;
+    }
+    if (obj.kind === kind && obj.apiVersion === from) {
+      obj.apiVersion = to;
+      return;
+    }
+    return;
+  }
+}
