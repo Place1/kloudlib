@@ -41,7 +41,7 @@ interface NginxIngressDeploymentMode {
    * replicas should be deployed.
    * defaults to 1
    */
-  replicas?: number;
+  replicas?: pulumi.Input<number>;
   /**
    * loadBalancerIP configures the cloud loadbalancer
    * IP address on supported clouds.
@@ -51,7 +51,7 @@ interface NginxIngressDeploymentMode {
    * an IP address to the nginx-ingress LoadBalancer Service
    * for you (if supported by your cloud provider).
    */
-  loadBalancerIP?: string;
+  loadBalancerIP?: pulumi.Input<string>;
 }
 
 interface NginxIngressDaemonSetMode {
