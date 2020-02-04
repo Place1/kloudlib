@@ -4,6 +4,7 @@ import * as random from '@pulumi/random';
 import * as basics from './basics';
 import { pickBy } from 'lodash';
 import { createHash } from 'crypto';
+import { replaceApiVersion } from '../transformations';
 
 export interface OAuthProxyInputs {
   provider?: k8s.Provider;
@@ -20,38 +21,18 @@ export interface OAuthProxyInputs {
    */
   ingress: basics.Ingress;
   /**
+   * domain configures the domain that the proxy and downstream
+   * services are under
+   * i.e. ".example.com" for all subdomains under example.com
+   */
+  domain: string;
+  /**
    * mode configures the backend service
    * that the proxy will redirect users to login with
    * mode can be excluded if you only want to allow
    * static credentials
    */
   mode?: Google | Azure | GitHub | GitLab;
-  /**
-   * whitelistDomain limits which domains the proxy
-   * will redirect back to after authentication
-   * it is recommended to set this value if you're
-   * using multiple OAuthProxy deployments for
-   * handling authentication of different domains
-   * within the same cluster.
-   * you can prefix the domain with a "." to allow
-   * for subdomains e.g. ".example.com" to allow any
-   * subdomain under example.com
-   * defaults to undefined (allows all domains)
-   */
-  whitelistDomain?: string;
-  /**
-   * cookieDomain limits which domains the proxy
-   * authorization will be valid for.
-   * it is recommended to set this value if you're
-   * using multiple OAuthProxy deployments for
-   * handling authentication of different domains
-   * within the same cluster.
-   * you can prefix the domain with a "." to allow
-   * for subdomains e.g. ".example.com" to allow any
-   * subdomain under example.com
-   * defaults to undefined (no limit on cookie domain)
-   */
-  cookieDomain?: string;
   /**
    * emailDomain limits which emails are
    * allowed to authenticate with the proxy.
@@ -148,13 +129,14 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    new k8s.helm.v2.Chart(`${name}-OAuthProxy`, {
+    new k8s.helm.v2.Chart(`${name}-oauthproxy`, {
       namespace: props.namespace,
       chart: this.meta.chart,
       version: this.meta.version,
       fetchOpts: {
         repo: this.meta.repo,
       },
+      transformations: [replaceApiVersion('Ingress', 'extensions/v1beta1', 'networking.k8s.io/v1beta1')],
       values: {
         config: {
           clientID: props.mode?.clientId,
@@ -162,9 +144,9 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
           cookieSecret: cookieSecret.result,
         },
         extraArgs: pickBy({
-          'whitelist-domain': props.whitelistDomain,
-          'cookie-domain': props.cookieDomain,
-          'email-domain': props.emailDomain,
+          'whitelist-domain': props.domain,
+          'cookie-domain': props.domain,
+          'email-domain': props.emailDomain ?? '*',
           'banner': props.banner,
           'footer': props.footer,
           'skip-provider-button': props.skipProviderButton,
@@ -205,8 +187,8 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
    */
   nginxAnnotations() {
     return {
-      'nginx.ingress.kubernetes.io/auth-url': pulumi.interpolate`https://${this.ingress.hosts}/auth`,
-      'nginx.ingress.kubernetes.io/auth-signin': pulumi.interpolate`https://${this.ingress.hosts}/start?rd=https://$host$request_uri`,
+      'nginx.ingress.kubernetes.io/auth-url': this.ingress.hosts!.apply((hosts: any) => `https://${hosts[0]}/oauth2/auth`),
+      'nginx.ingress.kubernetes.io/auth-signin': this.ingress.hosts!.apply((hosts: any) => `https://${hosts[0]}/oauth2/start?rd=https://$host$request_uri`),
     };
   }
 
@@ -226,11 +208,14 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
   }
 
   private azureExtraArgs(props: Azure) {
-    return {};
+    return {
+      'provider': 'azure',
+    };
   }
 
   private gitHubExtraArgs(props: GitHub) {
     return {
+      'provider': 'github',
       'github-org': props.githubOrg,
       'github-team': props.githubTeam,
     };
@@ -238,6 +223,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
 
   private gitLabExtraArgs(props: GitLab) {
     return {
+      'provider': 'gitlab',
       'gitlab-group': props.gitlabGroup,
       'oidc-issuer-url': props.gitlabHost,
     };
@@ -245,6 +231,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
 
   private googleExtraArgs(props: Google) {
     return {
+      'provider': 'google',
       'google-admin-email': props.googleAdminEmail,
       'google-group': props.googleGroup,
       'google-service-account-json': props.googleServiceAccountJson,

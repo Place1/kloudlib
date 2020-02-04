@@ -119,9 +119,10 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
           enabled: false,
         },
         'grafana.ini': {
-          'server': {
-            'root_url': props?.ingress ? props?.ingress.hosts : undefined,
-          },
+          'server': pulumi.output(props?.ingress?.hosts).apply((hosts) => !hosts ? undefined : {
+            'domain': hosts[0],
+            'root_url': `https://${hosts[0]}`,
+          }),
           'auth.anonymous': {
             enabled: 'true',
             org_name: 'Main Org.',

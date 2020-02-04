@@ -2372,7 +2372,7 @@ img {
 					<a href="_index_.oauthproxyinputs.html#banner" class="tsd-kind-icon">banner</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.oauthproxyinputs.html#cookiedomain" class="tsd-kind-icon">cookie<wbr>Domain</a>
+					<a href="_index_.oauthproxyinputs.html#domain" class="tsd-kind-icon">domain</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
 					<a href="_index_.oauthproxyinputs.html#emaildomain" class="tsd-kind-icon">email<wbr>Domain</a>
@@ -2401,9 +2401,6 @@ img {
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
 					<a href="_index_.oauthproxyinputs.html#version" class="tsd-kind-icon">version</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="_index_.oauthproxyinputs.html#whitelistdomain" class="tsd-kind-icon">whitelist<wbr>Domain</a>
-				</li>
 			</ul>
 		</li>
 	</ul>
@@ -2426,7 +2423,7 @@ img {
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#banner" class="tsd-kind-icon">banner</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#cookiedomain" class="tsd-kind-icon">cookie<wbr>Domain</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#domain" class="tsd-kind-icon">domain</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#emaildomain" class="tsd-kind-icon">email<wbr>Domain</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#footer" class="tsd-kind-icon">footer</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#ingress" class="tsd-kind-icon">ingress</a></li>
@@ -2436,7 +2433,6 @@ img {
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#skipproviderbutton" class="tsd-kind-icon">skip<wbr>Provider<wbr>Button</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#staticcredentials" class="tsd-kind-icon">static<wbr>Credentials</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#version" class="tsd-kind-icon">version</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_index_.oauthproxyinputs.html#whitelistdomain" class="tsd-kind-icon">whitelist<wbr>Domain</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2450,7 +2446,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">banner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L66">src/services/oauth-proxy.ts:66</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L47">src/services/oauth-proxy.ts:47</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2461,26 +2457,19 @@ img {
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="cookiedomain" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> cookie<wbr>Domain</h3>
-				<div class="tsd-signature tsd-kind-icon">cookie<wbr>Domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+				<a name="domain" class="tsd-anchor"></a>
+				<h3>domain</h3>
+				<div class="tsd-signature tsd-kind-icon">domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L54">src/services/oauth-proxy.ts:54</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L28">src/services/oauth-proxy.ts:28</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>cookieDomain limits which domains the proxy
-							authorization will be valid for.
-							it is recommended to set this value if you&#39;re
-							using multiple OAuthProxy deployments for
-							handling authentication of different domains
-							within the same cluster.
-							you can prefix the domain with a &quot;.&quot; to allow
-							for subdomains e.g. &quot;.example.com&quot; to allow any
-							subdomain under example.com
-						defaults to undefined (no limit on cookie domain)</p>
+						<p>domain configures the domain that the proxy and downstream
+							services are under
+						i.e. &quot;.example.com&quot; for all subdomains under example.com</p>
 					</div>
 				</div>
 			</section>
@@ -2490,7 +2479,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">email<wbr>Domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L61">src/services/oauth-proxy.ts:61</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L42">src/services/oauth-proxy.ts:42</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2508,7 +2497,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">footer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L71">src/services/oauth-proxy.ts:71</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L52">src/services/oauth-proxy.ts:52</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2524,7 +2513,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">ingress<span class="tsd-signature-symbol">:</span> <a href="_index_.ingress.html" class="tsd-signature-type">Ingress</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L21">src/services/oauth-proxy.ts:21</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L22">src/services/oauth-proxy.ts:22</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2542,7 +2531,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Google</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Azure</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GitHub</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GitLab</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L28">src/services/oauth-proxy.ts:28</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L35">src/services/oauth-proxy.ts:35</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2560,7 +2549,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">namespace<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">pulumi.Input</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L10">src/services/oauth-proxy.ts:10</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L11">src/services/oauth-proxy.ts:11</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2570,7 +2559,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">provider<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">k8s.Provider</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L9">src/services/oauth-proxy.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L10">src/services/oauth-proxy.ts:10</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2580,7 +2569,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">skip<wbr>Provider<wbr>Button<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L78">src/services/oauth-proxy.ts:78</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L59">src/services/oauth-proxy.ts:59</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2598,7 +2587,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">static<wbr>Credentials<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">StaticCredentials</span><span class="tsd-signature-symbol">[]</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L84">src/services/oauth-proxy.ts:84</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L65">src/services/oauth-proxy.ts:65</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2615,36 +2604,12 @@ img {
 				<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L14">src/services/oauth-proxy.ts:14</a></li>
+						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/7a29d50/src/services/oauth-proxy.ts#L15">src/services/oauth-proxy.ts:15</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
 						<p>the helm chart version</p>
-					</div>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="whitelistdomain" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> whitelist<wbr>Domain</h3>
-				<div class="tsd-signature tsd-kind-icon">whitelist<wbr>Domain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/Place1/kloudlib/blob/e0febf4/src/services/oauth-proxy.ts#L41">src/services/oauth-proxy.ts:41</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>whitelistDomain limits which domains the proxy
-							will redirect back to after authentication
-							it is recommended to set this value if you&#39;re
-							using multiple OAuthProxy deployments for
-							handling authentication of different domains
-							within the same cluster.
-							you can prefix the domain with a &quot;.&quot; to allow
-							for subdomains e.g. &quot;.example.com&quot; to allow any
-							subdomain under example.com
-						defaults to undefined (allows all domains)</p>
 					</div>
 				</div>
 			</section>
