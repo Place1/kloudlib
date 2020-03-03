@@ -110,10 +110,10 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
             enabled: true,
             service: {
               type: 'ClusterIP',
-              servicePort: 9913,
+              servicePort: 10254,
               annotations: {
                 'prometheus.io/scrape': 'true',
-                'prometheus.io/port': '9913',
+                'prometheus.io/port': '10254',
               },
             },
           },
