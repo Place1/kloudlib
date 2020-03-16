@@ -199,14 +199,22 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                   path: props.healthCheck.path,
                   port: props.healthCheck.port ?? props.httpPort ?? 80,
                 },
-                // the below readiness probe values are explicitly set
-                // to the kubernetes defaults:
-                // https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-                periodSeconds: 10,
-                timeoutSeconds: 1,
+                periodSeconds: 5,
+                timeoutSeconds: 2,
                 successThreshold: 1,
                 failureThreshold: 3,
                 initialDelaySeconds: 0,
+              },
+              livenessProbe: !props.healthCheck ? undefined : {
+                httpGet: {
+                  path: props.healthCheck.path,
+                  port: props.healthCheck.port ?? props.httpPort ?? 80,
+                },
+                periodSeconds: 10,
+                timeoutSeconds: 5,
+                successThreshold: 1,
+                failureThreshold: 5,
+                initialDelaySeconds: 60,
               },
             }],
             affinity: {
