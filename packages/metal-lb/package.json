@@ -1,0 +1,28 @@
+{
+  "name": "@kloudlib/metal-lb",
+  "description": "",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "github.com/place1/kloudlib"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -r ./dist || true"
+  },
+  "peerDependencies": {
+    "@pulumi/kubernetes": "*.*.*",
+    "@pulumi/pulumi": "*.*.*"
+  },
+  "dependencies": {
+    "@kloudlib/abstractions": "*.*.*"
+  },
+  "devDependencies": {
+    "@pulumi/kubernetes": "*.*.*",
+    "@pulumi/pulumi": "*.*.*",
+    "typescript": "3.8.3"
+  }
+}

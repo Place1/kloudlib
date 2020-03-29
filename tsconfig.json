@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "outDir": "dist",
         "target": "es6",
         "lib": [
             "es6"
@@ -13,11 +12,15 @@
         "pretty": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "paths": {
+            "@kloudlib/*": ["packages/*"]
+        }
     },
     "exclude": [
-        "node_modules",
-        "dist",
-        "e2e"
+        "**/node_modules",
+        "**/dist",
+        "**/e2e"
     ]
 }
