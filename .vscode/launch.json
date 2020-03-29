@@ -1,0 +1,18 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "doc-generator",
+			"type": "node",
+			"request": "launch",
+			"args": ["${workspaceFolder}/internal/doc-generator/index.ts"],
+			"runtimeArgs": ["-r", "ts-node/register"],
+			"cwd": "${workspaceFolder}/internal/doc-generator",
+			"protocol": "inspector",
+			"internalConsoleOptions": "openOnSessionStart",
+			"env": {
+				"TS_NODE_IGNORE": "false"
+			}
+		}
+	]
+}
