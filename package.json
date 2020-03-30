@@ -6,6 +6,7 @@
     "build": "lerna run --parallel build",
     "clean": "lerna run --parallel clean",
     "typedoc": "typedoc",
+    "mkdocs-publish": "npm run typedoc && cd docs && mkdocs gh-deploy",
     "prettier": "prettier ./packages/**/*.ts --write"
   },
   "devDependencies": {
