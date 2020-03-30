@@ -1,3 +1,16 @@
+/**
+ * @module "@kloudlib/loki"
+ * @packageDocumentation
+ * @example
+ * ```typescript
+ * import { Loki } from '@kloudlib/loki';
+ *
+ * new Loki('loki', {
+ *   // ...
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as abstractions from '@kloudlib/abstractions';
@@ -27,6 +40,9 @@ export interface LokiOutputs {
   persistence: pulumi.Output<abstractions.Persistence | undefined>;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class Loki extends pulumi.ComponentResource implements LokiOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
   readonly clusterUrl: pulumi.Output<string>;

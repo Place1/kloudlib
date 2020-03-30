@@ -1,3 +1,16 @@
+/**
+ * @module "@kloudlib/metal-lb"
+ * @packageDocumentation
+ * @example
+ * ```typescript
+ * import { MetalLB } from '@kloudlib/metal-lb';
+ *
+ * new MetalLB('metal-lb', {
+ *   // ...
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as abstractions from '@kloudlib/abstractions';
@@ -22,6 +35,9 @@ export interface MetalLBOutputs {
   meta: pulumi.Output<abstractions.HelmMeta>;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
 

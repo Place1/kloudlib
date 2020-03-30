@@ -1,3 +1,16 @@
+/**
+ * @module "@kloudlib/nginx-ingress"
+ * @packageDocumentation
+ * @example
+ * ```typescript
+ * import { NginxIngress } from '@kloudlib/nginx-ingress';
+ *
+ * new NginxIngress('nginx-ingress', {
+ *   // ...
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as abstractions from '@kloudlib/abstractions';
@@ -27,14 +40,14 @@ export interface NginxIngressInputs {
   /**
    * configure any L4 TCP services
    */
-  tcpServices?: L4ServiceBackends;
+  tcpServices?: Record<number, L4ServiceBackend>;
   /**
    * configure any L4 UDP services
    */
-  udpServices?: L4ServiceBackends;
+  udpServices?: Record<number, L4ServiceBackend>;
 }
 
-interface NginxIngressDeploymentMode {
+export interface NginxIngressDeploymentMode {
   kind: 'Deployment';
   /**
    * how many nginx ingress controller
@@ -54,18 +67,15 @@ interface NginxIngressDeploymentMode {
   loadBalancerIP?: pulumi.Input<string>;
 }
 
-interface NginxIngressDaemonSetMode {
+export interface NginxIngressDaemonSetMode {
   kind: 'DaemonSet';
 }
 
-type L4ServiceBackends = Record<
-  number,
-  {
-    namespace: pulumi.Input<string>;
-    serviceName: pulumi.Input<string>;
-    servicePort: pulumi.Input<number>;
-  }
->;
+export interface L4ServiceBackend {
+  namespace: pulumi.Input<string>;
+  serviceName: pulumi.Input<string>;
+  servicePort: pulumi.Input<number>;
+}
 
 type NginxL4Backends = Record<number, pulumi.Input<string>>;
 
@@ -78,6 +88,9 @@ export interface NginxIngressOutputs {
   ingressClass: pulumi.Output<string>;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class NginxIngress extends pulumi.ComponentResource implements NginxIngressOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
   readonly ingressClass: pulumi.Output<string>;
@@ -210,7 +223,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
     };
   }
 
-  private l4Services(props: L4ServiceBackends): NginxL4Backends {
+  private l4Services(props: Record<number, L4ServiceBackend>): NginxL4Backends {
     const backends: NginxL4Backends = {};
     for (const [key, value] of Object.entries(props)) {
       backends[Number(key)] = pulumi.interpolate`${value.namespace}/${value.serviceName}:${value.servicePort}`;

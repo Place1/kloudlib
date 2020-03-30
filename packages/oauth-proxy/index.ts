@@ -1,3 +1,8 @@
+/**
+ * @module "@kloudlib/oauth-proxy"
+ * @packageDocumentation
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
@@ -107,6 +112,9 @@ export interface OAuthProxyOutputs {
   ingress: pulumi.Output<abstractions.Ingress>;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
   readonly ingress: pulumi.Output<abstractions.Ingress>;

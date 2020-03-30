@@ -8,8 +8,15 @@ docs_dir: src
 
 nav:
   - Home: './index.md'
-  - Packages:
-      - '@kloudlib/cert-manager': './packages/modules/cert_manager.md'
+  - '@kloudlib/nginx-ingress': './packages/modules/__kloudlib_nginx_ingress_.md'
+  - '@kloudlib/metal-lb': './packages/modules/__kloudlib_metal_lb_.md'
+  - '@kloudlib/cert-manager': './packages/modules/__kloudlib_cert_manager_.md'
+  - '@kloudlib/grafana-stack': './packages/modules/__kloudlib_grafana_stack_.md'
+  - '@kloudlib/grafana': './packages/modules/__kloudlib_grafana_.md'
+  - '@kloudlib/loki': './packages/modules/__kloudlib_loki_.md'
+  - '@kloudlib/prometheus': './packages/modules/__kloudlib_prometheus_.md'
+  - '@kloudlib/rook-ceph': './packages/modules/__kloudlib_rook_ceph_.md'
+  - '@kloudlib/oauth-proxy': './packages/modules/__kloudlib_oauth_proxy_.md'
 
 theme:
   name: material

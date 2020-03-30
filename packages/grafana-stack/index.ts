@@ -1,3 +1,16 @@
+/**
+ * @module "@kloudlib/grafana-stack"
+ * @packageDocumentation
+ * @example
+ * ```typescript
+ * import { GrafanaStack } from '@kloudlib/grafana-stack';
+ *
+ * new GrafanaStack('grafana-stack', {
+ *   // ...
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as grafana from '@kloudlib/grafana';
@@ -23,6 +36,9 @@ export interface GrafanaStackOutputs {
   loki?: loki.LokiOutputs;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class GrafanaStack extends pulumi.ComponentResource implements GrafanaStackOutputs {
   readonly grafana?: grafana.GrafanaOutputs;
   readonly prometheus?: prometheus.PrometheusOutputs;

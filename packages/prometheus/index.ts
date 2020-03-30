@@ -1,3 +1,16 @@
+/**
+ * @module "@kloudlib/prometheus"
+ * @packageDocumentation
+ * @example
+ * ```typescript
+ * import { Prometheus } from '@kloudlib/prometheus';
+ *
+ * new Prometheus('prometheus', {
+ *   // ...
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as abstractions from '@kloudlib/abstractions';
@@ -23,6 +36,9 @@ export interface PrometheusOutputs {
   persistence: pulumi.Output<abstractions.Persistence | undefined>;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class Prometheus extends pulumi.ComponentResource implements PrometheusOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
   readonly persistence: pulumi.Output<abstractions.Persistence | undefined>;

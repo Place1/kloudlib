@@ -1,3 +1,16 @@
+/**
+ * @module "@kloudlib/rook-ceph"
+ * @packageDocumentation
+ * @example
+ * ```typescript
+ * import { RookCeph } from '@kloudlib/rook-ceph';
+ *
+ * new RookCeph('rook-ceph', {
+ *   // ...
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as abstractions from '@kloudlib/abstractions';
@@ -167,6 +180,9 @@ export interface CephStorageClass {
 
 export interface RookCephOutputs {}
 
+/**
+ * @noInheritDoc
+ */
 export class RookCeph extends pulumi.ComponentResource implements RookCephOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
 

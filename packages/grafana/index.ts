@@ -1,3 +1,16 @@
+/**
+ * @module "@kloudlib/grafana"
+ * @packageDocumentation
+ * @example
+ * ```typescript
+ * import { Grafana } from '@kloudlib/grafana';
+ *
+ * new Grafana('grafana', {
+ *   // ...
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
@@ -53,6 +66,9 @@ export interface GrafanaDataSource {
   url: string;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
   readonly adminUsername: pulumi.Output<string>;
