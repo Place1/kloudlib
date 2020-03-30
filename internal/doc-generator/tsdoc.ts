@@ -1,46 +1,46 @@
 import * as ts from 'typescript';
 import * as tsdoc from '@microsoft/tsdoc';
-import { tsquery } from '@phenomnomnominal/tsquery';
-import { Property } from './models';
-import { flatMap, trimStart } from 'lodash';
+import { block } from './markdown';
 
-export function getProperties(iface: ts.InterfaceDeclaration): Property[] {
-  return flatMap(tsquery<ts.PropertySignature>(iface, 'InterfaceDeclaration > PropertySignature'), node => getProps(node))
-    .map(prop => {
-      const p: Property = {
-        name: prop.name,
-        required: prop.node.questionToken !== undefined,
-        type: getType(prop.node.type!),
-        description: tsdocComment(prop.node),
-      };
-      return p;
-    });
+
+const config = new tsdoc.TSDocConfiguration();
+// config.addTagDefinition(new tsdoc.TSDocTagDefinition({
+//   tagName: '@example',
+//   syntaxKind: tsdoc.TSDocTagSyntaxKind.BlockTag,
+//   allowMultiple: true,
+// }));
+const parser = new tsdoc.TSDocParser(config);
+
+export function tsdocComment(tsnode: ts.Node): string {
+  const ctx = parser.parseString(tsnode.getFullText());
+  const comment = ctx.docComment;
+  return extractText(comment.summarySection);
 }
 
-function getType(node: ts.TypeNode): string {
-  if (node.kind === ts.SyntaxKind.TypeLiteral) {
-    return 'object';
-  }
-  return node.getText();
+export function tsdocExamples(tsnode: ts.Node): string[] {
+  const ctx = parser.parseString(tsnode.getFullText());
+  return ctx.docComment.customBlocks
+    .filter(block => block.blockTag.tagName === '@example')
+    .map(block => extractText(block));
 }
 
-interface Prop {
-  name: string;
-  node: ts.PropertySignature;
-}
-
-function getProps(property: ts.PropertySignature, prefix?: string): Prop[] {
-  const current = {
-    name: trimStart([prefix, property.name.getText()].join('.'), '.'),
-    node: property,
-  };
-
-  const childNodes = tsquery<ts.PropertySignature>(property, 'TypeLiteral > PropertySignature')
-    .filter(node => node !== current.node);
-
-  const children = flatMap(childNodes, node => getProps(node, current.name));
-
-  return [current, ...children];
+function extractText(docNode: tsdoc.DocNode): string {
+  const buffer = new Array<string>();
+  walk(docNode, (node) => {
+    switch (node.kind) {
+      case tsdoc.DocNodeKind.PlainText:
+        buffer.push((node as tsdoc.DocPlainText).text);
+        break;
+      case tsdoc.DocNodeKind.SoftBreak:
+        buffer.push('\n');
+        break;
+      case tsdoc.DocNodeKind.FencedCode:
+        const fencedCode = node as tsdoc.DocFencedCode;
+        buffer.push(block(fencedCode.code, fencedCode.language));
+        break;
+    }
+  });
+  return buffer.join('').trim();
 }
 
 type DocNodeVisitor = (docNode: tsdoc.DocNode) => void;
@@ -50,22 +50,4 @@ function walk(docNode: tsdoc.DocNode, visitor: DocNodeVisitor) {
   for (const node of docNode.getChildNodes()) {
     walk(node, visitor);
   }
-}
-
-function tsdocComment(tsnode: ts.Node) {
-  const parser = new tsdoc.TSDocParser();
-  const parserContext = parser.parseString(tsnode.getFullText());
-  const comment = parserContext.docComment;
-  const description = new Array<string>();
-  walk(comment.summarySection, (node) => {
-    switch (node.kind) {
-      case tsdoc.DocNodeKind.PlainText:
-        description.push((node as tsdoc.DocPlainText).text);
-        break;
-      case tsdoc.DocNodeKind.SoftBreak:
-        description.push('\n');
-        break;
-    }
-  });
-  return description.join('').trim();
 }

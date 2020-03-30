@@ -1,3 +1,22 @@
+/**
+ * CertManager is based on [jetstack's cert-manager](https://github.com/jetstack/cert-manager) helm chart.
+ *
+ * @module cert-manager
+ * @packageDocumentation
+ *
+ * @example
+ * ```typescript
+ * import { CertManager } from '@kloudlib/cert-manager';
+ *
+ * new CertManger('cert-manager', {
+ *   useStagingACME: true,
+ *   acme: {
+ *     email: 'admin@example.com',
+ *   },
+ * });
+ * ```
+ */
+
 import * as pulumi from '@pulumi/pulumi'
 import * as k8s from '@pulumi/kubernetes'
 import * as abstractions from '@kloudlib/abstractions';
@@ -12,7 +31,7 @@ export interface CertManagerInputs {
   /**
    * if true then the staging ACME api will be used
    * rather than the production ACME api.
-   * defaults to false
+   * defaults to true
    */
   useStagingACME?: boolean;
   /**
@@ -27,9 +46,15 @@ export interface CertManagerInputs {
 }
 
 export interface CertManagerOutputs {
+  /**
+   * Helm metadata
+   */
   meta: pulumi.Output<abstractions.HelmMeta>;
 }
 
+/**
+ * @noInheritDoc
+ */
 export class CertManager extends pulumi.ComponentResource implements CertManagerOutputs {
 
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
@@ -53,9 +78,9 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
       },
       spec: {
         acme: {
-          server: props?.useStagingACME === true // undefined or null means to use production
-            ? 'https://acme-staging-v02.api.letsencrypt.org/directory'
-            : 'https://acme-v02.api.letsencrypt.org/directory',
+          server: props?.useStagingACME === false
+            ? 'https://acme-v02.api.letsencrypt.org/directory'
+            : 'https://acme-staging-v02.api.letsencrypt.org/directory',
           email: props?.acme?.email,
           http01: {},
           privateKeySecretRef: {

@@ -5,19 +5,23 @@
     "bootstrap": "lerna bootstrap",
     "build": "lerna run --parallel build",
     "clean": "lerna run --parallel clean",
-    "typedoc": "typedoc ./packages/*",
+    "typedoc": "typedoc",
     "prettier": "prettier ./packages/**/*.ts"
   },
   "devDependencies": {
     "lerna": "3.20.2",
-    "typescript": "3.8.3",
     "prettier": "2.0.2",
-    "typedoc": "0.16.8",
-    "typedoc-plugin-lerna-packages": "0.3.0"
+    "typedoc-plugin-external-module-name": "3.0.0",
+    "typedoc-plugin-markdown": "2.2.17",
+    "typedoc-plugin-no-inherit": "^1.1.10",
+    "typescript": "3.8.3"
   },
   "prettier": {
     "parser": "typescript",
     "printWidth": 120,
     "singleQuote": true
+  },
+  "dependencies": {
+    "typedoc": "0.17.3"
   }
 }

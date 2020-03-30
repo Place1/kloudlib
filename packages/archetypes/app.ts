@@ -2,7 +2,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
 import * as fs from 'fs';
-import * as basics from '../../../packages/core/common';
+import * as abstractions from '@kloudlib/abstractions';
 
 export interface AppInputs {
   provider?: k8s.Provider;
