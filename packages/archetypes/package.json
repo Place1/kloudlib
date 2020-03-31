@@ -17,9 +17,9 @@
     "clean": "rm -r ./dist || true"
   },
   "peerDependencies": {
+    "@pulumi/docker": "*.*.*",
     "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
-    "@pulumi/docker": "*.*.*"
+    "@pulumi/pulumi": "*.*.*"
   },
   "dependencies": {
     "@kloudlib/abstractions": "*.*.*"

@@ -23,8 +23,8 @@
   "dependencies": {
     "@kloudlib/abstractions": "*.*.*",
     "@kloudlib/grafana": "*.*.*",
-    "@kloudlib/prometheus": "*.*.*",
     "@kloudlib/loki": "*.*.*",
+    "@kloudlib/prometheus": "*.*.*",
     "lodash": "4.17.15"
   },
   "devDependencies": {
