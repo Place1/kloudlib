@@ -1,0 +1,4 @@
+# typedoc will write it's output into this folder
+# we'll exclude it from the repo
+#src/packages/
+
