@@ -7,7 +7,9 @@
     "clean": "lerna run --parallel clean",
     "typedoc": "typedoc",
     "mkdocs-publish": "npm run typedoc && cd docs && mkdocs gh-deploy",
-    "prettier": "prettier ./packages/**/*.ts --write"
+    "prettier": "prettier ./packages/**/*.ts --write",
+    "publish": "lerna publish from-package",
+    "prepublish": "npm run bootstrap && npm run clean && npm run build"
   },
   "devDependencies": {
     "lerna": "3.20.2",
