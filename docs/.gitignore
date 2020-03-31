@@ -2,3 +2,5 @@
 # we'll exclude it from the repo
 src/packages/
 
+# ignore the build site
+site/
