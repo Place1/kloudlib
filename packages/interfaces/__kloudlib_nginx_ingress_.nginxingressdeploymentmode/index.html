@@ -413,27 +413,53 @@
                 
                 <h1 id="interface-nginxingressdeploymentmode">Interface: NginxIngressDeploymentMode<a class="headerlink" href="#interface-nginxingressdeploymentmode" title="Permanent link"> ¶</a></h1>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link"> ¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>property</th>
+<th>type</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kind</td>
+<td>"Deployment"</td>
+<td>-</td>
+</tr>
+<tr>
+<td>loadBalancerIP</td>
+<td>pulumi.Input‹string›</td>
+<td>loadBalancerIP configures the cloud loadbalancer<br>IP address on supported clouds.<br>This IP will need to be provisioned using the<br>appropriate cloud resource.<br><br>If this in left blank then kubernetes will assign<br>an IP address to the nginx-ingress LoadBalancer Service<br>for you (if supported by your cloud provider).</td>
+</tr>
+<tr>
+<td>replicas</td>
+<td>pulumi.Input‹number›</td>
+<td>how many nginx ingress controller<br>replicas should be deployed.<br><br>defaults to 1</td>
+</tr>
+</tbody>
+</table>
 <h3 id="kind">kind<a class="headerlink" href="#kind" title="Permanent link"> ¶</a></h3>
 <p>• <strong>kind</strong>: <em>"Deployment"</em></p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/nginx-ingress/index.ts#L51">nginx-ingress/index.ts:51</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L54">nginx-ingress/index.ts:54</a></em></p>
 <hr />
 <h3 id="optional-loadbalancerip"><code class="codehilite"><span class="err">Optional</span></code> loadBalancerIP<a class="headerlink" href="#optional-loadbalancerip" title="Permanent link"> ¶</a></h3>
 <p>• <strong>loadBalancerIP</strong>? : <em>pulumi.Input‹string›</em></p>
 <p>loadBalancerIP configures the cloud loadbalancer
 IP address on supported clouds.
 This IP will need to be provisioned using the
-appropriate cloud resource.
-If this in left blank then kubernetes will assign
+appropriate cloud resource.</p>
+<p>If this in left blank then kubernetes will assign
 an IP address to the nginx-ingress LoadBalancer Service
 for you (if supported by your cloud provider).</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/nginx-ingress/index.ts#L67">nginx-ingress/index.ts:67</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L72">nginx-ingress/index.ts:72</a></em></p>
 <hr />
 <h3 id="optional-replicas"><code class="codehilite"><span class="err">Optional</span></code> replicas<a class="headerlink" href="#optional-replicas" title="Permanent link"> ¶</a></h3>
 <p>• <strong>replicas</strong>? : <em>pulumi.Input‹number›</em></p>
 <p>how many nginx ingress controller
-replicas should be deployed.
-defaults to 1</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/nginx-ingress/index.ts#L57">nginx-ingress/index.ts:57</a></em></p>
+replicas should be deployed.</p>
+<p>defaults to 1</p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L61">nginx-ingress/index.ts:61</a></em></p>
                 
                   
                 

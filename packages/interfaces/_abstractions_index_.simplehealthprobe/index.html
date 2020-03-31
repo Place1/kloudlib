@@ -406,19 +406,40 @@
                 
                 <h1 id="interface-simplehealthprobe">Interface: SimpleHealthProbe<a class="headerlink" href="#interface-simplehealthprobe" title="Permanent link"> ¶</a></h1>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link"> ¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>property</th>
+<th>type</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td>string</td>
+<td>url is the HTTP url that will be used by<br>kubernetes to check the readiness of the container.<br>a 2xx status code indicates the container is ready<br>to receive traffic</td>
+</tr>
+<tr>
+<td>port</td>
+<td>undefined | number</td>
+<td>port configures the HTTP port that the health check<br>will connect to</td>
+</tr>
+</tbody>
+</table>
 <h3 id="path">path<a class="headerlink" href="#path" title="Permanent link"> ¶</a></h3>
 <p>• <strong>path</strong>: <em>string</em></p>
 <p>url is the HTTP url that will be used by
 kubernetes to check the readiness of the container.
 a 2xx status code indicates the container is ready
 to receive traffic</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/abstractions/index.ts#L77">abstractions/index.ts:77</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L77">abstractions/index.ts:77</a></em></p>
 <hr />
 <h3 id="optional-port"><code class="codehilite"><span class="err">Optional</span></code> port<a class="headerlink" href="#optional-port" title="Permanent link"> ¶</a></h3>
 <p>• <strong>port</strong>? : <em>undefined | number</em></p>
 <p>port configures the HTTP port that the health check
 will connect to</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/abstractions/index.ts#L82">abstractions/index.ts:82</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L82">abstractions/index.ts:82</a></em></p>
                 
                   
                 

@@ -441,41 +441,87 @@
                 
                 <h1 id="interface-grafanainputs">Interface: GrafanaInputs<a class="headerlink" href="#interface-grafanainputs" title="Permanent link"> ¶</a></h1>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link"> ¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>property</th>
+<th>type</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dashboards</td>
+<td>Array‹<a href="../../modules/__kloudlib_grafana_/#grafanadashboard">GrafanaDashboard</a>›</td>
+<td>import dasboards into grafana.<br>defaults to undefined.</td>
+</tr>
+<tr>
+<td>datasources</td>
+<td><a href="../__kloudlib_grafana_.grafanadatasource/">GrafanaDataSource</a>[]</td>
+<td>grafana datasources</td>
+</tr>
+<tr>
+<td>ingress</td>
+<td>abstractions.Ingress</td>
+<td>ingress resource configuration<br>defaults to undefined (no ingress resource will be created)</td>
+</tr>
+<tr>
+<td>namespace</td>
+<td>pulumi.Input‹string›</td>
+<td>-</td>
+</tr>
+<tr>
+<td>persistence</td>
+<td>abstractions.Persistence</td>
+<td>persistent storage configuration<br>defaults to undefined (no persistent storage will be used)</td>
+</tr>
+<tr>
+<td>provider</td>
+<td>k8s.Provider</td>
+<td>-</td>
+</tr>
+<tr>
+<td>version</td>
+<td>undefined | string</td>
+<td>the helm chart version</td>
+</tr>
+</tbody>
+</table>
 <h3 id="optional-dashboards"><code class="codehilite"><span class="err">Optional</span></code> dashboards<a class="headerlink" href="#optional-dashboards" title="Permanent link"> ¶</a></h3>
 <p>• <strong>dashboards</strong>? : <em>Array‹<a href="../../modules/__kloudlib_grafana_/#grafanadashboard">GrafanaDashboard</a>›</em></p>
 <p>import dasboards into grafana.
 defaults to undefined.</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/grafana/index.ts#L31">grafana/index.ts:31</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/grafana/index.ts#L31">grafana/index.ts:31</a></em></p>
 <hr />
 <h3 id="optional-datasources"><code class="codehilite"><span class="err">Optional</span></code> datasources<a class="headerlink" href="#optional-datasources" title="Permanent link"> ¶</a></h3>
 <p>• <strong>datasources</strong>? : <em><a href="../__kloudlib_grafana_.grafanadatasource/">GrafanaDataSource</a>[]</em></p>
 <p>grafana datasources</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/grafana/index.ts#L35">grafana/index.ts:35</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/grafana/index.ts#L35">grafana/index.ts:35</a></em></p>
 <hr />
 <h3 id="optional-ingress"><code class="codehilite"><span class="err">Optional</span></code> ingress<a class="headerlink" href="#optional-ingress" title="Permanent link"> ¶</a></h3>
 <p>• <strong>ingress</strong>? : <em>abstractions.Ingress</em></p>
 <p>ingress resource configuration
 defaults to undefined (no ingress resource will be created)</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/grafana/index.ts#L40">grafana/index.ts:40</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/grafana/index.ts#L40">grafana/index.ts:40</a></em></p>
 <hr />
 <h3 id="optional-namespace"><code class="codehilite"><span class="err">Optional</span></code> namespace<a class="headerlink" href="#optional-namespace" title="Permanent link"> ¶</a></h3>
 <p>• <strong>namespace</strong>? : <em>pulumi.Input‹string›</em></p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/grafana/index.ts#L22">grafana/index.ts:22</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/grafana/index.ts#L22">grafana/index.ts:22</a></em></p>
 <hr />
 <h3 id="optional-persistence"><code class="codehilite"><span class="err">Optional</span></code> persistence<a class="headerlink" href="#optional-persistence" title="Permanent link"> ¶</a></h3>
 <p>• <strong>persistence</strong>? : <em>abstractions.Persistence</em></p>
 <p>persistent storage configuration
 defaults to undefined (no persistent storage will be used)</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/grafana/index.ts#L45">grafana/index.ts:45</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/grafana/index.ts#L45">grafana/index.ts:45</a></em></p>
 <hr />
 <h3 id="optional-provider"><code class="codehilite"><span class="err">Optional</span></code> provider<a class="headerlink" href="#optional-provider" title="Permanent link"> ¶</a></h3>
 <p>• <strong>provider</strong>? : <em>k8s.Provider</em></p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/grafana/index.ts#L21">grafana/index.ts:21</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/grafana/index.ts#L21">grafana/index.ts:21</a></em></p>
 <hr />
 <h3 id="optional-version"><code class="codehilite"><span class="err">Optional</span></code> version<a class="headerlink" href="#optional-version" title="Permanent link"> ¶</a></h3>
 <p>• <strong>version</strong>? : <em>undefined | string</em></p>
 <p>the helm chart version</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/grafana/index.ts#L26">grafana/index.ts:26</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/grafana/index.ts#L26">grafana/index.ts:26</a></em></p>
                 
                   
                 

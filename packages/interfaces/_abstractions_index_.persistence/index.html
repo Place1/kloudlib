@@ -413,11 +413,37 @@
                 
                 <h1 id="interface-persistence">Interface: Persistence<a class="headerlink" href="#interface-persistence" title="Permanent link"> ¶</a></h1>
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link"> ¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>property</th>
+<th>type</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>enabled</td>
+<td>pulumi.Input‹boolean›</td>
+<td>if ingress should be enabled or not<br>defaults to true</td>
+</tr>
+<tr>
+<td>sizeGB</td>
+<td>undefined | number</td>
+<td>the size of the persistent volume in Gigabytes<br>non-interger values are supported<br>note that some cloud providers have a minimum<br>volume size that is used if your choice is too small</td>
+</tr>
+<tr>
+<td>storageClass</td>
+<td>undefined | string</td>
+<td>the storage class for the persistent volume<br>defaults to undefined (i.e. use the cluster's default storage class)</td>
+</tr>
+</tbody>
+</table>
 <h3 id="optional-enabled"><code class="codehilite"><span class="err">Optional</span></code> enabled<a class="headerlink" href="#optional-enabled" title="Permanent link"> ¶</a></h3>
 <p>• <strong>enabled</strong>? : <em>pulumi.Input‹boolean›</em></p>
 <p>if ingress should be enabled or not
 defaults to true</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/abstractions/index.ts#L40">abstractions/index.ts:40</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L40">abstractions/index.ts:40</a></em></p>
 <hr />
 <h3 id="optional-sizegb"><code class="codehilite"><span class="err">Optional</span></code> sizeGB<a class="headerlink" href="#optional-sizegb" title="Permanent link"> ¶</a></h3>
 <p>• <strong>sizeGB</strong>? : <em>undefined | number</em></p>
@@ -425,13 +451,13 @@ defaults to true</p>
 non-interger values are supported
 note that some cloud providers have a minimum
 volume size that is used if your choice is too small</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/abstractions/index.ts#L47">abstractions/index.ts:47</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L47">abstractions/index.ts:47</a></em></p>
 <hr />
 <h3 id="optional-storageclass"><code class="codehilite"><span class="err">Optional</span></code> storageClass<a class="headerlink" href="#optional-storageclass" title="Permanent link"> ¶</a></h3>
 <p>• <strong>storageClass</strong>? : <em>undefined | string</em></p>
 <p>the storage class for the persistent volume
 defaults to undefined (i.e. use the cluster's default storage class)</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/fcbd19c/packages/abstractions/index.ts#L52">abstractions/index.ts:52</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L52">abstractions/index.ts:52</a></em></p>
                 
                   
                 
