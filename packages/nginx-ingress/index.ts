@@ -26,14 +26,17 @@ export interface NginxIngressInputs {
   /**
    * mode configures nginx as either a kubernetes
    * deployment or daemonset.
+   *
    * In Deployment mode a kubernetes Deployment will be
    * created behind a kubernetes Service of type LoadBalancer.
    * The Deployment mode is intended to be used in Cloud Environments.
+   *
    * In DaemonSet mode a kubernetes DaemonSet will be created
    * without a kubernetes Service, instead, hostPorts will be
    * used by the DaemonSet containers. The DaemonSet mode is intended
    * to be used in onpremise environments where a LoadBalancer services
    * may not available.
+   *
    * defaults to Deployment mode.
    */
   mode?: NginxIngressDeploymentMode | NginxIngressDaemonSetMode;
@@ -52,6 +55,7 @@ export interface NginxIngressDeploymentMode {
   /**
    * how many nginx ingress controller
    * replicas should be deployed.
+   *
    * defaults to 1
    */
   replicas?: pulumi.Input<number>;
@@ -60,6 +64,7 @@ export interface NginxIngressDeploymentMode {
    * IP address on supported clouds.
    * This IP will need to be provisioned using the
    * appropriate cloud resource.
+   *
    * If this in left blank then kubernetes will assign
    * an IP address to the nginx-ingress LoadBalancer Service
    * for you (if supported by your cloud provider).
