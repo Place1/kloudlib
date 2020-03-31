@@ -16,7 +16,7 @@ npm install --save @kloudlib/<package>
 ```
 
 Distributing each service as a seperate NPM package means you only need to
-install what you use and each package is versioned seperatly.
+install what you use and each package is versioned separately.
 
 ## What does it look like?
 
