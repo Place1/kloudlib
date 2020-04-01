@@ -21,7 +21,8 @@
     "@pulumi/pulumi": "*.*.*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*"
+    "@kloudlib/abstractions": "*.*.*",
+    "@kloudlib/utils": "*.*.*"
   },
   "devDependencies": {
     "@pulumi/kubernetes": "*.*.*",

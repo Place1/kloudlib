@@ -12,11 +12,7 @@
         "pretty": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
-        "esModuleInterop": true,
-        "baseUrl": ".",
-        "paths": {
-            "@kloudlib/*": ["packages/*"]
-        }
+        "esModuleInterop": true
     },
     "exclude": [
         "**/node_modules",
