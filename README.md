@@ -83,7 +83,7 @@ Here's how you can get started:
 3. Bootstrap the repo: `npm run bootstrap`
 4. Generate your new package using: `./create-package.sh <your-package-name>`
     * for example: `./create-package.sh nginx-ingress`
-5. Implement your Pulumi!
+5. Implement your Pulumi code!
 
 When you're done, you can run `npm run build` from your package's folder
 or from the root folder (to build everything).
