@@ -1,0 +1,33 @@
+{
+  "name": "@kloudlib/postgresql",
+  "description": "",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/place1/kloudlib"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -r ./dist || true"
+  },
+  "peerDependencies": {
+    "@pulumi/kubernetes": "*.*.*",
+    "@pulumi/pulumi": "*.*.*",
+    "@pulumi/random": "*.*.*"
+  },
+  "dependencies": {
+    "@kloudlib/abstractions": "*.*.*"
+  },
+  "devDependencies": {
+    "@pulumi/kubernetes": "*.*.*",
+    "@pulumi/pulumi": "*.*.*",
+    "@pulumi/random": "*.*.*",
+    "typescript": "3.8.3"
+  }
+}
