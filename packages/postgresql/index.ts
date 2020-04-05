@@ -1,7 +1,7 @@
 /**
  * PostgreSQL is based off [bitnami/postgresql](https://github.com/bitnami/charts/tree/master/bitnami/postgresql)
  *
- * @module "@kloudlib/prometheus"
+ * @module "@kloudlib/postgresql"
  * @packageDocumentation
  * @example
  * ```typescript
@@ -11,9 +11,11 @@
  *   // ...
  * });
  *
+ * pg.host
+ * pg.port
+ * pg.database
  * pg.username
  * pg.password
- * pg.database
  * ```
  */
 
@@ -71,13 +73,8 @@ export interface PostgreSQLInputs {
 
 export interface PostgresqlReplication {
   /**
-   * enable postgresql read replicas
-   * defaults of false
-   */
-  enabled?: pulumi.Input<boolean>;
-  /**
    * the number of read replicas
-   * defaults to 1
+   * defaults to 0
    */
   replicas?: pulumi.Input<number>;
   /**
@@ -111,7 +108,11 @@ export interface PostgreSQLOutputs {
   username: pulumi.Output<string>;
   password: pulumi.Output<string>;
   database: pulumi.Output<string>;
-  replicationPassword?: pulumi.Output<string>;
+  host: pulumi.Output<string>;
+  port: pulumi.Output<number>;
+  readReplicasHost: pulumi.Output<string>;
+  readReplicasPort: pulumi.Output<number>;
+  replicationPassword: pulumi.Output<string>;
 }
 
 /**
@@ -122,28 +123,44 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
   readonly username: pulumi.Output<string>;
   readonly password: pulumi.Output<string>;
   readonly database: pulumi.Output<string>;
-  readonly replicationPassword?: pulumi.Output<string>;
+  readonly host: pulumi.Output<string>;
+  readonly port: pulumi.Output<number>;
+  readonly readReplicasHost: pulumi.Output<string>;
+  readonly readReplicasPort: pulumi.OutputInstance<number>;
+  readonly replicationPassword: pulumi.Output<string>;
 
   constructor(name: string, props?: PostgreSQLInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PostgreSQL', name, props, opts);
 
-    this.username = pulumi.output(props?.username ?? 'postgresql');
-    this.password = pulumi.output(
-      props?.password ??
-        new random.RandomPassword('postgresql-password', {
-          length: 32,
-        }, { parent: this }).result
-    );
+    this.host = pulumi.output('postgresql'); // TODO:
+    this.port = pulumi.output(5432);
     this.database = pulumi.output(props?.database ?? 'db');
-
-    if (props?.replication?.enabled) {
-      this.replicationPassword = pulumi.output(
-        props.replication.replicationPassword ||
-          new random.RandomPassword('postgresql-replication-password', {
+    this.username = pulumi.output(props?.username ?? 'postgresql');
+    this.password = pulumi.secret(
+      props?.password ??
+        new random.RandomPassword(
+          'postgresql-password',
+          {
             length: 32,
-          }, { parent: this }).result
-      );
-    }
+            special: false,
+          },
+          { parent: this }
+        ).result
+    );
+
+    this.readReplicasHost = pulumi.output('postgresql-read');
+    this.readReplicasPort = pulumi.output(5432);
+    this.replicationPassword = pulumi.secret(
+      props?.replication?.replicationPassword ??
+        new random.RandomPassword(
+          'postgresql-replication-password',
+          {
+            length: 32,
+            special: false,
+          },
+          { parent: this }
+        ).result
+    );
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'postgresql',
@@ -154,22 +171,42 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
     new k8s.helm.v2.Chart(
       'postgresql',
       {
+        namespace: props?.namespace,
         chart: this.meta.chart,
         version: this.meta.version,
         fetchOpts: {
           repo: this.meta.repo,
         },
+        // transformations: [replaceApiVersion('StatefulSet')]
         values: {
-          postgresqlUsername: this.username,
-          postgresqlPassword: this.password,
-          postgresqlDatabase: this.database,
+          global: {
+            postgresql: {
+              postgresqlUsername: this.username,
+              postgresqlPassword: this.password,
+              postgresqlDatabase: this.database,
+              replicationPassword: this.replicationPassword,
+            },
+          },
           replication: {
-            enabled: props?.replication?.enabled ?? false,
+            // Replication is always enabled.
+            // The bitnami/postgresql chart deployes a completely
+            // different statefulset + pvc for the master instance
+            // when replication is on or off.
+            // This behaviour makes the chart dangerous to use because
+            // simply "enabling replication" essentially deletes your
+            // current single master db instance.
+            // To resolve this usability issue we'll leave replication
+            // enabled but default the number of read replicas to 0.
+            // This configuration means it's safe for a user to start
+            // their deployment without read replicas (single instance)
+            // and then later increase the number of read replicas without
+            // downtime.
+            enabled: true,
             user: 'repl_user',
             password: this.replicationPassword,
-            slaveReplicas: props?.replication?.replicas,
-            synchronousCommit: props?.replication?.synchronousCommit,
-            numSynchronousReplicas: props?.replication?.numSynchronousReplicas,
+            slaveReplicas: props?.replication?.replicas ?? 0,
+            synchronousCommit: props?.replication?.synchronousCommit ?? 'off',
+            numSynchronousReplicas: props?.replication?.numSynchronousReplicas ?? 0,
           },
           metrics: {
             enabled: props?.metrics?.enabled,
