@@ -60,6 +60,7 @@ export class ImagePullSecret extends pulumi.ComponentResource implements ImagePu
         },
       },
       {
+        parent: this,
         provider: props.provider,
       }
     );
