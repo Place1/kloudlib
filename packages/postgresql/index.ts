@@ -23,6 +23,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
 import * as abstractions from '@kloudlib/abstractions';
+import * as utils from '@kloudlib/utils';
 
 export interface PostgreSQLInputs {
   /**
@@ -177,7 +178,22 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
         fetchOpts: {
           repo: this.meta.repo,
         },
-        // transformations: [replaceApiVersion('StatefulSet')]
+        transformations: [
+          utils.replaceApiVersion('StatefulSet', 'apps/v1beta2', 'apps/v1'),
+          (obj) => {
+            // If there are no replicas the helm chart will still create the
+            // postgres-read service and pulumi will await pods behind it.
+            // Given there are no replicas we need to tell pulumi to skip waiting.
+            if (!props?.replication?.replicas) {
+              if (obj.kind === 'Service' && obj.metadata.name === `postgresql-read`) {
+                if (!obj.metadata.annotations) {
+                  obj.metadata.annotations = {};
+                }
+                obj.metadata.annotations['pulumi.com/skipAwait'] = 'true';
+              }
+            }
+          },
+        ],
         values: {
           global: {
             postgresql: {
