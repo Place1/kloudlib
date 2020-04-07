@@ -51,7 +51,7 @@ export interface PostgreSQLInputs {
   password?: pulumi.Input<string>;
   /**
    * PostgreSQL database name
-   * defaults to db
+   * defaults to postgres
    */
   database?: pulumi.Input<string>;
   /**
@@ -133,10 +133,10 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
   constructor(name: string, props?: PostgreSQLInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PostgreSQL', name, props, opts);
 
-    this.host = pulumi.output('postgresql'); // TODO:
+    this.host = pulumi.output('postgresql');
     this.port = pulumi.output(5432);
-    this.database = pulumi.output(props?.database ?? 'db');
-    this.username = pulumi.output(props?.username ?? 'postgresql');
+    this.database = pulumi.output(props?.database ?? 'postgres');
+    this.username = pulumi.output(props?.username ?? 'postgres');
     this.password = pulumi.secret(
       props?.password ??
         new random.RandomPassword(
