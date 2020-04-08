@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/oauth-proxy",
   "description": "",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -22,7 +22,8 @@
     "@pulumi/random": "*.*.*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*"
+    "@kloudlib/abstractions": "*.*.*",
+    "@kloudlib/utils": "*.*.*"
   },
   "devDependencies": {
     "@pulumi/kubernetes": "*.*.*",

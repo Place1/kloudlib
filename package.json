@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "build": "lerna run --parallel build",
+    "build": "lerna run build",
     "clean": "lerna run --parallel clean",
     "typedoc": "typedoc",
     "mkdocs-publish": "npm run typedoc && cd docs && mkdocs gh-deploy",
