@@ -1,5 +1,5 @@
 /**
- * @module "@kloudlib/prometheus"
+ * @module "@kloudlib/my-component"
  * @packageDocumentation
  * @example
  * ```typescript

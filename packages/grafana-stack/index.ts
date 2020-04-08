@@ -56,12 +56,12 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
           {
             name: 'prometheus',
             type: 'prometheus',
-            url: 'http://prometheus-prometheus-server',
+            url: 'http://prometheus-server',
           },
           {
             name: 'loki',
             type: 'loki',
-            url: 'http://loki-loki:3100',
+            url: 'http://loki:3100',
           },
         ],
         persistence: {

@@ -23,6 +23,11 @@ export interface PrometheusInputs {
    */
   version?: string;
   /**
+   * how often prometheus should scrape metrics
+   * defaults to 60
+   */
+  scrapeIntervalSeconds?: number;
+  /**
    * the retention time for recorded metrics in hours
    * defaults to 7 days
    */
@@ -50,13 +55,13 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'prometheus',
-      version: props?.version ?? '9.7.2',
+      version: props?.version ?? '11.0.4',
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
     // https://github.com/helm/charts/tree/master/stable/prometheus
     const prometheus = new k8s.helm.v2.Chart(
-      `${name}-prometheus`,
+      'prometheus',
       {
         namespace: props?.namespace,
         chart: this.meta.chart,
@@ -66,6 +71,9 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
         },
         values: {
           // https://github.com/helm/charts/blob/master/stable/prometheus/values.yaml
+          global: {
+            scrape_interval: `${props?.scrapeIntervalSeconds ?? 60}s`,
+          },
           server: {
             retention: pulumi.interpolate`${props?.retentionHours || 168}h`,
             strategy: {

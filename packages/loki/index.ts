@@ -57,12 +57,12 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'loki-stack',
-      version: props?.version ?? '0.24.0',
+      version: props?.version ?? '0.33.0',
       repo: 'https://grafana.github.io/loki/charts',
     });
 
     const loki = new k8s.helm.v2.Chart(
-      `${name}-loki`,
+      'loki',
       {
         namespace: props?.namespace,
         chart: this.meta.chart,

@@ -15,7 +15,6 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
 import * as abstractions from '@kloudlib/abstractions';
-import { replaceApiVersion } from '@kloudlib/utils';
 
 export interface GrafanaInputs {
   provider?: k8s.Provider;
@@ -82,7 +81,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
     this.ingress = pulumi.output(props?.ingress);
     this.persistence = pulumi.output(props?.persistence);
 
-    const password = new random.RandomString(
+    const password = new random.RandomPassword(
       'grafana-admin-password',
       {
         length: 32,
@@ -94,16 +93,16 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
     );
 
     this.adminUsername = pulumi.output('admin');
-    this.adminPassword = password.result;
+    this.adminPassword = pulumi.secret(password.result);
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'grafana',
-      version: props?.version ?? '4.2.2',
+      version: props?.version ?? '5.0.10',
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
     const grafana = new k8s.helm.v2.Chart(
-      `${name}-grafana`,
+      'grafana',
       {
         namespace: props?.namespace,
         chart: this.meta.chart,
@@ -111,7 +110,6 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
         fetchOpts: {
           repo: this.meta.repo,
         },
-        transformations: [replaceApiVersion('Ingress', 'extensions/v1beta1', 'networking.k8s.io/v1beta1')],
         values: {
           adminUser: this.adminUsername,
           adminPassword: this.adminPassword,

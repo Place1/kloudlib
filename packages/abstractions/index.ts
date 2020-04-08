@@ -34,8 +34,7 @@ export interface Ingress {
 
 export interface Persistence {
   /**
-   * if ingress should be enabled or not
-   * defaults to true
+   * if persistence should be enabled or not
    */
   enabled?: pulumi.Input<boolean>;
   /**
