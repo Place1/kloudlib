@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/utils",
   "description": "",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,15 +15,5 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -r ./dist || true"
-  },
-  "peerDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*"
-  },
-  "dependencies": {
-    "@kloudlib/abstractions": "*.*.*"
-  },
-  "devDependencies": {
-    "typescript": "3.8.3"
   }
 }
