@@ -183,6 +183,12 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
               obj.spec.template.annotations['linkerd.io/inject'] = 'disabled';
               obj.spec.template.annotations['sidecar.istio.io/inject'] = 'false';
             }
+            if (obj.kind === 'Deployment') {
+              if (!obj.spec.template.annotations) {
+                obj.spec.template.annotations = {};
+              }
+              obj.spec.template.metadata.annotations.rollme = '';
+            }
           },
         ],
         values: {
