@@ -162,6 +162,10 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
         ).result
     );
 
+    this.serviceName = pulumi.output(`${name}-minio`);
+
+    this.servicePort = pulumi.output(80);
+
     this.ingress = props?.ingress && pulumi.output(props?.ingress);
 
     this.buckets = props?.buckets && pulumi.output(props?.buckets);
@@ -234,7 +238,5 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
       }
     );
 
-    this.serviceName = chart.getResource('v1/Service', name).metadata.name;
-    this.servicePort = pulumi.output(80);
   }
 }
