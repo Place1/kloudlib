@@ -73,6 +73,10 @@ export interface MinioInputs {
    */
   drivesPerNode?: pulumi.Input<number>;
   /**
+   * Configure ingress for minio
+   */
+  ingress?: abstractions.Ingress;
+  /**
    * Configure persistence for minio.
    * Defaults to enabled with 10Gi size.
    */
@@ -105,6 +109,7 @@ export interface MinioOutputs {
   secretKey: pulumi.Output<string>;
   serviceName: pulumi.Output<string>;
   servicePort: pulumi.Output<number>;
+  ingress?: pulumi.Output<abstractions.Ingress>;
   buckets?: pulumi.Output<MinioBucket[]>;
 }
 
@@ -112,12 +117,12 @@ export interface MinioOutputs {
  * @noInheritDoc
  */
 export class Minio extends pulumi.ComponentResource implements MinioOutputs {
-
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
   readonly accessKey: pulumi.Output<string>;
   readonly secretKey: pulumi.Output<string>;
   readonly serviceName: pulumi.Output<string>;
   readonly servicePort: pulumi.OutputInstance<number>;
+  readonly ingress?: pulumi.Output<abstractions.Ingress>;
   readonly buckets?: pulumi.Output<MinioBucket[]>;
 
   constructor(name: string, props?: MinioInputs, opts?: pulumi.CustomResourceOptions) {
@@ -129,67 +134,100 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    this.accessKey = pulumi.secret(props?.accessKey ?? new random.RandomPassword('minio-access-key', {
-      length: 20,
-      special: false,
-    }, {
-      parent: this,
-    }).result);
+    this.accessKey = pulumi.secret(
+      props?.accessKey ??
+        new random.RandomPassword(
+          'minio-access-key',
+          {
+            length: 20,
+            special: false,
+          },
+          {
+            parent: this,
+          }
+        ).result
+    );
 
-    this.secretKey = pulumi.secret(props?.secretKey ?? new random.RandomPassword('minio-secret-key', {
-      length: 40,
-      special: false,
-    }, {
-      parent: this,
-    }).result);
+    this.secretKey = pulumi.secret(
+      props?.secretKey ??
+        new random.RandomPassword(
+          'minio-secret-key',
+          {
+            length: 40,
+            special: false,
+          },
+          {
+            parent: this,
+          }
+        ).result
+    );
+
+    this.ingress = props?.ingress && pulumi.output(props?.ingress);
 
     this.buckets = props?.buckets && pulumi.output(props?.buckets);
 
-    const chart = new k8s.helm.v2.Chart(name, {
-      chart: this.meta.chart,
-      version: this.meta.version,
-      fetchOpts: {
-        repo: this.meta.repo,
-      },
-      transformations: [
-        (obj) => {
-          if (obj.kind === 'Job') {
-            if (!obj.spec.template.annotations) {
-              obj.spec.template.annotations = {};
+    const chart = new k8s.helm.v2.Chart(
+      name,
+      {
+        chart: this.meta.chart,
+        version: this.meta.version,
+        fetchOpts: {
+          repo: this.meta.repo,
+        },
+        transformations: [
+          (obj) => {
+            if (obj.kind === 'Job') {
+              if (!obj.spec.template.annotations) {
+                obj.spec.template.annotations = {};
+              }
+              obj.spec.template.annotations['linkerd.io/inject'] = 'disabled';
+              obj.spec.template.annotations['sidecar.istio.io/inject'] = 'false';
             }
-            obj.spec.template.annotations['linkerd.io/inject'] = 'disabled';
-            obj.spec.template.annotations['sidecar.istio.io/inject'] = 'false';
-          }
+          },
+        ],
+        values: {
+          mode: props?.mode ?? 'standalone',
+          replicas: props?.replicas ?? 1,
+          zones: props?.zones ?? 1,
+          drivesPerNode: props?.drivesPerNode ?? 1,
+          accessKey: this.accessKey,
+          secretKey: this.secretKey,
+          buckets: props?.buckets,
+          service: {
+            port: 80,
+          },
+          ingress: {
+            enabled: props?.ingress?.enabled ?? false,
+            annotations: {
+              'kubernetes.io/ingress.class': props?.ingress?.class ?? 'nginx',
+              'kubernetes.io/tls-acme': props?.ingress?.tls === false ? 'false' : 'true',
+              ...props?.ingress?.annotations,
+            },
+            hosts: props?.ingress?.hosts,
+            tls: [
+              {
+                hosts: props?.ingress?.hosts,
+                secretName: `tls-${name}`,
+              },
+            ],
+          },
+          persistence: {
+            enabled: props?.persistence?.enabled ?? true,
+            size: `${props?.persistence?.sizeGB ?? 10}Gi`,
+            storageClass: props?.persistence?.storageClass,
+          },
+          resources: props?.resources,
         },
-      ],
-      values: {
-        mode: props?.mode ?? 'standalone',
-        replicas: props?.replicas ?? 1,
-        zones: props?.zones ?? 1,
-        drivesPerNode: props?.drivesPerNode ?? 1,
-        accessKey: this.accessKey,
-        secretKey: this.secretKey,
-        buckets: props?.buckets,
-        service: {
-          port: 80,
-        },
-        persistence: {
-          enabled: props?.persistence?.enabled ?? true,
-          size: `${props?.persistence?.sizeGB ?? 10}Gi`,
-          storageClass: props?.persistence?.storageClass,
-        },
-        resources: props?.resources,
       },
-    }, {
-      parent: this,
-      providers: props?.provider && {
-        kubernetes: props?.provider
-      },
-    });
+      {
+        parent: this,
+        providers: props?.provider && {
+          kubernetes: props?.provider,
+        },
+      }
+    );
 
     this.serviceName = chart.getResource('v1/Service', name).metadata.name;
     this.servicePort = pulumi.output(80);
-
   }
-
 }
