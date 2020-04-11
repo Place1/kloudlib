@@ -169,6 +169,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
     const chart = new k8s.helm.v2.Chart(
       name,
       {
+        namespace: props?.namespace,
         chart: this.meta.chart,
         version: this.meta.version,
         fetchOpts: {
