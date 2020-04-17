@@ -11,7 +11,7 @@ export interface AppInputs {
    * the path to a folder containing
    * a Dockerfile or the path to a docker file
    */
-  src: string;
+  src: string | docker.DockerBuild;
   /**
    * a fully qualified docker image name without a tag
    * e.g. registry.example.com/group/image-name
@@ -135,18 +135,11 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   }
 
   private createDockerImage(name: string, props: AppInputs): docker.Image {
-    const build: docker.DockerBuild = fs.statSync(props.src).isDirectory()
-      ? {
-          context: props.src,
-        }
-      : {
-          dockerfile: props.src,
-        };
     return new docker.Image(
       `${name}-image`,
       {
         imageName: props.imageName,
-        build: build,
+        build: props.src,
       },
       {
         parent: this,
