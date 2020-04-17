@@ -123,7 +123,7 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
     // also require updating. Please follow the online documentation
     // when updating cert manager closely.
     // https://github.com/jetstack/cert-manager/tree/master/deploy
-    const certManager = new k8s.helm.v2.Chart(
+    const certManager = new k8s.helm.v3.Chart(
       'cert-manager',
       {
         namespace: props?.namespace,

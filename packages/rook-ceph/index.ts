@@ -215,7 +215,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
   }
 
   private createRookOperator(props?: RookCephInputs) {
-    return new k8s.helm.v2.Chart(
+    return new k8s.helm.v3.Chart(
       'rook-ceph',
       {
         namespace: props?.namespace,
@@ -239,7 +239,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
     );
   }
 
-  private createToolbox(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v2.Chart) {
+  private createToolbox(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v3.Chart) {
     const toolboxName = `${name}-toolbox`;
     return new k8s.apps.v1.Deployment(
       'rook-toolbox',
@@ -347,7 +347,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
     );
   }
 
-  private createDefaultCluster(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v2.Chart) {
+  private createDefaultCluster(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v3.Chart) {
     return new k8s.apiextensions.CustomResource(
       'ceph-cluster',
       {

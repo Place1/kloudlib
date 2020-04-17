@@ -61,7 +61,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
       repo: 'https://grafana.github.io/loki/charts',
     });
 
-    const loki = new k8s.helm.v2.Chart(
+    const loki = new k8s.helm.v3.Chart(
       'loki',
       {
         namespace: props?.namespace,

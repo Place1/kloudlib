@@ -82,10 +82,10 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
       repo: 'https://helm.linkerd.io/stable',
     });
 
-    let cniPlugin: k8s.helm.v2.Chart | undefined;
+    let cniPlugin: k8s.helm.v3.Chart | undefined;
 
     if (props?.enableCNI) {
-      cniPlugin = new k8s.helm.v2.Chart(
+      cniPlugin = new k8s.helm.v3.Chart(
         'linkerd-cni-plugin',
         {
           namespace: props.namespace,
@@ -203,7 +203,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
       });
     }
 
-    new k8s.helm.v2.Chart(
+    new k8s.helm.v3.Chart(
       'linkerd',
       {
         namespace: props?.namespace,

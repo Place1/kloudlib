@@ -169,7 +169,7 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
       repo: 'https://charts.bitnami.com/bitnami',
     });
 
-    new k8s.helm.v2.Chart(
+    new k8s.helm.v3.Chart(
       'postgresql',
       {
         namespace: props?.namespace,

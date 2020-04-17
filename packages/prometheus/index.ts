@@ -60,7 +60,7 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
     });
 
     // https://github.com/helm/charts/tree/master/stable/prometheus
-    const prometheus = new k8s.helm.v2.Chart(
+    const prometheus = new k8s.helm.v3.Chart(
       'prometheus',
       {
         namespace: props?.namespace,

@@ -101,7 +101,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    const grafana = new k8s.helm.v2.Chart(
+    const grafana = new k8s.helm.v3.Chart(
       'grafana',
       {
         namespace: props?.namespace,

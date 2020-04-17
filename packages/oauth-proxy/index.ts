@@ -140,7 +140,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    new k8s.helm.v2.Chart(
+    new k8s.helm.v3.Chart(
       `${name}-oauthproxy`,
       {
         namespace: props.namespace,

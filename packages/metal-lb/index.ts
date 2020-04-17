@@ -50,7 +50,7 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    const metallb = new k8s.helm.v2.Chart(
+    const metallb = new k8s.helm.v3.Chart(
       `${name}-metallb`,
       {
         namespace: props?.namespace,
