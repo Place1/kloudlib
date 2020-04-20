@@ -41,6 +41,12 @@ export interface NginxIngressInputs {
    */
   mode?: NginxIngressDeploymentMode | NginxIngressDaemonSetMode;
   /**
+   * config sets nginx config map entries.
+   *
+   * see: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md
+   */
+  config?: Record<string, string>;
+  /**
    * configure any L4 TCP services
    */
   tcpServices?: Record<number, L4ServiceBackend>;
@@ -127,7 +133,8 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
           defaultBackend: {
             enabled: false,
           },
-          controller: merge({}, this.values(props), {
+          controller: merge({}, this.controllerValues(props), {
+            config: props?.config,
             metrics: {
               enabled: true,
               service: {
@@ -155,7 +162,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
     );
   }
 
-  private values(props?: NginxIngressInputs) {
+  private controllerValues(props?: NginxIngressInputs) {
     switch (props?.mode?.kind) {
       case 'DaemonSet':
         return this.daemonSetValues(props?.mode);
