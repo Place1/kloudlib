@@ -333,6 +333,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           annotations: {
             'kubernetes.io/ingress.class': props.ingress?.class ?? 'nginx',
             'kubernetes.io/tls-acme': 'true',
+            ...props.ingress?.annotations,
           },
         },
         spec: {
