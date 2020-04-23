@@ -56,13 +56,13 @@ export interface Persistence {
  * resource request/limit value format
  */
 export interface ComputeResources {
-  requests: {
-    cpu: string;
-    memory: string;
+  requests?: {
+    cpu?: string;
+    memory?: string;
   };
-  limits: {
-    cpu: string;
-    memory: string;
+  limits?: {
+    cpu?: string;
+    memory?: string;
   };
 }
 

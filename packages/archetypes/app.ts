@@ -157,7 +157,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     }
 
     if (props.secrets && Object.keys(props.secrets).length > 0) {
-      new k8s.core.v1.Secret(
+      const secret = new k8s.core.v1.Secret(
         `${name}-secrets`,
         {
           metadata: {
@@ -180,7 +180,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           name: key,
           valueFrom: {
             secretKeyRef: {
-              name: name,
+              name: secret.metadata.name,
               key: key,
             },
           },
