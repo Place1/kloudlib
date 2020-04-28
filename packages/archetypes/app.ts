@@ -11,12 +11,12 @@ export interface AppInputs {
    * the path to a folder containing
    * a Dockerfile or the path to a docker file
    */
-  src: string | docker.DockerBuild;
+  src?: string | docker.DockerBuild;
   /**
    * a fully qualified docker image name without a tag
    * e.g. registry.example.com/group/image-name
    */
-  imageName: string;
+  imageName: pulumi.Input<string>;
   /**
    * replicas of your service
    * defaults to 1
@@ -74,20 +74,15 @@ export interface AppOutputs {
   /**
    * the internal kubernetes service name
    */
-  readonly serviceName: pulumi.Output<string>;
+  readonly service: k8s.core.v1.Service;
   /**
    * the internal kubernetes deployment name
    */
-  readonly deploymentName: pulumi.Output<string>;
+  readonly deployment: k8s.apps.v1.Deployment;
   /**
    * the docker image that was build for this app
    */
   readonly dockerImage: pulumi.Output<string>;
-  /**
-   * a kubectl command to access this
-   * kubernetes service locally for your convinience
-   */
-  readonly portForwardCommand: pulumi.Output<string>;
 }
 
 /**
@@ -114,24 +109,31 @@ export interface AppOutputs {
 export class App extends pulumi.ComponentResource implements AppOutputs {
   readonly namespace: pulumi.Output<string>;
   readonly ingressHosts?: pulumi.Output<string[]>;
-  readonly serviceName: pulumi.Output<string>;
-  readonly deploymentName: pulumi.Output<string>;
+  readonly service: k8s.core.v1.Service;
+  readonly deployment: k8s.apps.v1.Deployment;
   readonly dockerImage: pulumi.Output<string>;
-  readonly portForwardCommand: pulumi.Output<string>;
 
   constructor(name: string, props: AppInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:App', name, props, opts);
-    this.dockerImage = this.createDockerImage(name, props).imageName;
-    const deployment = this.createDeployment(name, props);
-    this.namespace = deployment.metadata.namespace;
-    this.deploymentName = deployment.metadata.namespace;
-    this.serviceName = this.createService(name, props).metadata.name;
+
+    // docker image
+    if (props.src) {
+      this.dockerImage = this.createDockerImage(name, props).imageName;
+    } else {
+      this.dockerImage = pulumi.output(props.imageName);
+    }
+
+    // deployment
+    this.deployment = this.createDeployment(name, props);
+    this.namespace = this.deployment.metadata.namespace;
+
+    // service
+    this.service = this.createService(name, props);
+
+    // ingress
     if (props.ingress && props.ingress.enabled !== false) {
       this.ingressHosts = this.createIngress(name, props).spec.rules.apply((rules) => rules.map((r) => r.host));
     }
-    this.portForwardCommand = pulumi.interpolate`kubectl -n ${this.namespace} port-forward service/${
-      this.serviceName
-    } 8000:${props.httpPort ?? 80}`;
   }
 
   private createDockerImage(name: string, props: AppInputs): docker.Image {
@@ -139,7 +141,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
       `${name}-image`,
       {
         imageName: props.imageName,
-        build: props.src,
+        build: props.src!,
       },
       {
         parent: this,
@@ -151,8 +153,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     const env = [];
 
     if (props.env) {
-      for (const [name, value] of Object.entries(props.env)) {
-        env.push({ name, value });
+      for (const key of Object.keys(props.env)) {
+        env.push({ name: key, value: props.env[key] });
       }
     }
 
@@ -283,6 +285,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
       {
         parent: this,
         provider: props.provider,
+        dependsOn: [this.deployment],
       }
     );
   }
@@ -345,7 +348,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                   {
                     path: '/',
                     backend: {
-                      serviceName: this.serviceName,
+                      serviceName: this.service.metadata.name,
                       servicePort: props.httpPort ?? 80,
                     },
                   },
@@ -364,6 +367,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
       {
         parent: this,
         provider: props.provider,
+        dependsOn: [this.service],
       }
     );
   }
