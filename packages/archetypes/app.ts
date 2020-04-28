@@ -33,6 +33,11 @@ export interface AppInputs {
    */
   secrets?: Record<string, pulumi.Input<string>>;
   /**
+   * secretRefs adds environment variables to your
+   * pod by referencing an existing secret.
+   */
+  secretRefs?: Record<string, pulumi.Input<{ name: pulumi.Input<string>, key: pulumi.Input<string> }>>;
+  /**
    * the http port your application listens on
    * defaults to 80
    */
@@ -184,6 +189,21 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
             secretKeyRef: {
               name: secret.metadata.name,
               key: key,
+            },
+          },
+        });
+      }
+    }
+
+    if (props.secretRefs) {
+      for (const key of Object.keys(props.secretRefs)) {
+        const secret = pulumi.output(props.secretRefs[key]);
+        env.push({
+          name: key,
+          valueFrom: {
+            secretKeyRef: {
+              name: secret.name,
+              key: secret.key,
             },
           },
         });
