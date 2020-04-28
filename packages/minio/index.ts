@@ -237,6 +237,5 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
         },
       }
     );
-
   }
 }
