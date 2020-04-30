@@ -3,10 +3,37 @@ import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
 import * as fs from 'fs';
 import * as abstractions from '@kloudlib/abstractions';
+import { VolumeInterface } from './volume';
+
+
+
+/**
+ * @noInheritDoc
+ * @example
+ * ```typescript
+ * ...,
+ * apppVolume: {
+ *  mountPath: `app/data`,
+ *  sizeGB: 1,
+ * }
+ * ....
+ * ```
+ **/
+interface ContainerVolume extends VolumeInterface {
+  /**
+   * mount location in the container. This is required.
+   */
+  mountPath: string;
+}
 
 export interface AppInputs {
   provider?: k8s.Provider;
   namespace?: pulumi.Input<string>;
+
+  /**
+   * volume information to mount 
+   */
+  containerVolumes?: ContainerVolume[],
   /**
    * the path to a folder containing
    * a Dockerfile or the path to a docker file
@@ -16,6 +43,7 @@ export interface AppInputs {
    * a fully qualified docker image name without a tag
    * e.g. registry.example.com/group/image-name
    */
+  
   imageName: pulumi.Input<string>;
   /**
    * replicas of your service
@@ -141,22 +169,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     }
   }
 
-  private createDockerImage(name: string, props: AppInputs): docker.Image {
-    return new docker.Image(
-      `${name}-image`,
-      {
-        imageName: props.imageName,
-        build: props.src!,
-      },
-      {
-        parent: this,
-      }
-    );
-  }
-
-  private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
+  private bundleEnvs(name: string, props: AppInputs) {
     const env = [];
-
     if (props.env) {
       for (const key of Object.keys(props.env)) {
         env.push({ name: key, value: props.env[key] });
@@ -193,22 +207,40 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           },
         });
       }
-    }
-
-    if (props.secretRefs) {
-      for (const key of Object.keys(props.secretRefs)) {
-        const secret = pulumi.output(props.secretRefs[key]);
-        env.push({
-          name: key,
-          valueFrom: {
-            secretKeyRef: {
-              name: secret.name,
-              key: secret.key,
+      if (props.secretRefs) {
+        for (const key of Object.keys(props.secretRefs)) {
+          const secret = pulumi.output(props.secretRefs[key]);
+          env.push({
+            name: key,
+            valueFrom: {
+              secretKeyRef: {
+                name: secret.name,
+                key: secret.key,
+              },
             },
-          },
-        });
+          });
+        }
       }
     }
+    return env;
+  }
+
+  private createDockerImage(name: string, props: AppInputs): docker.Image {
+    return new docker.Image(
+      `${name}-image`,
+      {
+        imageName: props.imageName,
+        build: props.src!,
+      },
+      {
+        parent: this,
+      }
+    );
+  }
+
+  private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
+    const env = this.bundleEnvs(name, props);
+    const volumes = this.createVolumes(name, props)
 
     return new k8s.apps.v1.Deployment(
       `${name}-deployment`,
@@ -222,6 +254,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
         },
         spec: {
           replicas: props.replicas,
+          strategy: volumes.volumes.length > 0 ? { type: 'Recreate'} : {},
           selector: {
             matchLabels: {
               app: name,
@@ -272,6 +305,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                         failureThreshold: 5,
                         initialDelaySeconds: 60,
                       },
+                      volumeMounts: volumes.volumeMounts,
                 },
               ],
               affinity: {
@@ -298,6 +332,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                       name: props.imagePullSecret,
                     },
                   ],
+              volumes: volumes.volumes,
             },
           },
         },
@@ -309,6 +344,45 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
       }
     );
   }
+
+  private createVolumes(name: string, props: AppInputs ) {
+    const volumes: k8s.types.input.core.v1.Volume[] = [];
+    const volumeMounts: k8s.types.input.core.v1.VolumeMount[] = [];
+    if (props.containerVolumes) {
+      let count = 1;
+      for(const containerVolume of props.containerVolumes) {
+        const vcName = containerVolume.name || `${name}-vol`;
+        const pvc = new k8s.core.v1.PersistentVolumeClaim(vcName, {
+          metadata: {
+            name: vcName,
+            labels: containerVolume.labels || {
+              app: vcName
+            },
+          },
+          spec: {
+            storageClassName: containerVolume.storageClass,
+            accessModes: containerVolume.accessModes || ['ReadWriteMany'],
+            resources: {
+              requests: {
+                storage: containerVolume.sizeGB ? `${containerVolume.sizeGB}Gi` : undefined,
+              }
+            }
+          }
+        }, {
+          parent: this,
+          provider: props.provider,
+        });
+        volumes.push({persistentVolumeClaim: { claimName: pvc.metadata.name }, name: vcName});
+        volumeMounts.push({name: vcName, mountPath: containerVolume.mountPath})
+        count += 1;
+      }
+    }
+    return {
+      volumes, 
+      volumeMounts,
+    };
+  }
+
 
   private createService(name: string, props: AppInputs): k8s.core.v1.Service {
     return new k8s.core.v1.Service(
