@@ -47,10 +47,13 @@ export interface AppInputs {
    */
   ingress?: abstractions.Ingress;
   /**
-   * volume information to mount volumes in 
-   * If mount path is not specified volume will be mounted under /persistence.
-   * default access mode is chosen to be: ReadWriteOnce.
-   * only one replica is allowed if persistence is used.
+   * persistence creates a PersistentVolumeClaim
+   * and mounts it into your pod.
+   * the volume will be mounted at /persistence unless
+   * persistence.mounthPath is provided.
+   * the volume only supports ReadWriteOnce access mode (currently).
+   * if persistence is used then only a single replica
+   * can be created.
    */
   persistence?: abstractions.Persistence,
   /**
@@ -217,12 +220,12 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   }
 
   private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
-    const env = this.bundleEnvs(name, props);
     const volumes = this.createVolumes(name, props)
-    let replicas = props.replicas;
-    if (volumes.volumes.length > 0) {
-      replicas = 1;
+
+    if (volumes.volumes.length > 0 && props.replicas > 1) {
+      throw new Error(`${name} config error: replicas must be 1 when using persistence`);
     }
+
     return new k8s.apps.v1.Deployment(
       `${name}-deployment`,
       {
@@ -234,7 +237,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           },
         },
         spec: {
-          replicas: replicas,
+          replicas: props.replicas ?? 1,
           strategy: volumes.volumes.length > 0 ? { type: 'Recreate'} : {},
           selector: {
             matchLabels: {
@@ -258,7 +261,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                       containerPort: props.httpPort ?? 80,
                     },
                   ],
-                  env: env,
+                  env: this.bundleEnvs(name, props),
                   resources: props.resources,
                   readinessProbe: !props.healthCheck
                     ? undefined
@@ -327,16 +330,15 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   }
 
   private createVolumes(name: string, props: AppInputs ) {
-    const volumes: k8s.types.input.core.v1.Volume[] = [];
-    const volumeMounts: k8s.types.input.core.v1.VolumeMount[] = [];
-    if (props.persistence) {
-      const vcName =`${name}-volume`;
-      const pvc = new k8s.core.v1.PersistentVolumeClaim(vcName, {
+    const volumes = new Array<k8s.types.input.core.v1.Volume>();
+    const volumeMounts = new Array<k8s.types.input.core.v1.VolumeMount>();
+    
+    if (props.persistence?.enabled) {
+      const pvc = new k8s.core.v1.PersistentVolumeClaim(`${name}-volume`, {
         metadata: {
-          name: vcName,
+          name: name,
           labels:{
-            app: vcName,
-            createdBy: 'kloudlib'
+            app: name,
           },
         },
         spec: {
@@ -345,16 +347,27 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           resources: {
             requests: {
               storage: props.persistence.sizeGB ? `${props.persistence.sizeGB}Gi` : undefined,
-            }
-          }
-        }
+            },
+          },
+        },
       }, {
         parent: this,
         provider: props.provider,
       });
-      volumes.push({persistentVolumeClaim: { claimName: pvc.metadata.name }, name: vcName});
-      volumeMounts.push({name: vcName, mountPath: props.persistence.mountPath ? props.persistence.mountPath : '/persistence'})
+
+      volumes.push({
+        name: name,
+        persistentVolumeClaim: {
+          claimName: pvc.metadata.name,
+        },
+      });
+      
+      volumeMounts.push({
+        name: name,
+        mountPath: props.persistence.mountPath ?? '/persistence',
+      });
     }
+    
     return {
       volumes, 
       volumeMounts,
