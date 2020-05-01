@@ -6,14 +6,6 @@ import * as abstractions from '@kloudlib/abstractions';
 export interface AppInputs {
   provider?: k8s.Provider;
   namespace?: pulumi.Input<string>;
-
-  /**
-   * volume information to mount volumes in 
-   * If mount path is not specified volume will be mounted under /persistence.
-   * default access mode is chosen to be: ReadWriteOnce.
-   * only one replica is allowed if persistence is used.
-   */
-  persistence?: abstractions.Persistence,
   /**
    * the path to a folder containing
    * a Dockerfile or the path to a docker file
@@ -23,7 +15,6 @@ export interface AppInputs {
    * a fully qualified docker image name without a tag
    * e.g. registry.example.com/group/image-name
    */
-  
   imageName: pulumi.Input<string>;
   /**
    * replicas of your service
@@ -55,6 +46,13 @@ export interface AppInputs {
    * defaults to undefined (no ingress)
    */
   ingress?: abstractions.Ingress;
+  /**
+   * volume information to mount volumes in 
+   * If mount path is not specified volume will be mounted under /persistence.
+   * default access mode is chosen to be: ReadWriteOnce.
+   * only one replica is allowed if persistence is used.
+   */
+  persistence?: abstractions.Persistence,
   /**
    * resource requests and limits
    * defaults to undefined (no requests or limits)
