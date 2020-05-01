@@ -222,7 +222,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
     const volumes = this.createVolumes(name, props)
 
-    if (volumes.volumes.length > 0 && props.replicas > 1) {
+    if (props.replicas && volumes.volumes.length > 0 && props.replicas > 1) {
       throw new Error(`${name} config error: replicas must be 1 when using persistence`);
     }
 
