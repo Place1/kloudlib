@@ -238,7 +238,9 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
         },
         spec: {
           replicas: props.replicas ?? 1,
-          strategy: volumes.volumes.length > 0 ? { type: 'Recreate' } : {},
+          strategy: {
+            type: volumes.volumes.length > 0 ? 'Recreate' : 'RollingUpdate',
+          },
           selector: {
             matchLabels: {
               app: name,
