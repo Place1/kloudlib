@@ -35,7 +35,7 @@ export interface AppInputs {
    * secretRefs adds environment variables to your
    * pod by referencing an existing secret.
    */
-  secretRefs?: Record<string, pulumi.Input<{ name: pulumi.Input<string>, key: pulumi.Input<string> }>>;
+  secretRefs?: Record<string, pulumi.Input<{ name: pulumi.Input<string>; key: pulumi.Input<string> }>>;
   /**
    * the http port your application listens on
    * defaults to 80
@@ -55,7 +55,7 @@ export interface AppInputs {
    * if persistence is used then only a single replica
    * can be created.
    */
-  persistence?: abstractions.Persistence,
+  persistence?: abstractions.Persistence;
   /**
    * resource requests and limits
    * defaults to undefined (no requests or limits)
@@ -220,7 +220,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   }
 
   private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
-    const volumes = this.createVolumes(name, props)
+    const volumes = this.createVolumes(name, props);
 
     if (props.replicas && volumes.volumes.length > 0 && props.replicas > 1) {
       throw new Error(`${name} config error: replicas must be 1 when using persistence`);
@@ -238,7 +238,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
         },
         spec: {
           replicas: props.replicas ?? 1,
-          strategy: volumes.volumes.length > 0 ? { type: 'Recreate'} : {},
+          strategy: volumes.volumes.length > 0 ? { type: 'Recreate' } : {},
           selector: {
             matchLabels: {
               app: name,
@@ -289,7 +289,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                         failureThreshold: 5,
                         initialDelaySeconds: 60,
                       },
-                      volumeMounts: volumes.volumeMounts,
+                  volumeMounts: volumes.volumeMounts,
                 },
               ],
               affinity: {
@@ -329,31 +329,35 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     );
   }
 
-  private createVolumes(name: string, props: AppInputs ) {
+  private createVolumes(name: string, props: AppInputs) {
     const volumes = new Array<k8s.types.input.core.v1.Volume>();
     const volumeMounts = new Array<k8s.types.input.core.v1.VolumeMount>();
-    
+
     if (props.persistence?.enabled) {
-      const pvc = new k8s.core.v1.PersistentVolumeClaim(`${name}-volume`, {
-        metadata: {
-          name: name,
-          labels:{
-            app: name,
+      const pvc = new k8s.core.v1.PersistentVolumeClaim(
+        `${name}-volume`,
+        {
+          metadata: {
+            name: name,
+            labels: {
+              app: name,
+            },
           },
-        },
-        spec: {
-          storageClassName: props.persistence.storageClass,
-          accessModes: ['ReadWriteOnce'],
-          resources: {
-            requests: {
-              storage: props.persistence.sizeGB ? `${props.persistence.sizeGB}Gi` : undefined,
+          spec: {
+            storageClassName: props.persistence.storageClass,
+            accessModes: ['ReadWriteOnce'],
+            resources: {
+              requests: {
+                storage: props.persistence.sizeGB ? `${props.persistence.sizeGB}Gi` : undefined,
+              },
             },
           },
         },
-      }, {
-        parent: this,
-        provider: props.provider,
-      });
+        {
+          parent: this,
+          provider: props.provider,
+        }
+      );
 
       volumes.push({
         name: name,
@@ -361,19 +365,18 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           claimName: pvc.metadata.name,
         },
       });
-      
+
       volumeMounts.push({
         name: name,
         mountPath: props.persistence.mountPath ?? '/persistence',
       });
     }
-    
+
     return {
-      volumes, 
+      volumes,
       volumeMounts,
     };
   }
-
 
   private createService(name: string, props: AppInputs): k8s.core.v1.Service {
     return new k8s.core.v1.Service(
