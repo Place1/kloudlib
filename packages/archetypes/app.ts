@@ -1,39 +1,17 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
-import * as fs from 'fs';
 import * as abstractions from '@kloudlib/abstractions';
-import { VolumeInterface } from './volume';
-
-
-
-/**
- * @noInheritDoc
- * @example
- * ```typescript
- * ...,
- * apppVolume: {
- *  mountPath: `app/data`,
- *  sizeGB: 1,
- * }
- * ....
- * ```
- **/
-interface ContainerVolume extends VolumeInterface {
-  /**
-   * mount location in the container. This is required.
-   */
-  mountPath: string;
-}
 
 export interface AppInputs {
   provider?: k8s.Provider;
   namespace?: pulumi.Input<string>;
 
   /**
-   * volume information to mount 
+   * volume information to mount volumes in 
+   * If mount path is not specified volume will be mounted under /persistence
    */
-  containerVolumes?: ContainerVolume[],
+  persistence?: abstractions.Persistence,
   /**
    * the path to a folder containing
    * a Dockerfile or the path to a docker file
@@ -348,34 +326,32 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
   private createVolumes(name: string, props: AppInputs ) {
     const volumes: k8s.types.input.core.v1.Volume[] = [];
     const volumeMounts: k8s.types.input.core.v1.VolumeMount[] = [];
-    if (props.containerVolumes) {
-      let count = 1;
-      for(const containerVolume of props.containerVolumes) {
-        const vcName = containerVolume.name || `${name}-vol`;
-        const pvc = new k8s.core.v1.PersistentVolumeClaim(vcName, {
-          metadata: {
-            name: vcName,
-            labels: containerVolume.labels || {
-              app: vcName
-            },
+    if (props.persistence) {
+      const vcName =`${name}-vol`;
+      const pvc = new k8s.core.v1.PersistentVolumeClaim(vcName, {
+        metadata: {
+          name: vcName,
+          labels:{
+            app: vcName,
+            createdBy: 'kloudlib'
           },
-          spec: {
-            storageClassName: containerVolume.storageClass,
-            accessModes: containerVolume.accessModes || ['ReadWriteMany'],
-            resources: {
-              requests: {
-                storage: containerVolume.sizeGB ? `${containerVolume.sizeGB}Gi` : undefined,
-              }
+        },
+        spec: {
+          storageClassName: props.persistence.storageClass,
+          // as almost all of the plugin support this action.
+          accessModes: ['ReadWriteOnce'],
+          resources: {
+            requests: {
+              storage: props.persistence.sizeGB ? `${props.persistence.sizeGB}Gi` : undefined,
             }
           }
-        }, {
-          parent: this,
-          provider: props.provider,
-        });
-        volumes.push({persistentVolumeClaim: { claimName: pvc.metadata.name }, name: vcName});
-        volumeMounts.push({name: vcName, mountPath: containerVolume.mountPath})
-        count += 1;
-      }
+        }
+      }, {
+        parent: this,
+        provider: props.provider,
+      });
+      volumes.push({persistentVolumeClaim: { claimName: pvc.metadata.name }, name: vcName});
+      volumeMounts.push({name: vcName, mountPath: props.persistence.mountPath ? props.persistence.mountPath : '/persistence'})
     }
     return {
       volumes, 
