@@ -49,6 +49,12 @@ export interface Persistence {
    * defaults to undefined (i.e. use the cluster's default storage class)
    */
   storageClass?: string;
+  /**
+   * the path within the pod to mount the volume
+   * this value is typically ignored for many helm
+   * based deployments which require a fixed path.
+   */
+  mountPath?: string;
 }
 
 /**
