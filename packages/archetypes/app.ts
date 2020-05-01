@@ -1,7 +1,6 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as docker from '@pulumi/docker';
-import * as fs from 'fs';
 import * as abstractions from '@kloudlib/abstractions';
 
 export interface AppInputs {
@@ -47,6 +46,16 @@ export interface AppInputs {
    * defaults to undefined (no ingress)
    */
   ingress?: abstractions.Ingress;
+  /**
+   * persistence creates a PersistentVolumeClaim
+   * and mounts it into your pod.
+   * the volume will be mounted at /persistence unless
+   * persistence.mounthPath is provided.
+   * the volume only supports ReadWriteOnce access mode (currently).
+   * if persistence is used then only a single replica
+   * can be created.
+   */
+  persistence?: abstractions.Persistence,
   /**
    * resource requests and limits
    * defaults to undefined (no requests or limits)
@@ -141,22 +150,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     }
   }
 
-  private createDockerImage(name: string, props: AppInputs): docker.Image {
-    return new docker.Image(
-      `${name}-image`,
-      {
-        imageName: props.imageName,
-        build: props.src!,
-      },
-      {
-        parent: this,
-      }
-    );
-  }
-
-  private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
+  private bundleEnvs(name: string, props: AppInputs) {
     const env = [];
-
     if (props.env) {
       for (const key of Object.keys(props.env)) {
         env.push({ name: key, value: props.env[key] });
@@ -193,21 +188,42 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           },
         });
       }
-    }
-
-    if (props.secretRefs) {
-      for (const key of Object.keys(props.secretRefs)) {
-        const secret = pulumi.output(props.secretRefs[key]);
-        env.push({
-          name: key,
-          valueFrom: {
-            secretKeyRef: {
-              name: secret.name,
-              key: secret.key,
+      if (props.secretRefs) {
+        for (const key of Object.keys(props.secretRefs)) {
+          const secret = pulumi.output(props.secretRefs[key]);
+          env.push({
+            name: key,
+            valueFrom: {
+              secretKeyRef: {
+                name: secret.name,
+                key: secret.key,
+              },
             },
-          },
-        });
+          });
+        }
       }
+    }
+    return env;
+  }
+
+  private createDockerImage(name: string, props: AppInputs): docker.Image {
+    return new docker.Image(
+      `${name}-image`,
+      {
+        imageName: props.imageName,
+        build: props.src!,
+      },
+      {
+        parent: this,
+      }
+    );
+  }
+
+  private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
+    const volumes = this.createVolumes(name, props)
+
+    if (props.replicas && volumes.volumes.length > 0 && props.replicas > 1) {
+      throw new Error(`${name} config error: replicas must be 1 when using persistence`);
     }
 
     return new k8s.apps.v1.Deployment(
@@ -221,7 +237,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           },
         },
         spec: {
-          replicas: props.replicas,
+          replicas: props.replicas ?? 1,
+          strategy: volumes.volumes.length > 0 ? { type: 'Recreate'} : {},
           selector: {
             matchLabels: {
               app: name,
@@ -244,7 +261,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                       containerPort: props.httpPort ?? 80,
                     },
                   ],
-                  env: env,
+                  env: this.bundleEnvs(name, props),
                   resources: props.resources,
                   readinessProbe: !props.healthCheck
                     ? undefined
@@ -272,6 +289,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                         failureThreshold: 5,
                         initialDelaySeconds: 60,
                       },
+                      volumeMounts: volumes.volumeMounts,
                 },
               ],
               affinity: {
@@ -298,6 +316,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                       name: props.imagePullSecret,
                     },
                   ],
+              volumes: volumes.volumes,
             },
           },
         },
@@ -309,6 +328,52 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
       }
     );
   }
+
+  private createVolumes(name: string, props: AppInputs ) {
+    const volumes = new Array<k8s.types.input.core.v1.Volume>();
+    const volumeMounts = new Array<k8s.types.input.core.v1.VolumeMount>();
+    
+    if (props.persistence?.enabled) {
+      const pvc = new k8s.core.v1.PersistentVolumeClaim(`${name}-volume`, {
+        metadata: {
+          name: name,
+          labels:{
+            app: name,
+          },
+        },
+        spec: {
+          storageClassName: props.persistence.storageClass,
+          accessModes: ['ReadWriteOnce'],
+          resources: {
+            requests: {
+              storage: props.persistence.sizeGB ? `${props.persistence.sizeGB}Gi` : undefined,
+            },
+          },
+        },
+      }, {
+        parent: this,
+        provider: props.provider,
+      });
+
+      volumes.push({
+        name: name,
+        persistentVolumeClaim: {
+          claimName: pvc.metadata.name,
+        },
+      });
+      
+      volumeMounts.push({
+        name: name,
+        mountPath: props.persistence.mountPath ?? '/persistence',
+      });
+    }
+    
+    return {
+      volumes, 
+      volumeMounts,
+    };
+  }
+
 
   private createService(name: string, props: AppInputs): k8s.core.v1.Service {
     return new k8s.core.v1.Service(
