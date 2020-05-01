@@ -152,6 +152,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
 
   private bundleEnvs(name: string, props: AppInputs) {
     const env = [];
+
     if (props.env) {
       for (const key of Object.keys(props.env)) {
         env.push({ name: key, value: props.env[key] });
@@ -188,21 +189,23 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           },
         });
       }
-      if (props.secretRefs) {
-        for (const key of Object.keys(props.secretRefs)) {
-          const secret = pulumi.output(props.secretRefs[key]);
-          env.push({
-            name: key,
-            valueFrom: {
-              secretKeyRef: {
-                name: secret.name,
-                key: secret.key,
-              },
+    }
+
+    if (props.secretRefs) {
+      for (const key of Object.keys(props.secretRefs)) {
+        const secret = pulumi.output(props.secretRefs[key]);
+        env.push({
+          name: key,
+          valueFrom: {
+            secretKeyRef: {
+              name: secret.name,
+              key: secret.key,
             },
-          });
-        }
+          },
+        });
       }
     }
+
     return env;
   }
 
