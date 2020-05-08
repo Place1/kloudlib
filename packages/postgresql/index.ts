@@ -133,14 +133,14 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
   constructor(name: string, props?: PostgreSQLInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PostgreSQL', name, props, opts);
 
-    this.host = pulumi.output('postgresql');
+    this.host = pulumi.output(`${name}-chart-postgresql`);
     this.port = pulumi.output(5432);
     this.database = pulumi.output(props?.database ?? 'postgres');
     this.username = pulumi.output(props?.username ?? 'postgres');
     this.password = pulumi.secret(
       props?.password ??
         new random.RandomPassword(
-          'postgresql-password',
+          `${name}-postgresql-password`,
           {
             length: 32,
             special: false,
@@ -149,12 +149,12 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
         ).result
     );
 
-    this.readReplicasHost = pulumi.output('postgresql-read');
+    this.readReplicasHost = pulumi.output(`${name}-chart-postgresql-read`);
     this.readReplicasPort = pulumi.output(5432);
     this.replicationPassword = pulumi.secret(
       props?.replication?.replicationPassword ??
         new random.RandomPassword(
-          'postgresql-replication-password',
+          `${name}-postgresql-replication-password`,
           {
             length: 32,
             special: false,
@@ -170,7 +170,7 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
     });
 
     new k8s.helm.v3.Chart(
-      'postgresql',
+      `${name}-chart`,
       {
         namespace: props?.namespace,
         chart: this.meta.chart,
@@ -185,7 +185,7 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
             // postgres-read service and pulumi will await pods behind it.
             // Given there are no replicas we need to tell pulumi to skip waiting.
             if (!props?.replication?.replicas) {
-              if (obj.kind === 'Service' && obj.metadata.name === `postgresql-read`) {
+              if (obj.kind === 'Service' && obj.metadata.name === `${name}-chart-postgresql-read`) {
                 if (!obj.metadata.annotations) {
                   obj.metadata.annotations = {};
                 }
