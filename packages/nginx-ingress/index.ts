@@ -118,7 +118,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
     });
 
     new k8s.helm.v3.Chart(
-      'nginx-ingress',
+      name,
       {
         namespace: props?.namespace,
         chart: this.meta.chart,

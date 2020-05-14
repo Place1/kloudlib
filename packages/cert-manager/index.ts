@@ -61,25 +61,55 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
   constructor(name: string, props?: CertManagerInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:CertManager', name, props, opts);
 
-    const crds = new k8s.yaml.ConfigFile(
-      `${name}-crd`,
+    const certIssuerName = `${name}-cert-issuer`;
+
+    this.meta = pulumi.output<abstractions.HelmMeta>({
+      chart: 'cert-manager',
+      version: props?.version ?? 'v0.15.0',
+      repo: 'https://charts.jetstack.io',
+    });
+
+    // Note: cert manager requires manual installation of
+    // custom resource definitions. This has been done above.
+    // When upgrading cert manager these CRDs will generally
+    // also require updating. Please follow the online documentation
+    // when updating cert manager closely.
+    // https://github.com/jetstack/cert-manager/tree/master/deploy
+    const certManager = new k8s.helm.v3.Chart(
+      name,
       {
-        file: 'https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml',
+        namespace: props?.namespace,
+        version: this.meta.version,
+        chart: this.meta.chart,
+        fetchOpts: {
+          repo: this.meta.repo,
+        },
+        values: {
+          installCRDs: true,
+          ingressShim: {
+            defaultIssuerKind: 'ClusterIssuer',
+            defaultIssuerName: certIssuerName,
+          },
+        },
       },
       {
         parent: this,
-        provider: props?.provider,
+        providers: props?.provider
+          ? {
+              kubernetes: props?.provider,
+            }
+          : {},
       }
     );
 
     const certIssuer = new k8s.apiextensions.CustomResource(
-      'cluster-issuer',
+      certIssuerName,
       {
         apiVersion: 'cert-manager.io/v1alpha2',
         kind: 'ClusterIssuer',
         metadata: {
+          name: certIssuerName,
           namespace: props?.namespace,
-          name: 'cert-issuer',
         },
         spec: {
           acme: {
@@ -106,47 +136,8 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
       },
       {
         parent: this,
-        dependsOn: crds,
         provider: props?.provider,
-      }
-    );
-
-    this.meta = pulumi.output<abstractions.HelmMeta>({
-      chart: 'cert-manager',
-      version: props?.version ?? 'v0.12.0',
-      repo: 'https://charts.jetstack.io',
-    });
-
-    // Note: cert manager requires manual installation of
-    // custom resource definitions. This has been done above.
-    // When upgrading cert manager these CRDs will generally
-    // also require updating. Please follow the online documentation
-    // when updating cert manager closely.
-    // https://github.com/jetstack/cert-manager/tree/master/deploy
-    const certManager = new k8s.helm.v3.Chart(
-      'cert-manager',
-      {
-        namespace: props?.namespace,
-        version: this.meta.version,
-        chart: this.meta.chart,
-        fetchOpts: {
-          repo: this.meta.repo,
-        },
-        values: {
-          ingressShim: {
-            defaultIssuerKind: 'ClusterIssuer',
-            defaultIssuerName: certIssuer.metadata.name,
-          },
-        },
-      },
-      {
-        parent: this,
-        dependsOn: certIssuer,
-        providers: props?.provider
-          ? {
-              kubernetes: props?.provider,
-            }
-          : {},
+        dependsOn: [certManager],
       }
     );
   }
