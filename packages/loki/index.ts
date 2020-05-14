@@ -62,7 +62,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
     });
 
     const loki = new k8s.helm.v3.Chart(
-      'loki',
+      name,
       {
         namespace: props?.namespace,
         chart: this.meta.chart,

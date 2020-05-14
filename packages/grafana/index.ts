@@ -33,6 +33,12 @@ export interface GrafanaInputs {
    */
   datasources?: GrafanaDataSource[];
   /**
+   * allowAnonymousAccess configures grafana so that
+   * users can access it without needing to login.
+   * defaults to false
+   */
+  allowAnonymousAccess?: boolean;
+  /**
    * ingress resource configuration
    * defaults to undefined (no ingress resource will be created)
    */
@@ -82,7 +88,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
     this.persistence = pulumi.output(props?.persistence);
 
     const password = new random.RandomPassword(
-      'grafana-admin-password',
+      `${name}-admin-password`,
       {
         length: 32,
         special: false,
@@ -102,7 +108,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
     });
 
     const grafana = new k8s.helm.v3.Chart(
-      'grafana',
+      name,
       {
         namespace: props?.namespace,
         chart: this.meta.chart,
@@ -153,7 +159,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
                   }
             ),
             'auth.anonymous': {
-              enabled: 'true',
+              enabled: props?.allowAnonymousAccess ? 'true' : 'false',
               org_name: 'Main Org.',
               org_role: 'Editor',
             },

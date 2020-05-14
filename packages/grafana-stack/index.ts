@@ -56,12 +56,12 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
           {
             name: 'prometheus',
             type: 'prometheus',
-            url: 'http://prometheus-server',
+            url: `http://${name}-prometheus-server`,
           },
           {
             name: 'loki',
             type: 'loki',
-            url: 'http://loki:3100',
+            url: `http://${name}-loki:3100`,
           },
         ],
         persistence: {
@@ -95,17 +95,23 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
           dashboard.datasource = 'prometheus';
         }
       });
-      this.grafana = new grafana.Grafana('grafana', merge({}, defaults.grafana, props?.grafana), { parent: this });
+      this.grafana = new grafana.Grafana(`${name}-grafana`, merge({}, defaults.grafana, props?.grafana), {
+        parent: this,
+      });
     }
 
     if (props?.loki?.enabled !== false) {
-      this.loki = new loki.Loki('loki', merge({}, defaults.loki, props?.loki), { parent: this });
+      this.loki = new loki.Loki(`${name}-loki`, merge({}, defaults.loki, props?.loki), { parent: this });
     }
 
     if (props?.prometheus?.enabled !== false) {
-      this.prometheus = new prometheus.Prometheus('prometheus', merge({}, defaults.prometheus, props?.prometheus), {
-        parent: this,
-      });
+      this.prometheus = new prometheus.Prometheus(
+        `${name}-prometheus`,
+        merge({}, defaults.prometheus, props?.prometheus),
+        {
+          parent: this,
+        }
+      );
     }
   }
 }

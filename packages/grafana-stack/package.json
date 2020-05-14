@@ -25,6 +25,7 @@
     "@kloudlib/grafana": "0.2.0",
     "@kloudlib/loki": "0.2.0",
     "@kloudlib/prometheus": "0.2.0",
+    "@pulumi/random": "^2.1.1",
     "lodash": "4.17.15"
   },
   "devDependencies": {
