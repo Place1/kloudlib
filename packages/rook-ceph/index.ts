@@ -195,7 +195,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
       repo: 'https://charts.rook.io/release',
     });
 
-    const rook = this.createRookOperator(props);
+    const rook = this.createRookOperator(name, props);
 
     if (props?.toolbox ?? true) {
       this.createToolbox(name, props, rook);
@@ -214,9 +214,9 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
     }
   }
 
-  private createRookOperator(props?: RookCephInputs) {
+  private createRookOperator(name: string, props?: RookCephInputs) {
     return new k8s.helm.v3.Chart(
-      'rook-ceph',
+      name,
       {
         namespace: props?.namespace,
         chart: this.meta.chart,
@@ -242,7 +242,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
   private createToolbox(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v3.Chart) {
     const toolboxName = `${name}-toolbox`;
     return new k8s.apps.v1.Deployment(
-      'rook-toolbox',
+      `${name}-rook-toolbox`,
       {
         metadata: {
           name: toolboxName,
@@ -349,7 +349,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
 
   private createDefaultCluster(name: string, props: RookCephInputs | undefined, rook: k8s.helm.v3.Chart) {
     return new k8s.apiextensions.CustomResource(
-      'ceph-cluster',
+      `${name}-ceph-cluster`,
       {
         apiVersion: 'ceph.rook.io/v1',
         kind: 'CephCluster',
@@ -408,7 +408,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
     cluster: k8s.apiextensions.CustomResource
   ) {
     return new k8s.apiextensions.CustomResource(
-      'storage-pool',
+      `${name}-storage-pool`,
       {
         apiVersion: 'ceph.rook.io/v1',
         kind: 'CephBlockPool',
@@ -440,7 +440,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
     return cluster.metadata.namespace.apply((namespace) => {
       namespace = namespace || 'default';
       return new k8s.storage.v1.StorageClass(
-        'storage-class',
+        `${name}-storage-class`,
         {
           metadata: {
             name: props?.storageClass?.name ?? name,

@@ -86,7 +86,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
 
     if (props?.enableCNI) {
       cniPlugin = new k8s.helm.v3.Chart(
-        'linkerd-cni-plugin',
+        `${name}-cni-plugin-chart`,
         {
           namespace: props.namespace,
           chart: 'linkerd2-cni',
@@ -107,7 +107,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
       );
     }
 
-    const certificates = this.tls(props);
+    const certificates = this.tls(name, props);
 
     let values = {
       global: {
@@ -204,7 +204,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
     }
 
     new k8s.helm.v3.Chart(
-      'linkerd',
+      name,
       {
         namespace: props?.namespace,
         chart: this.meta.chart,
@@ -230,11 +230,11 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
    * This method will generate all the root CA and the required
    * TLS certficiates.
    */
-  private tls(props?: LinkerdInputs) {
+  private tls(name: string, props?: LinkerdInputs) {
     const issuerCertValidityHours = props?.issuerCertValidityHours ?? 365 * 24;
 
     const caPK = new tls.PrivateKey(
-      'linkerd-ca-pk',
+      `${name}-linkerd-ca-pk`,
       {
         algorithm: 'ECDSA',
         ecdsaCurve: 'P256',
@@ -245,7 +245,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
     );
 
     const ca = new tls.SelfSignedCert(
-      'linkerd-ca',
+      `${name}-linkerd-ca`,
       {
         isCaCertificate: true,
         keyAlgorithm: 'ECDSA',
@@ -264,22 +264,28 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
 
     return {
       ca: ca,
-      issuer: this.cert('linkerd-issuer', ca, caPK, 'identity.linkerd.cluster.local', issuerCertValidityHours),
+      issuer: this.cert(`${name}-linkerd-issuer`, ca, caPK, 'identity.linkerd.cluster.local', issuerCertValidityHours),
       proxyInjector: this.cert(
-        'linkerd-proxy-injector',
+        `${name}-linkerd-proxy-injector`,
         ca,
         caPK,
         pulumi.interpolate`linkerd-proxy-injector.${ns}.svc`,
         issuerCertValidityHours
       ),
       profileValidator: this.cert(
-        'linkerd-sp-validator',
+        `${name}-linkerd-sp-validator`,
         ca,
         caPK,
         pulumi.interpolate`linkerd-sp-validator.${ns}.svc`,
         issuerCertValidityHours
       ),
-      tap: this.cert('linkerd-tap', ca, caPK, pulumi.interpolate`linkerd-tap.${ns}.svc`, issuerCertValidityHours),
+      tap: this.cert(
+        `${name}-linkerd-tap`,
+        ca,
+        caPK,
+        pulumi.interpolate`linkerd-tap.${ns}.svc`,
+        issuerCertValidityHours
+      ),
     };
   }
 

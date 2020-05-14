@@ -137,7 +137,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
     this.accessKey = pulumi.secret(
       props?.accessKey ??
         new random.RandomPassword(
-          'minio-access-key',
+          `${name}-minio-access-key`,
           {
             length: 20,
             special: false,
@@ -151,7 +151,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
     this.secretKey = pulumi.secret(
       props?.secretKey ??
         new random.RandomPassword(
-          'minio-secret-key',
+          `${name}-minio-secret-key`,
           {
             length: 40,
             special: false,

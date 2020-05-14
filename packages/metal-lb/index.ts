@@ -51,7 +51,7 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
     });
 
     const metallb = new k8s.helm.v3.Chart(
-      `${name}-metallb`,
+      name,
       {
         namespace: props?.namespace,
         chart: this.meta.chart,

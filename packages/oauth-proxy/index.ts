@@ -123,7 +123,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
     super('kloudlib:OAuthProxy', name, props, opts);
 
     const cookieSecret = new random.RandomString(
-      'cookie-secret',
+      `${name}-cookie-secret`,
       {
         length: 32,
       },
@@ -141,7 +141,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
     });
 
     new k8s.helm.v3.Chart(
-      `${name}-oauthproxy`,
+      name,
       {
         namespace: props.namespace,
         chart: this.meta.chart,
