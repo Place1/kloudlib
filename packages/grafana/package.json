@@ -28,7 +28,7 @@
   "devDependencies": {
     "@pulumi/kubernetes": "*.*.*",
     "@pulumi/pulumi": "*.*.*",
-    "@pulumi/random": "^2.1.1",
+    "@pulumi/random": "*.*.*",
     "typescript": "3.8.3"
   }
 }
