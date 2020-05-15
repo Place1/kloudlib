@@ -57,6 +57,28 @@ export interface AppInputs {
    */
   persistence?: abstractions.Persistence;
   /**
+   * metrics allows you to configure prometheus scraping
+   * annotations for pods of this app.
+   * defaults to undefined
+   */
+  metrics?: {
+    /**
+     * should metrics be scraped from this application
+     * this will add prometheus scrape annotations
+     */
+    scrape: boolean;
+    /**
+     * the port that should be scraped
+     * defaults to httpPort
+     */
+    port?: number;
+    /**
+     * the path that should be scraped
+     * defaults to /metrics
+     */
+    path?: string;
+  };
+  /**
    * resource requests and limits
    * defaults to undefined (no requests or limits)
    */
@@ -251,6 +273,11 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
           },
           template: {
             metadata: {
+              annotations: props.metrics && {
+                'prometheus.io/scrape': 'true',
+                'prometheus.io/port': String(props.metrics.port ?? props.httpPort ?? 80),
+                'prometheus.io/path': props.metrics.path ?? '/metrics',
+              },
               labels: {
                 app: name,
               },
