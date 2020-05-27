@@ -1,7 +1,7 @@
 {
-  "name": "@kloudlib/postgresql",
+  "name": "@kloudlib/prometheus-postgresql-exporter",
   "description": "",
-  "version": "0.4.1",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,17 +18,14 @@
   },
   "peerDependencies": {
     "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
-    "@pulumi/random": "*.*.*"
+    "@pulumi/pulumi": "*.*.*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*",
-    "@kloudlib/utils": "*.*.*"
+    "@kloudlib/abstractions": "*.*.*"
   },
   "devDependencies": {
     "@pulumi/kubernetes": "*.*.*",
     "@pulumi/pulumi": "*.*.*",
-    "@pulumi/random": "*.*.*",
     "typescript": "3.8.3"
   }
 }

@@ -110,9 +110,9 @@ export interface PostgreSQLOutputs {
   password: pulumi.Output<string>;
   database: pulumi.Output<string>;
   host: pulumi.Output<string>;
-  port: pulumi.Output<number>;
+  port: pulumi.Output<string>;
   readReplicasHost: pulumi.Output<string>;
-  readReplicasPort: pulumi.Output<number>;
+  readReplicasPort: pulumi.Output<string>;
   replicationPassword: pulumi.Output<string>;
 }
 
@@ -125,16 +125,16 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
   readonly password: pulumi.Output<string>;
   readonly database: pulumi.Output<string>;
   readonly host: pulumi.Output<string>;
-  readonly port: pulumi.Output<number>;
+  readonly port: pulumi.Output<string>;
   readonly readReplicasHost: pulumi.Output<string>;
-  readonly readReplicasPort: pulumi.OutputInstance<number>;
+  readonly readReplicasPort: pulumi.Output<string>;
   readonly replicationPassword: pulumi.Output<string>;
 
   constructor(name: string, props?: PostgreSQLInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PostgreSQL', name, props, opts);
 
     this.host = pulumi.output(`${name}-postgresql`);
-    this.port = pulumi.output(5432);
+    this.port = pulumi.output('5432');
     this.database = pulumi.output(props?.database ?? 'postgres');
     this.username = pulumi.output(props?.username ?? 'postgres');
     this.password = pulumi.secret(
@@ -150,7 +150,7 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
     );
 
     this.readReplicasHost = pulumi.output(`${name}-postgresql-read`);
-    this.readReplicasPort = pulumi.output(5432);
+    this.readReplicasPort = pulumi.output('5432');
     this.replicationPassword = pulumi.secret(
       props?.replication?.replicationPassword ??
         new random.RandomPassword(
