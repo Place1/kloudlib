@@ -53,6 +53,11 @@ export interface PrometheusPostgreSQLExporterInputs {
    * the postgresql server password
    */
   password: pulumi.Input<string>;
+  /**
+   * resource requests and limits
+   * defaults to undefined (no requests or limits)
+   */
+  resources?: abstractions.ComputeResources;
 }
 
 export interface PrometheusPostgreSQLExporterOutputs {
@@ -117,6 +122,7 @@ export class PrometheusPostgreSQLExporter extends pulumi.ComponentResource imple
                 name: 'http',
                 containerPort: 9187,
               }],
+              resources: props.resources,
             }],
           },
         },

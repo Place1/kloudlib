@@ -13,6 +13,7 @@
 
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
+import * as abstractions from '@kloudlib/abstractions';
 
 export interface PrometheusMSSQLExporterInputs {
   /**
@@ -47,6 +48,11 @@ export interface PrometheusMSSQLExporterInputs {
    * the mssql server password
    */
   password: pulumi.Input<string>;
+  /**
+   * resource requests and limits
+   * defaults to undefined (no requests or limits)
+   */
+  resources?: abstractions.ComputeResources;
 }
 
 export interface PrometheusMSSQLExporterOutputs {
@@ -112,6 +118,7 @@ export class PrometheusMSSQLExporter extends pulumi.ComponentResource implements
                 name: 'http',
                 containerPort: 4000,
               }],
+              resources: props.resources,
             }],
           },
         },
