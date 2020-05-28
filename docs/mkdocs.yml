@@ -21,6 +21,9 @@ nav:
   - '@kloudlib/linkerd': './packages/modules/__kloudlib_linkerd_.md'
   - '@kloudlib/prometheus-postgresql-exporter': './packages/modules/__kloudlib_prometheus_postgresql_exporter_.md'
   - '@kloudlib/prometheus-mssql-exporter': './packages/modules/__kloudlib_prometheus_mssql_exporter_.md'
+  - '@kloudlib/prometheus-redis-exporter': './packages/modules/__kloudlib_prometheus_redis_exporter_.md'
+  - '@kloudlib/prometheus-mongodb-exporter': './packages/modules/__kloudlib_prometheus_mongodb_exporter_.md'
+  - '@kloudlib/prometheus-servicebus-exporter': './packages/modules/__kloudlib_prometheus_servicebus_exporter_.md'
 
 theme:
   name: material
