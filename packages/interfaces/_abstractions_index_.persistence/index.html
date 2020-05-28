@@ -338,6 +338,54 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_minio_/" title="@kloudlib/minio" class="md-nav__link">
+      @kloudlib/minio
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_linkerd_/" title="@kloudlib/linkerd" class="md-nav__link">
+      @kloudlib/linkerd
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_postgresql_exporter_/" title="@kloudlib/prometheus-postgresql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-postgresql-exporter
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_mssql_exporter_/" title="@kloudlib/prometheus-mssql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-mssql-exporter
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -369,6 +417,13 @@
           <li class="md-nav__item">
   <a href="#optional-enabled" class="md-nav__link">
     Optional enabled
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-mountpath" class="md-nav__link">
+    Optional mountPath
   </a>
   
 </li>
@@ -425,7 +480,12 @@
 <tr>
 <td>enabled</td>
 <td>pulumi.Input‹boolean›</td>
-<td>if ingress should be enabled or not<br>defaults to true</td>
+<td>if persistence should be enabled or not</td>
+</tr>
+<tr>
+<td>mountPath</td>
+<td>undefined | string</td>
+<td>the path within the pod to mount the volume<br>this value is typically ignored for many helm<br>based deployments which require a fixed path.</td>
 </tr>
 <tr>
 <td>sizeGB</td>
@@ -441,9 +501,15 @@
 </table>
 <h3 id="optional-enabled"><code class="codehilite"><span class="err">Optional</span></code> enabled<a class="headerlink" href="#optional-enabled" title="Permanent link"> ¶</a></h3>
 <p>• <strong>enabled</strong>? : <em>pulumi.Input‹boolean›</em></p>
-<p>if ingress should be enabled or not
-defaults to true</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L40">abstractions/index.ts:40</a></em></p>
+<p>if persistence should be enabled or not</p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/abstractions/index.ts#L39">abstractions/index.ts:39</a></em></p>
+<hr />
+<h3 id="optional-mountpath"><code class="codehilite"><span class="err">Optional</span></code> mountPath<a class="headerlink" href="#optional-mountpath" title="Permanent link"> ¶</a></h3>
+<p>• <strong>mountPath</strong>? : <em>undefined | string</em></p>
+<p>the path within the pod to mount the volume
+this value is typically ignored for many helm
+based deployments which require a fixed path.</p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/abstractions/index.ts#L57">abstractions/index.ts:57</a></em></p>
 <hr />
 <h3 id="optional-sizegb"><code class="codehilite"><span class="err">Optional</span></code> sizeGB<a class="headerlink" href="#optional-sizegb" title="Permanent link"> ¶</a></h3>
 <p>• <strong>sizeGB</strong>? : <em>undefined | number</em></p>
@@ -451,13 +517,13 @@ defaults to true</p>
 non-interger values are supported
 note that some cloud providers have a minimum
 volume size that is used if your choice is too small</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L47">abstractions/index.ts:47</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/abstractions/index.ts#L46">abstractions/index.ts:46</a></em></p>
 <hr />
 <h3 id="optional-storageclass"><code class="codehilite"><span class="err">Optional</span></code> storageClass<a class="headerlink" href="#optional-storageclass" title="Permanent link"> ¶</a></h3>
 <p>• <strong>storageClass</strong>? : <em>undefined | string</em></p>
 <p>the storage class for the persistent volume
 defaults to undefined (i.e. use the cluster's default storage class)</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/abstractions/index.ts#L52">abstractions/index.ts:52</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/abstractions/index.ts#L51">abstractions/index.ts:51</a></em></p>
                 
                   
                 

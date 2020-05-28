@@ -338,6 +338,54 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_minio_/" title="@kloudlib/minio" class="md-nav__link">
+      @kloudlib/minio
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_linkerd_/" title="@kloudlib/linkerd" class="md-nav__link">
+      @kloudlib/linkerd
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_postgresql_exporter_/" title="@kloudlib/prometheus-postgresql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-postgresql-exporter
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_mssql_exporter_/" title="@kloudlib/prometheus-mssql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-mssql-exporter
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -365,6 +413,13 @@
   
     <nav class="md-nav">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-config" class="md-nav__link">
+    Optional config
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#optional-mode" class="md-nav__link">
@@ -444,6 +499,11 @@
 </thead>
 <tbody>
 <tr>
+<td>config</td>
+<td>Record‹string, string›</td>
+<td>config sets nginx config map entries.<br><br>see: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md</td>
+</tr>
+<tr>
 <td>mode</td>
 <td><a href="../__kloudlib_nginx_ingress_.nginxingressdeploymentmode/">NginxIngressDeploymentMode</a> | <a href="../__kloudlib_nginx_ingress_.nginxingressdaemonsetmode/">NginxIngressDaemonSetMode</a></td>
 <td>mode configures nginx as either a kubernetes<br>deployment or daemonset.<br><br>In Deployment mode a kubernetes Deployment will be<br>created behind a kubernetes Service of type LoadBalancer.<br>The Deployment mode is intended to be used in Cloud Environments.<br><br>In DaemonSet mode a kubernetes DaemonSet will be created<br>without a kubernetes Service, instead, hostPorts will be<br>used by the DaemonSet containers. The DaemonSet mode is intended<br>to be used in onpremise environments where a LoadBalancer services<br>may not available.<br><br>defaults to Deployment mode.</td>
@@ -475,6 +535,12 @@
 </tr>
 </tbody>
 </table>
+<h3 id="optional-config"><code class="codehilite"><span class="err">Optional</span></code> config<a class="headerlink" href="#optional-config" title="Permanent link"> ¶</a></h3>
+<p>• <strong>config</strong>? : <em>Record‹string, string›</em></p>
+<p>config sets nginx config map entries.</p>
+<p>see: https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/nginx-configuration/configmap.md</p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/nginx-ingress/index.ts#L48">nginx-ingress/index.ts:48</a></em></p>
+<hr />
 <h3 id="optional-mode"><code class="codehilite"><span class="err">Optional</span></code> mode<a class="headerlink" href="#optional-mode" title="Permanent link"> ¶</a></h3>
 <p>• <strong>mode</strong>? : <em><a href="../__kloudlib_nginx_ingress_.nginxingressdeploymentmode/">NginxIngressDeploymentMode</a> | <a href="../__kloudlib_nginx_ingress_.nginxingressdaemonsetmode/">NginxIngressDaemonSetMode</a></em></p>
 <p>mode configures nginx as either a kubernetes
@@ -488,30 +554,30 @@ used by the DaemonSet containers. The DaemonSet mode is intended
 to be used in onpremise environments where a LoadBalancer services
 may not available.</p>
 <p>defaults to Deployment mode.</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L42">nginx-ingress/index.ts:42</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/nginx-ingress/index.ts#L42">nginx-ingress/index.ts:42</a></em></p>
 <hr />
 <h3 id="optional-namespace"><code class="codehilite"><span class="err">Optional</span></code> namespace<a class="headerlink" href="#optional-namespace" title="Permanent link"> ¶</a></h3>
 <p>• <strong>namespace</strong>? : <em>pulumi.Input‹string›</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L21">nginx-ingress/index.ts:21</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/nginx-ingress/index.ts#L21">nginx-ingress/index.ts:21</a></em></p>
 <hr />
 <h3 id="optional-provider"><code class="codehilite"><span class="err">Optional</span></code> provider<a class="headerlink" href="#optional-provider" title="Permanent link"> ¶</a></h3>
 <p>• <strong>provider</strong>? : <em>k8s.Provider</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L20">nginx-ingress/index.ts:20</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/nginx-ingress/index.ts#L20">nginx-ingress/index.ts:20</a></em></p>
 <hr />
 <h3 id="optional-tcpservices"><code class="codehilite"><span class="err">Optional</span></code> tcpServices<a class="headerlink" href="#optional-tcpservices" title="Permanent link"> ¶</a></h3>
 <p>• <strong>tcpServices</strong>? : <em>Record‹number, <a href="../__kloudlib_nginx_ingress_.l4servicebackend/">L4ServiceBackend</a>›</em></p>
 <p>configure any L4 TCP services</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L46">nginx-ingress/index.ts:46</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/nginx-ingress/index.ts#L52">nginx-ingress/index.ts:52</a></em></p>
 <hr />
 <h3 id="optional-udpservices"><code class="codehilite"><span class="err">Optional</span></code> udpServices<a class="headerlink" href="#optional-udpservices" title="Permanent link"> ¶</a></h3>
 <p>• <strong>udpServices</strong>? : <em>Record‹number, <a href="../__kloudlib_nginx_ingress_.l4servicebackend/">L4ServiceBackend</a>›</em></p>
 <p>configure any L4 UDP services</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L50">nginx-ingress/index.ts:50</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/nginx-ingress/index.ts#L56">nginx-ingress/index.ts:56</a></em></p>
 <hr />
 <h3 id="optional-version"><code class="codehilite"><span class="err">Optional</span></code> version<a class="headerlink" href="#optional-version" title="Permanent link"> ¶</a></h3>
 <p>• <strong>version</strong>? : <em>undefined | string</em></p>
 <p>the helm chart version</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/nginx-ingress/index.ts#L25">nginx-ingress/index.ts:25</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/nginx-ingress/index.ts#L25">nginx-ingress/index.ts:25</a></em></p>
                 
                   
                 

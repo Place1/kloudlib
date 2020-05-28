@@ -1,43 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://place1.github.io/kloudlib/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_nginx_ingress_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_metal_lb_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_cert_manager_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_grafana_stack_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_grafana_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_loki_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_prometheus_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_rook_ceph_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_oauth_proxy_/</loc>
-     <lastmod>2020-03-31</lastmod>
+     <lastmod>2020-05-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_minio_/</loc>
+     <lastmod>2020-05-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_linkerd_/</loc>
+     <lastmod>2020-05-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_prometheus_postgresql_exporter_/</loc>
+     <lastmod>2020-05-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_prometheus_mssql_exporter_/</loc>
+     <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>

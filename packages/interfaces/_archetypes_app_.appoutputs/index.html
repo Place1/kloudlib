@@ -338,6 +338,54 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_minio_/" title="@kloudlib/minio" class="md-nav__link">
+      @kloudlib/minio
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_linkerd_/" title="@kloudlib/linkerd" class="md-nav__link">
+      @kloudlib/linkerd
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_postgresql_exporter_/" title="@kloudlib/prometheus-postgresql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-postgresql-exporter
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_mssql_exporter_/" title="@kloudlib/prometheus-mssql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-mssql-exporter
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -367,8 +415,8 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#deploymentname" class="md-nav__link">
-    deploymentName
+  <a href="#deployment" class="md-nav__link">
+    deployment
   </a>
   
 </li>
@@ -395,15 +443,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#portforwardcommand" class="md-nav__link">
-    portForwardCommand
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#servicename" class="md-nav__link">
-    serviceName
+  <a href="#service" class="md-nav__link">
+    service
   </a>
   
 </li>
@@ -444,8 +485,8 @@
 </thead>
 <tbody>
 <tr>
-<td>deploymentName</td>
-<td>pulumi.Output‹string›</td>
+<td>deployment</td>
+<td>Deployment</td>
 <td>the internal kubernetes deployment name</td>
 </tr>
 <tr>
@@ -464,47 +505,36 @@
 <td>the namespace that contains this app</td>
 </tr>
 <tr>
-<td>portForwardCommand</td>
-<td>pulumi.Output‹string›</td>
-<td>a kubectl command to access this<br>kubernetes service locally for your convinience</td>
-</tr>
-<tr>
-<td>serviceName</td>
-<td>pulumi.Output‹string›</td>
+<td>service</td>
+<td>Service</td>
 <td>the internal kubernetes service name</td>
 </tr>
 </tbody>
 </table>
-<h3 id="deploymentname">deploymentName<a class="headerlink" href="#deploymentname" title="Permanent link"> ¶</a></h3>
-<p>• <strong>deploymentName</strong>: <em>pulumi.Output‹string›</em></p>
+<h3 id="deployment">deployment<a class="headerlink" href="#deployment" title="Permanent link"> ¶</a></h3>
+<p>• <strong>deployment</strong>: <em>Deployment</em></p>
 <p>the internal kubernetes deployment name</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/archetypes/app.ts#L81">archetypes/app.ts:81</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/archetypes/app.ts#L117">archetypes/app.ts:117</a></em></p>
 <hr />
 <h3 id="dockerimage">dockerImage<a class="headerlink" href="#dockerimage" title="Permanent link"> ¶</a></h3>
 <p>• <strong>dockerImage</strong>: <em>pulumi.Output‹string›</em></p>
 <p>the docker image that was build for this app</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/archetypes/app.ts#L85">archetypes/app.ts:85</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/archetypes/app.ts#L121">archetypes/app.ts:121</a></em></p>
 <hr />
 <h3 id="optional-ingresshosts"><code class="codehilite"><span class="err">Optional</span></code> ingressHosts<a class="headerlink" href="#optional-ingresshosts" title="Permanent link"> ¶</a></h3>
 <p>• <strong>ingressHosts</strong>? : <em>pulumi.Output‹string[]›</em></p>
 <p>the ingress host</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/archetypes/app.ts#L73">archetypes/app.ts:73</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/archetypes/app.ts#L109">archetypes/app.ts:109</a></em></p>
 <hr />
 <h3 id="namespace">namespace<a class="headerlink" href="#namespace" title="Permanent link"> ¶</a></h3>
 <p>• <strong>namespace</strong>: <em>pulumi.Output‹string›</em></p>
 <p>the namespace that contains this app</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/archetypes/app.ts#L69">archetypes/app.ts:69</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/archetypes/app.ts#L105">archetypes/app.ts:105</a></em></p>
 <hr />
-<h3 id="portforwardcommand">portForwardCommand<a class="headerlink" href="#portforwardcommand" title="Permanent link"> ¶</a></h3>
-<p>• <strong>portForwardCommand</strong>: <em>pulumi.Output‹string›</em></p>
-<p>a kubectl command to access this
-kubernetes service locally for your convinience</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/archetypes/app.ts#L90">archetypes/app.ts:90</a></em></p>
-<hr />
-<h3 id="servicename">serviceName<a class="headerlink" href="#servicename" title="Permanent link"> ¶</a></h3>
-<p>• <strong>serviceName</strong>: <em>pulumi.Output‹string›</em></p>
+<h3 id="service">service<a class="headerlink" href="#service" title="Permanent link"> ¶</a></h3>
+<p>• <strong>service</strong>: <em>Service</em></p>
 <p>the internal kubernetes service name</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/archetypes/app.ts#L77">archetypes/app.ts:77</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/archetypes/app.ts#L113">archetypes/app.ts:113</a></em></p>
                 
                   
                 

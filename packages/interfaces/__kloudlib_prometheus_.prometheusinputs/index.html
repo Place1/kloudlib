@@ -338,6 +338,54 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_minio_/" title="@kloudlib/minio" class="md-nav__link">
+      @kloudlib/minio
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_linkerd_/" title="@kloudlib/linkerd" class="md-nav__link">
+      @kloudlib/linkerd
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_postgresql_exporter_/" title="@kloudlib/prometheus-postgresql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-postgresql-exporter
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../modules/__kloudlib_prometheus_mssql_exporter_/" title="@kloudlib/prometheus-mssql-exporter" class="md-nav__link">
+      @kloudlib/prometheus-mssql-exporter
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -397,6 +445,13 @@
           <li class="md-nav__item">
   <a href="#optional-retentionhours" class="md-nav__link">
     Optional retentionHours
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-scrapeintervalseconds" class="md-nav__link">
+    Optional scrapeIntervalSeconds
   </a>
   
 </li>
@@ -469,6 +524,11 @@
 <td>the retention time for recorded metrics in hours<br>defaults to 7 days</td>
 </tr>
 <tr>
+<td>scrapeIntervalSeconds</td>
+<td>undefined | number</td>
+<td>how often prometheus should scrape metrics<br>defaults to 60</td>
+</tr>
+<tr>
 <td>version</td>
 <td>undefined | string</td>
 <td>the helm chart version</td>
@@ -477,30 +537,36 @@
 </table>
 <h3 id="optional-namespace"><code class="codehilite"><span class="err">Optional</span></code> namespace<a class="headerlink" href="#optional-namespace" title="Permanent link"> ¶</a></h3>
 <p>• <strong>namespace</strong>? : <em>pulumi.Input‹string›</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/prometheus/index.ts#L20">prometheus/index.ts:20</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus/index.ts#L20">prometheus/index.ts:20</a></em></p>
 <hr />
 <h3 id="optional-persistence"><code class="codehilite"><span class="err">Optional</span></code> persistence<a class="headerlink" href="#optional-persistence" title="Permanent link"> ¶</a></h3>
 <p>• <strong>persistence</strong>? : <em>abstractions.Persistence</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/prometheus/index.ts#L30">prometheus/index.ts:30</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus/index.ts#L35">prometheus/index.ts:35</a></em></p>
 <hr />
 <h3 id="optional-provider"><code class="codehilite"><span class="err">Optional</span></code> provider<a class="headerlink" href="#optional-provider" title="Permanent link"> ¶</a></h3>
 <p>• <strong>provider</strong>? : <em>k8s.Provider</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/prometheus/index.ts#L19">prometheus/index.ts:19</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus/index.ts#L19">prometheus/index.ts:19</a></em></p>
 <hr />
 <h3 id="optional-resources"><code class="codehilite"><span class="err">Optional</span></code> resources<a class="headerlink" href="#optional-resources" title="Permanent link"> ¶</a></h3>
 <p>• <strong>resources</strong>? : <em>abstractions.ComputeResources</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/prometheus/index.ts#L31">prometheus/index.ts:31</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus/index.ts#L36">prometheus/index.ts:36</a></em></p>
 <hr />
 <h3 id="optional-retentionhours"><code class="codehilite"><span class="err">Optional</span></code> retentionHours<a class="headerlink" href="#optional-retentionhours" title="Permanent link"> ¶</a></h3>
 <p>• <strong>retentionHours</strong>? : <em>undefined | number</em></p>
 <p>the retention time for recorded metrics in hours
 defaults to 7 days</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/prometheus/index.ts#L29">prometheus/index.ts:29</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus/index.ts#L34">prometheus/index.ts:34</a></em></p>
+<hr />
+<h3 id="optional-scrapeintervalseconds"><code class="codehilite"><span class="err">Optional</span></code> scrapeIntervalSeconds<a class="headerlink" href="#optional-scrapeintervalseconds" title="Permanent link"> ¶</a></h3>
+<p>• <strong>scrapeIntervalSeconds</strong>? : <em>undefined | number</em></p>
+<p>how often prometheus should scrape metrics
+defaults to 60</p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus/index.ts#L29">prometheus/index.ts:29</a></em></p>
 <hr />
 <h3 id="optional-version"><code class="codehilite"><span class="err">Optional</span></code> version<a class="headerlink" href="#optional-version" title="Permanent link"> ¶</a></h3>
 <p>• <strong>version</strong>? : <em>undefined | string</em></p>
 <p>the helm chart version</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/a12b5b9/packages/prometheus/index.ts#L24">prometheus/index.ts:24</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus/index.ts#L24">prometheus/index.ts:24</a></em></p>
                 
                   
                 
