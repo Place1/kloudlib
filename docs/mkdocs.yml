@@ -17,6 +17,10 @@ nav:
   - '@kloudlib/prometheus': './packages/modules/__kloudlib_prometheus_.md'
   - '@kloudlib/rook-ceph': './packages/modules/__kloudlib_rook_ceph_.md'
   - '@kloudlib/oauth-proxy': './packages/modules/__kloudlib_oauth_proxy_.md'
+  - '@kloudlib/minio': './packages/modules/__kloudlib_minio_.md'
+  - '@kloudlib/linkerd': './packages/modules/__kloudlib_linkerd_.md'
+  - '@kloudlib/prometheus-postgresql-exporter': './packages/modules/__kloudlib_prometheus_postgresql_exporter_.md'
+  - '@kloudlib/prometheus-mssql-exporter': './packages/modules/__kloudlib_prometheus_mssql_exporter_.md'
 
 theme:
   name: material
