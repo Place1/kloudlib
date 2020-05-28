@@ -55,5 +55,17 @@
      <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_prometheus_mssql_exporter_/</loc>
      <lastmod>2020-05-28</lastmod>
      <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_prometheus_redis_exporter_/</loc>
+     <lastmod>2020-05-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_prometheus_mongodb_exporter_/</loc>
+     <lastmod>2020-05-28</lastmod>
+     <changefreq>daily</changefreq>
+    </url><url>
+     <loc>https://place1.github.io/kloudlib/packages/modules/__kloudlib_prometheus_servicebus_exporter_/</loc>
+     <lastmod>2020-05-28</lastmod>
+     <changefreq>daily</changefreq>
     </url>
 </urlset>
