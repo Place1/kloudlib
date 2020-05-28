@@ -450,6 +450,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#optional-resources" class="md-nav__link">
+    Optional resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#username" class="md-nav__link">
     username
   </a>
@@ -524,6 +531,11 @@
 <td>The pulumi kubernetes provider</td>
 </tr>
 <tr>
+<td>resources</td>
+<td>abstractions.ComputeResources</td>
+<td>resource requests and limits<br>defaults to undefined (no requests or limits)</td>
+</tr>
+<tr>
 <td>username</td>
 <td>pulumi.Input‹string›</td>
 <td>the mssql server username</td>
@@ -539,40 +551,46 @@
 <p>• <strong>host</strong>: <em>pulumi.Input‹string›</em></p>
 <p>the mssql server hostname or IP
 e.g. 1.2.3.4 or example.com</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus-mssql-exporter/index.ts#L36">prometheus-mssql-exporter/index.ts:36</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L37">prometheus-mssql-exporter/index.ts:37</a></em></p>
 <hr />
 <h3 id="optional-namespace"><code class="codehilite"><span class="err">Optional</span></code> namespace<a class="headerlink" href="#optional-namespace" title="Permanent link"> ¶</a></h3>
 <p>• <strong>namespace</strong>? : <em>pulumi.Input‹string›</em></p>
 <p>A kubernetes namespace. If present, this will override
 the given provider's namespace.</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus-mssql-exporter/index.ts#L26">prometheus-mssql-exporter/index.ts:26</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L27">prometheus-mssql-exporter/index.ts:27</a></em></p>
 <hr />
 <h3 id="password">password<a class="headerlink" href="#password" title="Permanent link"> ¶</a></h3>
 <p>• <strong>password</strong>: <em>pulumi.Input‹string›</em></p>
 <p>the mssql server password</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus-mssql-exporter/index.ts#L49">prometheus-mssql-exporter/index.ts:49</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L50">prometheus-mssql-exporter/index.ts:50</a></em></p>
 <hr />
 <h3 id="optional-port"><code class="codehilite"><span class="err">Optional</span></code> port<a class="headerlink" href="#optional-port" title="Permanent link"> ¶</a></h3>
 <p>• <strong>port</strong>? : <em>pulumi.Input‹string›</em></p>
 <p>the mssql server port
 defaults to 1443</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus-mssql-exporter/index.ts#L41">prometheus-mssql-exporter/index.ts:41</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L42">prometheus-mssql-exporter/index.ts:42</a></em></p>
 <hr />
 <h3 id="optional-provider"><code class="codehilite"><span class="err">Optional</span></code> provider<a class="headerlink" href="#optional-provider" title="Permanent link"> ¶</a></h3>
 <p>• <strong>provider</strong>? : <em>k8s.Provider</em></p>
 <p>The pulumi kubernetes provider</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus-mssql-exporter/index.ts#L21">prometheus-mssql-exporter/index.ts:21</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L22">prometheus-mssql-exporter/index.ts:22</a></em></p>
+<hr />
+<h3 id="optional-resources"><code class="codehilite"><span class="err">Optional</span></code> resources<a class="headerlink" href="#optional-resources" title="Permanent link"> ¶</a></h3>
+<p>• <strong>resources</strong>? : <em>abstractions.ComputeResources</em></p>
+<p>resource requests and limits
+defaults to undefined (no requests or limits)</p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L55">prometheus-mssql-exporter/index.ts:55</a></em></p>
 <hr />
 <h3 id="username">username<a class="headerlink" href="#username" title="Permanent link"> ¶</a></h3>
 <p>• <strong>username</strong>: <em>pulumi.Input‹string›</em></p>
 <p>the mssql server username</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus-mssql-exporter/index.ts#L45">prometheus-mssql-exporter/index.ts:45</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L46">prometheus-mssql-exporter/index.ts:46</a></em></p>
 <hr />
 <h3 id="optional-version"><code class="codehilite"><span class="err">Optional</span></code> version<a class="headerlink" href="#optional-version" title="Permanent link"> ¶</a></h3>
 <p>• <strong>version</strong>? : <em>undefined | string</em></p>
 <p>the docker image tag to use.
 defaults to v0.4.1</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/prometheus-mssql-exporter/index.ts#L31">prometheus-mssql-exporter/index.ts:31</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/prometheus-mssql-exporter/index.ts#L32">prometheus-mssql-exporter/index.ts:32</a></em></p>
                 
                   
                 

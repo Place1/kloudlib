@@ -612,79 +612,79 @@
 <p>The minio access key.
 Must be 5 to 20 characters.
 Defaults to a pulumi.RandomPassword</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L40">minio/index.ts:40</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L40">minio/index.ts:40</a></em></p>
 <hr />
 <h3 id="optional-buckets"><code class="codehilite"><span class="err">Optional</span></code> buckets<a class="headerlink" href="#optional-buckets" title="Permanent link"> ¶</a></h3>
 <p>• <strong>buckets</strong>? : <em>pulumi.Input‹<a href="../__kloudlib_minio_.miniobucket/">MinioBucket</a>[]›</em></p>
 <p>A list of buckets to create after
 minio is installed.</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L51">minio/index.ts:51</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L51">minio/index.ts:51</a></em></p>
 <hr />
 <h3 id="optional-drivespernode"><code class="codehilite"><span class="err">Optional</span></code> drivesPerNode<a class="headerlink" href="#optional-drivespernode" title="Permanent link"> ¶</a></h3>
 <p>• <strong>drivesPerNode</strong>? : <em>pulumi.Input‹number›</em></p>
 <p>Number of drives per node.
 Only applicable for distributed mode.
 Defaults to 1</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L74">minio/index.ts:74</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L74">minio/index.ts:74</a></em></p>
 <hr />
 <h3 id="optional-ingress"><code class="codehilite"><span class="err">Optional</span></code> ingress<a class="headerlink" href="#optional-ingress" title="Permanent link"> ¶</a></h3>
 <p>• <strong>ingress</strong>? : <em>abstractions.Ingress</em></p>
 <p>Configure ingress for minio</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L78">minio/index.ts:78</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L78">minio/index.ts:78</a></em></p>
 <hr />
 <h3 id="optional-mode"><code class="codehilite"><span class="err">Optional</span></code> mode<a class="headerlink" href="#optional-mode" title="Permanent link"> ¶</a></h3>
 <p>• <strong>mode</strong>? : <em>pulumi.Input‹"standalone" | "distributed"›</em></p>
 <p>The minio server mode
 Defaults to standalone</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L56">minio/index.ts:56</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L56">minio/index.ts:56</a></em></p>
 <hr />
 <h3 id="optional-namespace"><code class="codehilite"><span class="err">Optional</span></code> namespace<a class="headerlink" href="#optional-namespace" title="Permanent link"> ¶</a></h3>
 <p>• <strong>namespace</strong>? : <em>pulumi.Input‹string›</em></p>
 <p>A kubernetes namespace. If present, this will override
 the given provider's namespace.</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L30">minio/index.ts:30</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L30">minio/index.ts:30</a></em></p>
 <hr />
 <h3 id="optional-persistence"><code class="codehilite"><span class="err">Optional</span></code> persistence<a class="headerlink" href="#optional-persistence" title="Permanent link"> ¶</a></h3>
 <p>• <strong>persistence</strong>? : <em>abstractions.Persistence</em></p>
 <p>Configure persistence for minio.
 Defaults to enabled with 10Gi size.</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L83">minio/index.ts:83</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L83">minio/index.ts:83</a></em></p>
 <hr />
 <h3 id="optional-provider"><code class="codehilite"><span class="err">Optional</span></code> provider<a class="headerlink" href="#optional-provider" title="Permanent link"> ¶</a></h3>
 <p>• <strong>provider</strong>? : <em>k8s.Provider</em></p>
 <p>The pulumi kubernetes provider</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L25">minio/index.ts:25</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L25">minio/index.ts:25</a></em></p>
 <hr />
 <h3 id="optional-replicas"><code class="codehilite"><span class="err">Optional</span></code> replicas<a class="headerlink" href="#optional-replicas" title="Permanent link"> ¶</a></h3>
 <p>• <strong>replicas</strong>? : <em>pulumi.Input‹number›</em></p>
 <p>The number of minio replicas.
 This must be 1 for standalone mode.
 Defaults to 1</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L62">minio/index.ts:62</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L62">minio/index.ts:62</a></em></p>
 <hr />
 <h3 id="optional-resources"><code class="codehilite"><span class="err">Optional</span></code> resources<a class="headerlink" href="#optional-resources" title="Permanent link"> ¶</a></h3>
 <p>• <strong>resources</strong>? : <em>abstractions.ComputeResources</em></p>
 <p>Configure compute resources.</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L87">minio/index.ts:87</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L87">minio/index.ts:87</a></em></p>
 <hr />
 <h3 id="optional-secretkey"><code class="codehilite"><span class="err">Optional</span></code> secretKey<a class="headerlink" href="#optional-secretkey" title="Permanent link"> ¶</a></h3>
 <p>• <strong>secretKey</strong>? : <em>pulumi.Input‹string›</em></p>
 <p>The minio secret key.
 Must be 8 to 40 characters.
 Defaults to a pulumi.RandomPassword</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L46">minio/index.ts:46</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L46">minio/index.ts:46</a></em></p>
 <hr />
 <h3 id="optional-version"><code class="codehilite"><span class="err">Optional</span></code> version<a class="headerlink" href="#optional-version" title="Permanent link"> ¶</a></h3>
 <p>• <strong>version</strong>? : <em>undefined | string</em></p>
 <p>Helm chart version</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L34">minio/index.ts:34</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L34">minio/index.ts:34</a></em></p>
 <hr />
 <h3 id="optional-zones"><code class="codehilite"><span class="err">Optional</span></code> zones<a class="headerlink" href="#optional-zones" title="Permanent link"> ¶</a></h3>
 <p>• <strong>zones</strong>? : <em>pulumi.Input‹number›</em></p>
 <p>Number of zones.
 Only applicable for distributed mode.
 Defaults to 1</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/28082f8/packages/minio/index.ts#L68">minio/index.ts:68</a></em></p>
+<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/c32fb33/packages/minio/index.ts#L68">minio/index.ts:68</a></em></p>
                 
                   
                 
