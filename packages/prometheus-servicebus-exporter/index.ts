@@ -93,7 +93,7 @@ export class PrometheusServicebusExporter extends pulumi.ComponentResource imple
           spec: {
             containers: [{
               name: 'prometheus-servicebus-exporter',
-              image: `awaragi/prometheus-servicebus-exporter:${props?.version ?? '0.1.0'}`,
+              image: `marcinbudny/servicebus_exporter:${props?.version ?? '0.1.0'}`,
               envFrom: [{
                 secretRef: {
                   name: secret.metadata.name,
