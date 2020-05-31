@@ -103,7 +103,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'grafana',
-      version: props?.version ?? '5.0.10',
+      version: props?.version ?? '5.1.0',
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 

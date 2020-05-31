@@ -57,7 +57,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'loki-stack',
-      version: props?.version ?? '0.33.0',
+      version: props?.version ?? '0.37.2',
       repo: 'https://grafana.github.io/loki/charts',
     });
 
