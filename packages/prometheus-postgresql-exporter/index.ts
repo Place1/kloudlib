@@ -60,76 +60,89 @@ export interface PrometheusPostgreSQLExporterInputs {
   resources?: abstractions.ComputeResources;
 }
 
-export interface PrometheusPostgreSQLExporterOutputs {
-
-}
+export interface PrometheusPostgreSQLExporterOutputs {}
 
 /**
  * @noInheritDoc
  */
-export class PrometheusPostgreSQLExporter extends pulumi.ComponentResource implements PrometheusPostgreSQLExporterOutputs {
-
+export class PrometheusPostgreSQLExporter extends pulumi.ComponentResource
+  implements PrometheusPostgreSQLExporterOutputs {
   constructor(name: string, props: PrometheusPostgreSQLExporterInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PrometheusPostgreSQLExporter', name, props, opts);
 
-    const secret = new k8s.core.v1.Secret(`${name}-secret`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      stringData: {
-        DATA_SOURCE_URI: pulumi.interpolate`${props.host}:${props.port ?? '5432'}?sslmode=${props.sslmode ?? 'disable'}`,
-        DATA_SOURCE_USER: props.username,
-        DATA_SOURCE_PASS: props.password,
-      },
-    }, {
-      provider: props?.provider,
-    });
-
-    new k8s.apps.v1.Deployment(`${name}-deployment`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      spec: {
-        replicas: 1,
-        selector: {
-          matchLabels: {
-            app: name,
-          },
+    const secret = new k8s.core.v1.Secret(
+      `${name}-secret`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
         },
-        template: {
-          metadata: {
-            annotations: {
-              'prometheus.io/scrape': 'true',
-              'prometheus.io/port': '9187',
-              'prometheus.io/path': '/metrics',
-            },
-            labels: {
+        stringData: {
+          DATA_SOURCE_URI: pulumi.interpolate`${props.host}:${props.port ?? '5432'}?sslmode=${
+            props.sslmode ?? 'disable'
+          }`,
+          DATA_SOURCE_USER: props.username,
+          DATA_SOURCE_PASS: props.password,
+        },
+      },
+      {
+        provider: props?.provider,
+      }
+    );
+
+    new k8s.apps.v1.Deployment(
+      `${name}-deployment`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
+        },
+        spec: {
+          replicas: 1,
+          selector: {
+            matchLabels: {
               app: name,
             },
           },
-          spec: {
-            containers: [{
-              name: 'prometheus-postgresql-exporter',
-              image: `wrouesnel/postgres_exporter:${props?.version ?? 'v0.8.0'}`,
-              envFrom: [{
-                secretRef: {
-                  name: secret.metadata.name,
+          template: {
+            metadata: {
+              annotations: {
+                'prometheus.io/scrape': 'true',
+                'prometheus.io/port': '9187',
+                'prometheus.io/path': '/metrics',
+              },
+              labels: {
+                app: name,
+              },
+            },
+            spec: {
+              containers: [
+                {
+                  name: 'prometheus-postgresql-exporter',
+                  image: `wrouesnel/postgres_exporter:${props?.version ?? 'v0.8.0'}`,
+                  envFrom: [
+                    {
+                      secretRef: {
+                        name: secret.metadata.name,
+                      },
+                    },
+                  ],
+                  ports: [
+                    {
+                      name: 'http',
+                      containerPort: 9187,
+                    },
+                  ],
+                  resources: props.resources,
                 },
-              }],
-              ports: [{
-                name: 'http',
-                containerPort: 9187,
-              }],
-              resources: props.resources,
-            }],
+              ],
+            },
           },
         },
       },
-    }, {
-      provider: props?.provider,
-    });
+      {
+        provider: props?.provider,
+      }
+    );
   }
-
 }

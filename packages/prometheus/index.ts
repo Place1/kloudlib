@@ -32,6 +32,42 @@ export interface PrometheusInputs {
    * defaults to 7 days
    */
   retentionHours?: number;
+  /**
+   * extra cli flags with values for prometheus
+   */
+  extraArgs?: Record<string, string>;
+  /**
+   * extra cli flags for prometheus
+   */
+  extraFlags?: string[];
+  /**
+   * configure alertmanager
+   * defaults to enabled
+   */
+  alertmanager?: {
+    enabled?: boolean;
+  };
+  /**
+   * configure nodeExporter
+   * defaults to enabled
+   */
+  nodeExporter?: {
+    enabled?: boolean;
+  };
+  /**
+   * configure kubeStateMetrics
+   * defaults to enabled
+   */
+  kubeStateMetrics?: {
+    enabled?: boolean;
+  };
+  /**
+   * configure pushgateway
+   * defaults to disabled
+   */
+  pushgateway?: {
+    enabled?: boolean;
+  };
   persistence?: abstractions.Persistence;
   resources?: abstractions.ComputeResources;
 }
@@ -79,10 +115,8 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
             strategy: {
               type: 'Recreate',
             },
-            extraArgs: {
-              'query.max-samples': '5000000',
-              'query.timeout': '6s',
-            },
+            extraArgs: props?.extraArgs,
+            extraFlags: ['storage.tsdb.wal-compression', ...(props?.extraFlags || [])],
             persistentVolume: !props?.persistence
               ? { enabled: false }
               : {
@@ -104,19 +138,19 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
                 },
           },
           alertmanager: {
-            enabled: true,
+            enabled: props?.alertmanager?.enabled ?? true,
             persistentVolume: {
               enabled: false,
             },
           },
           nodeExporter: {
-            enabled: true,
+            enabled: props?.nodeExporter?.enabled ?? true,
           },
           kubeStateMetrics: {
-            enabled: true,
+            enabled: props?.kubeStateMetrics?.enabled ?? true,
           },
           pushgateway: {
-            enabled: false,
+            enabled: props?.pushgateway?.enabled ?? false,
           },
         },
       },

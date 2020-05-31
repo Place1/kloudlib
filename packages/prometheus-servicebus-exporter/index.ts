@@ -43,74 +43,85 @@ export interface PrometheusServicebusExporterInputs {
   resources?: abstractions.ComputeResources;
 }
 
-export interface PrometheusServicebusExporterOutputs {
-
-}
+export interface PrometheusServicebusExporterOutputs {}
 
 /**
  * @noInheritDoc
  */
-export class PrometheusServicebusExporter extends pulumi.ComponentResource implements PrometheusServicebusExporterOutputs {
-
+export class PrometheusServicebusExporter extends pulumi.ComponentResource
+  implements PrometheusServicebusExporterOutputs {
   constructor(name: string, props: PrometheusServicebusExporterInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PrometheusServicebusExporter', name, props, opts);
 
-    const secret = new k8s.core.v1.Secret(`${name}-secret`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      stringData: {
-        CONNECTION_STRING: props.connectionString,
-      },
-    }, {
-      provider: props?.provider,
-    });
-
-    new k8s.apps.v1.Deployment(`${name}-deployment`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      spec: {
-        replicas: 1,
-        selector: {
-          matchLabels: {
-            app: name,
-          },
+    const secret = new k8s.core.v1.Secret(
+      `${name}-secret`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
         },
-        template: {
-          metadata: {
-            annotations: {
-              'prometheus.io/scrape': 'true',
-              'prometheus.io/port': '9580',
-              'prometheus.io/path': '/metrics',
-            },
-            labels: {
+        stringData: {
+          CONNECTION_STRING: props.connectionString,
+        },
+      },
+      {
+        provider: props?.provider,
+      }
+    );
+
+    new k8s.apps.v1.Deployment(
+      `${name}-deployment`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
+        },
+        spec: {
+          replicas: 1,
+          selector: {
+            matchLabels: {
               app: name,
             },
           },
-          spec: {
-            containers: [{
-              name: 'prometheus-servicebus-exporter',
-              image: `marcinbudny/servicebus_exporter:${props?.version ?? '0.1.0'}`,
-              envFrom: [{
-                secretRef: {
-                  name: secret.metadata.name,
+          template: {
+            metadata: {
+              annotations: {
+                'prometheus.io/scrape': 'true',
+                'prometheus.io/port': '9580',
+                'prometheus.io/path': '/metrics',
+              },
+              labels: {
+                app: name,
+              },
+            },
+            spec: {
+              containers: [
+                {
+                  name: 'prometheus-servicebus-exporter',
+                  image: `marcinbudny/servicebus_exporter:${props?.version ?? '0.1.0'}`,
+                  envFrom: [
+                    {
+                      secretRef: {
+                        name: secret.metadata.name,
+                      },
+                    },
+                  ],
+                  ports: [
+                    {
+                      name: 'http',
+                      containerPort: 9580,
+                    },
+                  ],
+                  resources: props.resources,
                 },
-              }],
-              ports: [{
-                name: 'http',
-                containerPort: 9580,
-              }],
-              resources: props.resources,
-            }],
+              ],
+            },
           },
         },
       },
-    }, {
-      provider: props?.provider,
-    });
+      {
+        provider: props?.provider,
+      }
+    );
   }
-
 }

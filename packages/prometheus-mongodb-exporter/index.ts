@@ -44,74 +44,84 @@ export interface PrometheusMongoDBExporterInputs {
   resources?: abstractions.ComputeResources;
 }
 
-export interface PrometheusMongoDBExporterOutputs {
-
-}
+export interface PrometheusMongoDBExporterOutputs {}
 
 /**
  * @noInheritDoc
  */
 export class PrometheusMongoDBExporter extends pulumi.ComponentResource implements PrometheusMongoDBExporterOutputs {
-
   constructor(name: string, props: PrometheusMongoDBExporterInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PrometheusMongoDBExporter', name, props, opts);
 
-    const secret = new k8s.core.v1.Secret(`${name}-secret`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      stringData: {
-        MONGODB_URI: props.connectionString,
-      },
-    }, {
-      provider: props?.provider,
-    });
-
-    new k8s.apps.v1.Deployment(`${name}-deployment`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      spec: {
-        replicas: 1,
-        selector: {
-          matchLabels: {
-            app: name,
-          },
+    const secret = new k8s.core.v1.Secret(
+      `${name}-secret`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
         },
-        template: {
-          metadata: {
-            annotations: {
-              'prometheus.io/scrape': 'true',
-              'prometheus.io/port': '9216',
-              'prometheus.io/path': '/metrics',
-            },
-            labels: {
+        stringData: {
+          MONGODB_URI: props.connectionString,
+        },
+      },
+      {
+        provider: props?.provider,
+      }
+    );
+
+    new k8s.apps.v1.Deployment(
+      `${name}-deployment`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
+        },
+        spec: {
+          replicas: 1,
+          selector: {
+            matchLabels: {
               app: name,
             },
           },
-          spec: {
-            containers: [{
-              name: 'prometheus-mongodb-exporter',
-              image: `ssheehy/mongodb-exporter:${props?.version ?? '0.11.0'}`,
-              envFrom: [{
-                secretRef: {
-                  name: secret.metadata.name,
+          template: {
+            metadata: {
+              annotations: {
+                'prometheus.io/scrape': 'true',
+                'prometheus.io/port': '9216',
+                'prometheus.io/path': '/metrics',
+              },
+              labels: {
+                app: name,
+              },
+            },
+            spec: {
+              containers: [
+                {
+                  name: 'prometheus-mongodb-exporter',
+                  image: `ssheehy/mongodb-exporter:${props?.version ?? '0.11.0'}`,
+                  envFrom: [
+                    {
+                      secretRef: {
+                        name: secret.metadata.name,
+                      },
+                    },
+                  ],
+                  ports: [
+                    {
+                      name: 'http',
+                      containerPort: 9216,
+                    },
+                  ],
+                  resources: props.resources,
                 },
-              }],
-              ports: [{
-                name: 'http',
-                containerPort: 9216,
-              }],
-              resources: props.resources,
-            }],
+              ],
+            },
           },
         },
       },
-    }, {
-      provider: props?.provider,
-    });
+      {
+        provider: props?.provider,
+      }
+    );
   }
-
 }

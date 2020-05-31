@@ -15,6 +15,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
 import * as abstractions from '@kloudlib/abstractions';
+import { merge } from 'lodash';
 
 export interface GrafanaInputs {
   provider?: k8s.Provider;
@@ -38,6 +39,10 @@ export interface GrafanaInputs {
    * defaults to false
    */
   allowAnonymousAccess?: boolean;
+  /**
+   *
+   */
+  grafanaConfig?: pulumi.Input<Record<string, pulumi.Input<any>>>;
   /**
    * ingress resource configuration
    * defaults to undefined (no ingress resource will be created)
@@ -101,6 +106,25 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
     this.adminUsername = pulumi.output('admin');
     this.adminPassword = pulumi.secret(password.result);
 
+    const config = pulumi.output(props?.ingress?.hosts).apply((hosts) => ({
+      server: hosts && {
+        domain: hosts[0],
+        root_url: `https://${hosts[0]}`,
+      },
+      'auth.anonymous': {
+        enabled: props?.allowAnonymousAccess ? 'true' : 'false',
+        org_name: 'Main Org.',
+        org_role: 'Editor',
+      },
+      'auth.basic': {
+        enabled: 'false',
+      },
+    }));
+
+    const grafanaIni = pulumi
+      .all([config, props?.grafanaConfig || {}])
+      .apply(([base, extra]) => merge({}, base, extra));
+
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'grafana',
       version: props?.version ?? '5.1.0',
@@ -149,24 +173,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
           testFramework: {
             enabled: false,
           },
-          'grafana.ini': {
-            server: pulumi.output(props?.ingress?.hosts).apply((hosts) =>
-              !hosts
-                ? undefined
-                : {
-                    domain: hosts[0],
-                    root_url: `https://${hosts[0]}`,
-                  }
-            ),
-            'auth.anonymous': {
-              enabled: props?.allowAnonymousAccess ? 'true' : 'false',
-              org_name: 'Main Org.',
-              org_role: 'Editor',
-            },
-            'auth.basic': {
-              enabled: 'false',
-            },
-          },
+          'grafana.ini': grafanaIni,
           datasources: {
             'datasources.yaml': {
               apiVersion: 1,

@@ -58,77 +58,87 @@ export interface PrometheusRedisExporterInputs {
   resources?: abstractions.ComputeResources;
 }
 
-export interface PrometheusRedisExporterOutputs {
-
-}
+export interface PrometheusRedisExporterOutputs {}
 
 /**
  * @noInheritDoc
  */
 export class PrometheusRedisExporter extends pulumi.ComponentResource implements PrometheusRedisExporterOutputs {
-
   constructor(name: string, props: PrometheusRedisExporterInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PrometheusRedisExporter', name, props, opts);
 
     const scheme = props.ssl ? 'rediss' : 'redis';
 
-    const secret = new k8s.core.v1.Secret(`${name}-secret`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      stringData: {
-        REDIS_ADDR: pulumi.interpolate`${scheme}://${props.host}:${props.port ?? '6379'}`,
-        REDIS_PASSWORD: props.password,
-      },
-    }, {
-      provider: props?.provider,
-    });
-
-    new k8s.apps.v1.Deployment(`${name}-deployment`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      spec: {
-        replicas: 1,
-        selector: {
-          matchLabels: {
-            app: name,
-          },
+    const secret = new k8s.core.v1.Secret(
+      `${name}-secret`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
         },
-        template: {
-          metadata: {
-            annotations: {
-              'prometheus.io/scrape': 'true',
-              'prometheus.io/port': '9121',
-              'prometheus.io/path': '/metrics',
-            },
-            labels: {
+        stringData: {
+          REDIS_ADDR: pulumi.interpolate`${scheme}://${props.host}:${props.port ?? '6379'}`,
+          REDIS_PASSWORD: props.password,
+        },
+      },
+      {
+        provider: props?.provider,
+      }
+    );
+
+    new k8s.apps.v1.Deployment(
+      `${name}-deployment`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
+        },
+        spec: {
+          replicas: 1,
+          selector: {
+            matchLabels: {
               app: name,
             },
           },
-          spec: {
-            containers: [{
-              name: 'prometheus-redis-exporter',
-              image: `oliver006/redis_exporter:${props?.version ?? 'v1.6.1-alpine'}`,
-              envFrom: [{
-                secretRef: {
-                  name: secret.metadata.name,
+          template: {
+            metadata: {
+              annotations: {
+                'prometheus.io/scrape': 'true',
+                'prometheus.io/port': '9121',
+                'prometheus.io/path': '/metrics',
+              },
+              labels: {
+                app: name,
+              },
+            },
+            spec: {
+              containers: [
+                {
+                  name: 'prometheus-redis-exporter',
+                  image: `oliver006/redis_exporter:${props?.version ?? 'v1.6.1-alpine'}`,
+                  envFrom: [
+                    {
+                      secretRef: {
+                        name: secret.metadata.name,
+                      },
+                    },
+                  ],
+                  ports: [
+                    {
+                      name: 'http',
+                      containerPort: 9121,
+                    },
+                  ],
+                  resources: props.resources,
                 },
-              }],
-              ports: [{
-                name: 'http',
-                containerPort: 9121,
-              }],
-              resources: props.resources,
-            }],
+              ],
+            },
           },
         },
       },
-    }, {
-      provider: props?.provider,
-    });
+      {
+        provider: props?.provider,
+      }
+    );
   }
-
 }

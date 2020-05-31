@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/grafana",
   "description": "",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,12 +23,14 @@
   },
   "dependencies": {
     "@kloudlib/abstractions": "*.*.*",
-    "@kloudlib/utils": "*.*.*"
+    "@kloudlib/utils": "*.*.*",
+    "lodash": "4.17.15"
   },
   "devDependencies": {
     "@pulumi/kubernetes": "*.*.*",
     "@pulumi/pulumi": "*.*.*",
     "@pulumi/random": "*.*.*",
+    "@types/lodash": "4.14.149",
     "typescript": "3.8.3"
   }
 }

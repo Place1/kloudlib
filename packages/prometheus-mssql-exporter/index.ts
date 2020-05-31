@@ -55,77 +55,87 @@ export interface PrometheusMSSQLExporterInputs {
   resources?: abstractions.ComputeResources;
 }
 
-export interface PrometheusMSSQLExporterOutputs {
-
-}
+export interface PrometheusMSSQLExporterOutputs {}
 
 /**
  * @noInheritDoc
  */
 export class PrometheusMSSQLExporter extends pulumi.ComponentResource implements PrometheusMSSQLExporterOutputs {
-
   constructor(name: string, props: PrometheusMSSQLExporterInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PrometheusMSSQLExporter', name, props, opts);
 
-    const secret = new k8s.core.v1.Secret(`${name}-secret`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      stringData: {
-        SERVER: props.host,
-        PORT: props.port ?? '1443',
-        USERNAME: props.username,
-        PASSWORD: props.password,
-      },
-    }, {
-      provider: props?.provider,
-    });
-
-    new k8s.apps.v1.Deployment(`${name}-deployment`, {
-      metadata: {
-        name: name,
-        namespace: props?.namespace,
-      },
-      spec: {
-        replicas: 1,
-        selector: {
-          matchLabels: {
-            app: name,
-          },
+    const secret = new k8s.core.v1.Secret(
+      `${name}-secret`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
         },
-        template: {
-          metadata: {
-            annotations: {
-              'prometheus.io/scrape': 'true',
-              'prometheus.io/port': '4000',
-              'prometheus.io/path': '/metrics',
-            },
-            labels: {
+        stringData: {
+          SERVER: props.host,
+          PORT: props.port ?? '1443',
+          USERNAME: props.username,
+          PASSWORD: props.password,
+        },
+      },
+      {
+        provider: props?.provider,
+      }
+    );
+
+    new k8s.apps.v1.Deployment(
+      `${name}-deployment`,
+      {
+        metadata: {
+          name: name,
+          namespace: props?.namespace,
+        },
+        spec: {
+          replicas: 1,
+          selector: {
+            matchLabels: {
               app: name,
             },
           },
-          spec: {
-            containers: [{
-              name: 'prometheus-mssql-exporter',
-              image: `awaragi/prometheus-mssql-exporter:${props?.version ?? 'v0.4.1'}`,
-              envFrom: [{
-                secretRef: {
-                  name: secret.metadata.name,
+          template: {
+            metadata: {
+              annotations: {
+                'prometheus.io/scrape': 'true',
+                'prometheus.io/port': '4000',
+                'prometheus.io/path': '/metrics',
+              },
+              labels: {
+                app: name,
+              },
+            },
+            spec: {
+              containers: [
+                {
+                  name: 'prometheus-mssql-exporter',
+                  image: `awaragi/prometheus-mssql-exporter:${props?.version ?? 'v0.4.1'}`,
+                  envFrom: [
+                    {
+                      secretRef: {
+                        name: secret.metadata.name,
+                      },
+                    },
+                  ],
+                  ports: [
+                    {
+                      name: 'http',
+                      containerPort: 4000,
+                    },
+                  ],
+                  resources: props.resources,
                 },
-              }],
-              ports: [{
-                name: 'http',
-                containerPort: 4000,
-              }],
-              resources: props.resources,
-            }],
+              ],
+            },
           },
         },
       },
-    }, {
-      provider: props?.provider,
-    });
+      {
+        provider: props?.provider,
+      }
+    );
   }
-
 }
