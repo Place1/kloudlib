@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/archetypes",
   "description": "",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

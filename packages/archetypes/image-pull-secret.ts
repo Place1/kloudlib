@@ -32,9 +32,16 @@ export interface ImagePullSecretOutputs {
  */
 export class ImagePullSecret extends pulumi.ComponentResource implements ImagePullSecretOutputs {
   readonly secret: k8s.core.v1.Secret;
+  readonly server: pulumi.Output<string>;
+  readonly username: pulumi.Output<string>;
+  readonly password: pulumi.Output<string>;
 
   constructor(name: string, props: ImagePullSecretInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:ImagePullSecret', name, props, opts);
+
+    this.server = pulumi.output(props.server);
+    this.username = pulumi.output(props.username);
+    this.password = pulumi.output(props.password);
 
     this.secret = new k8s.core.v1.Secret(
       `${name}-secret`,
