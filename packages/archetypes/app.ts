@@ -17,6 +17,10 @@ export interface AppInputs {
    */
   imageName: pulumi.Input<string>;
   /**
+   * docker registry credentials
+   */
+  registry?: pulumi.Input<docker.ImageRegistry>;
+  /**
    * replicas of your service
    * defaults to 1
    */
@@ -237,6 +241,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
       {
         imageName: props.imageName,
         build: props.src!,
+        registry: props.registry,
       },
       {
         parent: this,
