@@ -299,7 +299,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                     },
                   ],
                   env: this.bundleEnvs(name, props),
-                  resources: props.resources,
+                  resources: props.resources as any,
                   readinessProbe: !props.healthCheck
                     ? undefined
                     : {
