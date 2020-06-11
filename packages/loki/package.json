@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/loki",
   "description": "",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,16 +17,16 @@
     "clean": "rm -r ./dist || true"
   },
   "peerDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*"
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*",
+    "@kloudlib/abstractions": "*",
     "@kloudlib/utils": "../utils"
   },
   "devDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
     "typescript": "3.8.3"
   }
 }

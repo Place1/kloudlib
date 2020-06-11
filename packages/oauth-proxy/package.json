@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/oauth-proxy",
   "description": "",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,18 +17,18 @@
     "clean": "rm -r ./dist || true"
   },
   "peerDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
-    "@pulumi/random": "*.*.*"
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
+    "@pulumi/random": "*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*",
+    "@kloudlib/abstractions": "*",
     "@kloudlib/utils": "../utils"
   },
   "devDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
-    "@pulumi/random": "*.*.*",
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
+    "@pulumi/random": "*",
     "@types/lodash": "4.14.149",
     "typescript": "3.8.3"
   }

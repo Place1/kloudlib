@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/archetypes",
   "description": "",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,17 +17,17 @@
     "clean": "rm -r ./dist || true"
   },
   "peerDependencies": {
-    "@pulumi/docker": "*.*.*",
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*"
+    "@pulumi/docker": "*",
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*"
+    "@kloudlib/abstractions": "*"
   },
   "devDependencies": {
-    "@pulumi/docker": "*.*.*",
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
+    "@pulumi/docker": "*",
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
     "typescript": "3.8.3"
   }
 }

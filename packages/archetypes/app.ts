@@ -371,6 +371,10 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     const volumeMounts = new Array<k8s.types.input.core.v1.VolumeMount>();
 
     if (props.persistence?.enabled) {
+      if (props.persistence.sizeGB === undefined) {
+        throw new Error(`${name} is missing the persistence sizeGB field`);
+      }
+
       const pvc = new k8s.core.v1.PersistentVolumeClaim(
         `${name}-volume`,
         {
@@ -385,7 +389,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
             accessModes: ['ReadWriteOnce'],
             resources: {
               requests: {
-                storage: props.persistence.sizeGB ? `${props.persistence.sizeGB}Gi` : undefined,
+                storage: `${props.persistence.sizeGB}Gi`,
               },
             },
           },

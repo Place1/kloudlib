@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/grafana-stack",
   "description": "",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,21 +17,21 @@
     "clean": "rm -r ./dist || true"
   },
   "peerDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
-    "@pulumi/random": "*.*.*"
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
+    "@pulumi/random": "*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*",
+    "@kloudlib/abstractions": "*",
     "@kloudlib/grafana": "file:../grafana",
     "@kloudlib/loki": "file:../loki",
     "@kloudlib/prometheus": "file:../prometheus",
     "lodash": "4.17.15"
   },
   "devDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
-    "@pulumi/random": "*.*.*",
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
+    "@pulumi/random": "*",
     "@types/lodash": "4.14.149",
     "typescript": "3.8.3"
   }

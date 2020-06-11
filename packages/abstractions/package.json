@@ -17,12 +17,12 @@
     "clean": "rm -r ./dist || true"
   },
   "peerDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*"
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*"
   },
   "devDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
     "typescript": "3.8.3"
   }
 }

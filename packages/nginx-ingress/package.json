@@ -17,16 +17,16 @@
     "clean": "rm -r ./dist || true"
   },
   "peerDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*"
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*.*.*",
+    "@kloudlib/abstractions": "*",
     "lodash": "4.17.15"
   },
   "devDependencies": {
-    "@pulumi/kubernetes": "*.*.*",
-    "@pulumi/pulumi": "*.*.*",
+    "@pulumi/kubernetes": "*",
+    "@pulumi/pulumi": "*",
     "@types/lodash": "4.14.149",
     "typescript": "3.8.3"
   }
