@@ -129,7 +129,7 @@ export class PrometheusRedisExporter extends pulumi.ComponentResource implements
                       containerPort: 9121,
                     },
                   ],
-                  resources: props.resources,
+                  resources: props.resources as any,
                 },
               ],
             },

@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@kloudlib/abstractions": "*",
-    "@kloudlib/utils": "../utils"
+    "@kloudlib/utils": "*"
   },
   "devDependencies": {
     "@pulumi/kubernetes": "*",

@@ -126,7 +126,7 @@ export class PrometheusMSSQLExporter extends pulumi.ComponentResource implements
                       containerPort: 4000,
                     },
                   ],
-                  resources: props.resources,
+                  resources: props.resources as any,
                 },
               ],
             },

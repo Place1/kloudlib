@@ -112,7 +112,7 @@ export class PrometheusServicebusExporter extends pulumi.ComponentResource
                       containerPort: 9580,
                     },
                   ],
-                  resources: props.resources,
+                  resources: props.resources as any,
                 },
               ],
             },

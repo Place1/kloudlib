@@ -112,7 +112,7 @@ export class PrometheusMongoDBExporter extends pulumi.ComponentResource implemen
                       containerPort: 9216,
                     },
                   ],
-                  resources: props.resources,
+                  resources: props.resources as any,
                 },
               ],
             },

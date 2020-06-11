@@ -133,7 +133,7 @@ export class PrometheusPostgreSQLExporter extends pulumi.ComponentResource
                       containerPort: 9187,
                     },
                   ],
-                  resources: props.resources,
+                  resources: props.resources as any,
                 },
               ],
             },
