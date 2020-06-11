@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/grafana",
   "description": "",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@kloudlib/abstractions": "*.*.*",
-    "@kloudlib/utils": "*.*.*",
+    "@kloudlib/utils": "../utils",
     "lodash": "4.17.15"
   },
   "devDependencies": {
