@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/loki",
   "description": "",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
