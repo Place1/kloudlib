@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/grafana-stack",
   "description": "",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@kloudlib/abstractions": "*.*.*",
-    "@kloudlib/grafana": "0.4.1",
-    "@kloudlib/loki": "0.3.1",
-    "@kloudlib/prometheus": "0.3.2",
+    "@kloudlib/grafana": "file:../grafana",
+    "@kloudlib/loki": "file:../loki",
+    "@kloudlib/prometheus": "file:../prometheus",
     "lodash": "4.17.15"
   },
   "devDependencies": {
