@@ -373,7 +373,6 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
       {
         parent: this,
         provider: props.provider,
-        dependsOn: [this.deployment],
       }
     );
   }
