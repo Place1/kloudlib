@@ -162,7 +162,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
         ).result
     );
 
-    this.serviceName = pulumi.output(`${name}-minio`);
+    this.serviceName = pulumi.output(name);
 
     this.servicePort = pulumi.output(80);
 
