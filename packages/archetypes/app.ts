@@ -21,6 +21,16 @@ export interface AppInputs {
    */
   registry?: pulumi.Input<docker.ImageRegistry>;
   /**
+   * an optional command for the container to run
+   * if left empty, the docker image's default CMD
+   * is used.
+   */
+  command?: pulumi.Input<pulumi.Input<string>[]>;
+  /**
+   * an optional set of args for the container's entrypoint.
+   */
+  args?: pulumi.Input<pulumi.Input<string>[]>;
+  /**
    * replicas of your service
    * defaults to 1
    */
@@ -298,6 +308,8 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                       containerPort: props.httpPort ?? 80,
                     },
                   ],
+                  command: props.command,
+                  args: props.args,
                   env: this.bundleEnvs(name, props),
                   resources: props.resources as any,
                   readinessProbe: !props.healthCheck
