@@ -109,7 +109,7 @@ export interface MinioOutputs {
   secretKey: pulumi.Output<string>;
   serviceName: pulumi.Output<string>;
   servicePort: pulumi.Output<number>;
-  ingress?: pulumi.Output<abstractions.Ingress>;
+  ingress?: abstractions.Ingress;
   buckets?: pulumi.Output<MinioBucket[]>;
 }
 
@@ -122,7 +122,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
   readonly secretKey: pulumi.Output<string>;
   readonly serviceName: pulumi.Output<string>;
   readonly servicePort: pulumi.OutputInstance<number>;
-  readonly ingress?: pulumi.Output<abstractions.Ingress>;
+  readonly ingress?: abstractions.Ingress;
   readonly buckets?: pulumi.Output<MinioBucket[]>;
 
   constructor(name: string, props?: MinioInputs, opts?: pulumi.CustomResourceOptions) {
@@ -130,7 +130,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'minio',
-      version: props?.version ?? '5.0.20',
+      version: props?.version ?? '5.0.30',
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
@@ -166,7 +166,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
 
     this.servicePort = pulumi.output(80);
 
-    this.ingress = props?.ingress && pulumi.output(props?.ingress);
+    this.ingress = props?.ingress;
 
     this.buckets = props?.buckets && pulumi.output(props?.buckets);
 
@@ -204,6 +204,9 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
           accessKey: this.accessKey,
           secretKey: this.secretKey,
           buckets: props?.buckets,
+          DeploymentUpdate: {
+            type: 'Recreate',
+          },
           service: {
             port: 80,
           },
@@ -226,6 +229,9 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
             enabled: props?.persistence?.enabled ?? true,
             size: `${props?.persistence?.sizeGB ?? 10}Gi`,
             storageClass: props?.persistence?.storageClass,
+          },
+          readinessProbe: {
+            initialDelaySeconds: 5,
           },
           resources: props?.resources,
         },
