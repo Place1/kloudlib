@@ -31,6 +31,10 @@ export interface AppInputs {
    */
   args?: pulumi.Input<pulumi.Input<string>[]>;
   /**
+   * set the working directory for the container's entrypoint.
+   */
+  workingDir?: pulumi.Input<string>;
+  /**
    * replicas of your service
    * defaults to 1
    */
@@ -310,6 +314,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                   ],
                   command: props.command,
                   args: props.args,
+                  workingDir: props.workingDir,
                   env: this.bundleEnvs(name, props),
                   resources: props.resources as any,
                   readinessProbe: !props.healthCheck
