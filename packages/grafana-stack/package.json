@@ -26,7 +26,7 @@
     "@kloudlib/grafana": "*",
     "@kloudlib/loki": "*",
     "@kloudlib/prometheus": "*",
-    "lodash": "4.17.15"
+    "lodash": "4.17.19"
   },
   "devDependencies": {
     "@pulumi/kubernetes": "*",
