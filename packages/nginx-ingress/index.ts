@@ -76,6 +76,11 @@ export interface NginxIngressDeploymentMode {
    * for you (if supported by your cloud provider).
    */
   loadBalancerIP?: pulumi.Input<string>;
+  /**
+   * serviceAnnotations adds the given annotations to the
+   * nginx-ingress loadbalancer service
+   */
+  serviceAnnotations?: pulumi.Input<Record<string, pulumi.Input<string>>>;
 }
 
 export interface NginxIngressDaemonSetMode {
@@ -198,6 +203,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
         type: 'LoadBalancer',
         loadBalancerIP: props?.loadBalancerIP,
         externalTrafficPolicy: 'Local',
+        annotations: props.serviceAnnotations,
       },
       /**
        * we'll only add the antiaffinity policy if
