@@ -102,6 +102,11 @@ export interface NginxIngressOutputs {
    * ingress controller will consume
    */
   ingressClass: pulumi.Output<string>;
+
+  /**
+   * The kubernetes service resource of the ingress controller
+   */
+  ingressService: pulumi.Output<k8s.core.v1.Service>;
 }
 
 /**
@@ -110,6 +115,7 @@ export interface NginxIngressOutputs {
 export class NginxIngress extends pulumi.ComponentResource implements NginxIngressOutputs {
   readonly meta: pulumi.Output<abstractions.HelmMeta>;
   readonly ingressClass: pulumi.Output<string>;
+  readonly ingressService: pulumi.Output<k8s.core.v1.Service>;
 
   constructor(name: string, props?: NginxIngressInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:NginxIngress', name, props, opts);
@@ -122,7 +128,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
       repo: 'https://kubernetes-charts.storage.googleapis.com',
     });
 
-    new k8s.helm.v3.Chart(
+    const ingressChart = new k8s.helm.v3.Chart(
       name,
       {
         namespace: props?.namespace,
@@ -165,6 +171,10 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
           : {},
       }
     );
+    const serviceName = `${name}-controller`;
+    this.ingressService = props?.namespace
+      ? ingressChart.getResource('v1/Service', props.namespace.toString(), serviceName)
+      : ingressChart.getResource('v1/Service', serviceName);
   }
 
   private controllerValues(props?: NginxIngressInputs) {
