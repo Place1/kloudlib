@@ -102,7 +102,6 @@ export interface NginxIngressOutputs {
    * ingress controller will consume
    */
   ingressClass: pulumi.Output<string>;
-
   /**
    * The kubernetes service resource of the ingress controller
    */
@@ -171,6 +170,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
           : {},
       }
     );
+
     const serviceName = `${name}-controller`;
     this.ingressService = props?.namespace
       ? ingressChart.getResource('v1/Service', props.namespace.toString(), serviceName)
