@@ -84,22 +84,6 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
         fetchOpts: {
           repo: this.meta.repo,
         },
-        transformations: [(resource: any) => {
-          if (!resource) {
-            return;
-          }
-          if (resource.kind === 'CustomResourceDefinition') {
-            // The cert-manager helm chart uses a hardcoded name for it's CRD resource
-            // which causes problems in pulumi when deploying cert-manager multiple
-            // times (i.e. multi-cluster deployments).
-            // This transformation prefixes the resource name to avoid a duplicate
-            // URN issue.
-            // https://github.com/pulumi/pulumi-kubernetes/issues/1225
-            resource.metadata.name = `${name}-${resource.metadata.name}`;
-            return resource;
-          }
-          return;
-        }],
         values: {
           installCRDs: true,
           ingressShim: {
