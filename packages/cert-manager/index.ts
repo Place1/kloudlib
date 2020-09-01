@@ -65,7 +65,7 @@ export class CertManager extends pulumi.ComponentResource implements CertManager
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'cert-manager',
-      version: props?.version ?? 'v0.15.0',
+      version: props?.version ?? 'v0.15.2',
       repo: 'https://charts.jetstack.io',
     });
 
