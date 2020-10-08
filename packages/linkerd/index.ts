@@ -214,7 +214,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
       },
       {
         parent: this,
-        provider: props.provider,
+        provider: props?.provider,
         dependsOn: cniPlugin && [cniPlugin],
       }
     );
