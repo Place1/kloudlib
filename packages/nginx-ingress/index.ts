@@ -163,11 +163,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
       },
       {
         parent: this,
-        providers: props?.provider
-          ? {
-              kubernetes: props?.provider,
-            }
-          : {},
+        provider: props?.provider,
       }
     );
 

@@ -75,11 +75,7 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
       },
       {
         parent: this,
-        providers: props?.provider
-          ? {
-              kubernetes: props?.provider,
-            }
-          : {},
+        provider: props?.provider,
       }
     );
   }
