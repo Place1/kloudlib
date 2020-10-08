@@ -153,9 +153,7 @@ export class KubernetesDashboard extends pulumi.ComponentResource implements Kub
       },
       {
         parent: this,
-        providers: props?.provider && {
-          kubernetes: props.provider,
-        },
+        provider: props.provider,
       }
     );
   }
