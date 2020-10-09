@@ -7,13 +7,12 @@ export interface AppInputs {
   provider?: k8s.Provider;
   namespace?: pulumi.Input<string>;
   /**
-   * e.g. ['sleep 5'] // sleep for 5 seconds
    * A Pod can have multiple containers running apps within it,
    * but it can also have one or more init containers, 
    * which are run before the app containers are started.
    * https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
    */
-  initCommands?: pulumi.Input<string>[];
+  initContainers?: pulumi.Input<pulumi.Input<k8s.types.input.core.v1.Container>[]>;
   /**
    * the path to a folder containing
    * a Dockerfile or the path to a docker file
@@ -271,17 +270,6 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
     );
   }
 
-  private createInitContainers(name: string, props: AppInputs) {
-    return props.initCommands?.map((command, index) => {
-      return {
-          // always use latest image
-          image: 'busybox',
-          name: `${name}-init-container-${index}`,
-          command: ['sh', '-c', command]
-      } as k8s.types.input.core.v1.Container;
-    })
-  }
-
   private createDeployment(name: string, props: AppInputs): k8s.apps.v1.Deployment {
     const volumes = this.createVolumes(name, props);
 
@@ -365,7 +353,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                   volumeMounts: volumes.volumeMounts,
                 },
               ],
-              initContainers: this.createInitContainers(name, props),
+              initContainers: props.initContainers,
               affinity: {
                 podAntiAffinity: {
                   preferredDuringSchedulingIgnoredDuringExecution: [
