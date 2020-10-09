@@ -7,6 +7,7 @@ export interface AppInputs {
   provider?: k8s.Provider;
   namespace?: pulumi.Input<string>;
   /**
+   * e.g. ['sleep 5'] // sleep for 5 seconds
    * A Pod can have multiple containers running apps within it,
    * but it can also have one or more init containers, 
    * which are run before the app containers are started.
