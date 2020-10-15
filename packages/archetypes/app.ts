@@ -7,6 +7,13 @@ export interface AppInputs {
   provider?: k8s.Provider;
   namespace?: pulumi.Input<string>;
   /**
+   * A Pod can have multiple containers running apps within it,
+   * but it can also have one or more init containers, 
+   * which are run before the app containers are started.
+   * https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+   */
+  initContainers?: pulumi.Input<pulumi.Input<k8s.types.input.core.v1.Container>[]>;
+  /**
    * the path to a folder containing
    * a Dockerfile or the path to a docker file
    */
@@ -346,6 +353,7 @@ export class App extends pulumi.ComponentResource implements AppOutputs {
                   volumeMounts: volumes.volumeMounts,
                 },
               ],
+              initContainers: props.initContainers,
               affinity: {
                 podAntiAffinity: {
                   preferredDuringSchedulingIgnoredDuringExecution: [
