@@ -72,8 +72,8 @@ export interface GrafanaOutputs {
 
 export interface GrafanaDataSource {
   name: string;
-  type: 'prometheus' | 'loki';
-  url: string;
+  type: 'prometheus' | 'loki' | 'jaeger';
+  url: pulumi.Input<string>;
 }
 
 /**

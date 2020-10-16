@@ -112,7 +112,9 @@ export interface JaegerHelmChartMode {
   };
 }
 
-export interface JaegerOutputs {}
+export interface JaegerOutputs {
+  serviceName: pulumi.Output<string>;
+}
 
 /**
  * @noInheritDoc
@@ -120,6 +122,7 @@ export interface JaegerOutputs {}
 export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
 
   meta?: pulumi.Output<abstractions.HelmMeta>;
+  serviceName!: pulumi.Output<string>;
 
   constructor(name: string, props?: JaegerInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:Jaeger', name, props, opts);
@@ -160,9 +163,9 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
               app: name,
             },
             annotations: {
-              ...(mode?.persistence?.storageClass && {
+              ...(mode?.persistence?.storageClass ? {
                 'volume.beta.kubernetes.io/storage-class': mode?.persistence?.storageClass,
-              }),
+              } : {}),
             },
           },
           spec: {
@@ -298,6 +301,8 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
       }
     );
 
+    this.serviceName = service.metadata.name;
+
     if (mode?.ingress?.enabled) {
       const hosts = pulumi.output(mode?.ingress?.hosts ?? []);
       new k8s.networking.v1beta1.Ingress(name, {
@@ -349,6 +354,8 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
       version: mode?.version ?? '0.39.0',
       repo: 'https://jaegertracing.github.io/helm-charts',
     });
+
+    this.serviceName = pulumi.output(`${name}-jaeger-query`);
 
     new k8s.helm.v3.Chart(
       name,

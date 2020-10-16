@@ -16,7 +16,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as grafana from '@kloudlib/grafana';
 import * as prometheus from '@kloudlib/prometheus';
 import * as loki from '@kloudlib/loki';
-import { merge } from 'lodash';
+import { mergeWith, isArray } from 'lodash';
 
 interface ServiceInputs {
   enabled?: boolean;
@@ -95,23 +95,30 @@ export class GrafanaStack extends pulumi.ComponentResource implements GrafanaSta
           dashboard.datasource = 'prometheus';
         }
       });
-      this.grafana = new grafana.Grafana(`${name}-grafana`, merge({}, defaults.grafana, props?.grafana), {
+      this.grafana = new grafana.Grafana(`${name}-grafana`, mergeWith({}, defaults.grafana, props?.grafana, customizer), {
         parent: this,
       });
     }
 
     if (props?.loki?.enabled !== false) {
-      this.loki = new loki.Loki(`${name}-loki`, merge({}, defaults.loki, props?.loki), { parent: this });
+      this.loki = new loki.Loki(`${name}-loki`, mergeWith({}, defaults.loki, props?.loki, customizer), { parent: this });
     }
 
     if (props?.prometheus?.enabled !== false) {
       this.prometheus = new prometheus.Prometheus(
         `${name}-prometheus`,
-        merge({}, defaults.prometheus, props?.prometheus),
+        mergeWith({}, defaults.prometheus, props?.prometheus, customizer),
         {
           parent: this,
         }
       );
     }
   }
+}
+
+function customizer(obj: any, src: any) {
+  if (isArray(obj)) {
+    return obj.concat(src);
+  }
+  return undefined;
 }
