@@ -100,9 +100,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
         },
         {
           parent: this,
-          providers: props.provider && {
-            kubernetes: props.provider,
-          },
+          provider: props.provider,
         }
       );
     }
@@ -216,9 +214,7 @@ export class Linkerd extends pulumi.ComponentResource implements LinkerdOutputs 
       },
       {
         parent: this,
-        providers: props?.provider && {
-          kubernetes: props.provider,
-        },
+        provider: props?.provider,
         dependsOn: cniPlugin && [cniPlugin],
       }
     );

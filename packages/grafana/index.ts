@@ -221,11 +221,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
       },
       {
         parent: this,
-        providers: props?.provider
-          ? {
-              kubernetes: props?.provider,
-            }
-          : {},
+        provider: props?.provider,
       }
     );
   }

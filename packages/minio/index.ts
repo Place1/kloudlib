@@ -238,9 +238,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
       },
       {
         parent: this,
-        providers: props?.provider && {
-          kubernetes: props?.provider,
-        },
+        provider: props?.provider,
       }
     );
   }

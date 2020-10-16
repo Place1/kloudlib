@@ -192,11 +192,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
       },
       {
         parent: this,
-        providers: props.provider
-          ? {
-              kubernetes: props.provider,
-            }
-          : {},
+        provider: props.provider,
       }
     );
   }

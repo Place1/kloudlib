@@ -230,11 +230,7 @@ export class RookCeph extends pulumi.ComponentResource implements RookCephOutput
       },
       {
         parent: this,
-        providers: props?.provider
-          ? {
-              kubernetes: props?.provider,
-            }
-          : {},
+        provider: props?.provider,
       }
     );
   }

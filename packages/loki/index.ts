@@ -91,11 +91,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
       },
       {
         parent: this,
-        providers: props?.provider
-          ? {
-              kubernetes: props?.provider,
-            }
-          : {},
+        provider: props?.provider,
       }
     );
   }

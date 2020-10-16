@@ -237,11 +237,7 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
       },
       {
         parent: this,
-        providers: props?.provider
-          ? {
-              kubernetes: props?.provider,
-            }
-          : {},
+        provider: props?.provider,
       }
     );
   }
