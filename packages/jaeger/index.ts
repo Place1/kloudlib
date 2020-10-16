@@ -14,6 +14,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as abstractions from '@kloudlib/abstractions';
+import * as inputs from "@pulumi/kubernetes/types/input";
 
 export interface JaegerInputs {
   /**
@@ -26,10 +27,89 @@ export interface JaegerInputs {
    */
   namespace?: pulumi.Input<string>;
   /**
-   * Deploy the jaeger all-in-one container which
-   * is suitable for non-production use-cases.
+   * TODO:
+   *
+   * defaults to kind AllInOne
    */
-  allInOne?: boolean;
+  mode?: JaegerAllInOneMode | JaegerHelmChartMode;
+}
+
+export interface JaegerAllInOneMode {
+  kind: 'AllInOne';
+  /**
+   * the docker image to use
+   *
+   * defaults to jaegertracing/all-in-one
+   */
+  image?: pulumi.Input<string>;
+  /**
+   * ingress resource configuration for the web ui
+   *
+   * defaults to undefined (no ingress resource will be created)
+   */
+  ingress?: abstractions.Ingress;
+  /**
+   * persistent storage configuration
+   *
+   * defaults to 10GB
+   */
+  persistence?: abstractions.Persistence;
+}
+
+export interface JaegerHelmChartMode {
+  kind: 'HelmChart';
+  /**
+   * The helm chart version
+   */
+  version?: string;
+  /**
+   * ingress resource configuration for the web ui
+   *
+   * defaults to undefined (no ingress resource will be created)
+   */
+  ingress?: abstractions.Ingress;
+  /**
+   * persistent storage configuration for cassandra
+   *
+   * defaults to 10GB
+   */
+  persistence?: abstractions.Persistence;
+  /**
+   * configure the cassandra storage cluster
+   *
+   * these values are tuned for tiny development clusters
+   * where resources are limited.
+   *
+   * tuning is recommended for production deployments.
+   */
+  cassandra?: {
+    /**
+     * number of cassandra replicas (either 3 or 10)
+     *
+     * defaults to 3
+     */
+    clusterSize?: 3 | 10;
+    /**
+     * the initial size of the heap (initdb argument)
+     *
+     * defaults to 256M
+     */
+    heapNewSize?: string;
+    /**
+     * the max heapsize for cassandra (initdb argument)
+     *
+     * defaults to 1024M
+     */
+    maxHeapSize?: string;
+    /**
+     * kubernetes resource limits/requests for cassandra pods
+     *
+     * cassandra demands a high minimum set of resources
+     *
+     * defaults to cpu=400m and memory=2048Mi
+     */
+    resources?: abstractions.ComputeResources,
+  };
 }
 
 export interface JaegerOutputs {}
@@ -38,6 +118,9 @@ export interface JaegerOutputs {}
  * @noInheritDoc
  */
 export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
+
+  meta?: pulumi.Output<abstractions.HelmMeta>;
+
   constructor(name: string, props?: JaegerInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:Jaeger', name, props, opts);
 
@@ -51,35 +134,63 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
       );
     }
 
-    if (props?.allInOne) {
-      this.allInOne(name, props);
-    } else {
-      this.helmChart(name, props);
+    switch (props?.mode?.kind ?? 'AllInOne') {
+      case 'HelmChart':
+        this.helmChart(name, props ?? {}, props?.mode as JaegerHelmChartMode);
+        break;
+      case 'AllInOne':
+        this.allInOne(name, props ?? {}, props?.mode as JaegerAllInOneMode);
+        break;
+      default:
+        throw new Error(`Unknown jaeger deployment mode: ${props?.mode?.kind}`);
     }
   }
 
-  private allInOne(name: string, props?: JaegerInputs) {
-    const pvc = new k8s.core.v1.PersistentVolumeClaim(
-      name,
-      {
-        metadata: {
-          name: name,
-          namespace: props?.namespace,
-        },
-        spec: {
-          accessModes: ['ReadWriteOnce'],
-          resources: {
-            requests: {
-              storage: '1Gi',
+  private allInOne(name: string, props: JaegerInputs, mode?: JaegerAllInOneMode) {
+    const volumes = new Array<inputs.core.v1.Volume>();
+
+    if (mode?.persistence?.enabled ?? true) {
+      const pvc = new k8s.core.v1.PersistentVolumeClaim(
+        name,
+        {
+          metadata: {
+            name: name,
+            namespace: props?.namespace,
+            labels: {
+              app: name,
+            },
+            annotations: {
+              ...(mode?.persistence?.storageClass && {
+                'volume.beta.kubernetes.io/storage-class': mode?.persistence?.storageClass,
+              }),
+            },
+          },
+          spec: {
+            accessModes: ['ReadWriteOnce'],
+            resources: {
+              requests: {
+                storage: `${mode?.persistence?.sizeGB ?? 10}Gi`,
+              },
             },
           },
         },
-      },
-      {
-        parent: this,
-        provider: props?.provider,
-      }
-    );
+        {
+          parent: this,
+          provider: props?.provider,
+        }
+      );
+      volumes.push({
+        name: 'data',
+        persistentVolumeClaim: {
+          claimName: pvc.metadata.name,
+        },
+      });
+    } else {
+      volumes.push({
+        name: 'data',
+        emptyDir: {},
+      });
+    }
 
     const deployment = new k8s.apps.v1.Deployment(
       name,
@@ -111,7 +222,7 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
               containers: [
                 {
                   name: 'jaeger',
-                  image: 'jaegertracing/all-in-one:1.19',
+                  image: mode?.image ?? 'jaegertracing/all-in-one:1.20',
                   env: [
                     {
                       name: 'SPAN_STORAGE_TYPE',
@@ -146,14 +257,7 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
                   ],
                 },
               ],
-              volumes: [
-                {
-                  name: 'data',
-                  persistentVolumeClaim: {
-                    claimName: pvc.metadata.name,
-                  },
-                },
-              ],
+              volumes: volumes,
             },
           },
         },
@@ -164,12 +268,15 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
       }
     );
 
-    new k8s.core.v1.Service(
+    const service = new k8s.core.v1.Service(
       name,
       {
         metadata: {
           name: name,
           namespace: props?.namespace,
+          labels: {
+            app: name,
+          },
         },
         spec: {
           selector: {
@@ -190,44 +297,136 @@ export class Jaeger extends pulumi.ComponentResource implements JaegerOutputs {
         provider: props?.provider,
       }
     );
+
+    if (mode?.ingress?.enabled) {
+      const hosts = pulumi.output(mode?.ingress?.hosts ?? []);
+      new k8s.networking.v1beta1.Ingress(name, {
+        metadata: {
+          name: name,
+          namespace: props.namespace,
+          labels: {
+            app: name,
+          },
+          annotations: {
+            'kubernetes.io/ingress.class': mode.ingress?.class ?? 'nginx',
+            'kubernetes.io/tls-acme': 'true',
+            ...mode.ingress?.annotations,
+          },
+        },
+        spec: {
+          rules: hosts.apply((items: string[]) =>
+            items.map((host) => ({
+              host: host,
+              http: {
+                paths: [
+                  {
+                    path: '/',
+                    backend: {
+                      serviceName: service.metadata.name,
+                      servicePort: 16686,
+                    },
+                  },
+                ],
+              },
+            }))
+          ),
+          tls: [
+            {
+              hosts: hosts,
+              secretName: `tls-${name}`,
+            },
+          ],
+        },
+      }, {
+        provider: props.provider,
+      });
+    }
   }
 
-  private helmChart(name: string, props?: JaegerInputs) {
+  private helmChart(name: string, props: JaegerInputs, mode?: JaegerHelmChartMode) {
+    this.meta = pulumi.output<abstractions.HelmMeta>({
+      chart: 'jaeger',
+      version: mode?.version ?? '0.39.0',
+      repo: 'https://jaegertracing.github.io/helm-charts',
+    });
+
     new k8s.helm.v3.Chart(
       name,
       {
-        chart: 'jaeger',
-        // version:
+        chart: this.meta.chart,
+        version: this.meta.version,
         namespace: props?.namespace,
         fetchOpts: {
-          repo: 'https://jaegertracing.github.io/helm-charts',
+          repo: this.meta.repo,
         },
         values: {
+          query: {
+            ingress: {
+              enabled: mode?.ingress?.enabled ?? false,
+              annotations: {
+                'kubernetes.io/ingress.class': mode?.ingress?.class ?? 'nginx',
+                'kubernetes.io/tls-acme': mode?.ingress?.tls === false ? 'false' : 'true',
+                ...mode?.ingress?.annotations,
+              },
+              hosts: mode?.ingress?.hosts,
+              tls: [
+                {
+                  hosts: mode?.ingress?.hosts,
+                  secretName: `tls-${name}`,
+                },
+              ],
+            }
+          },
           cassandra: {
             config: {
-              max_heap_size: '1024M',
-              heap_new_size: '256M',
+              cluster_size: mode?.cassandra?.clusterSize ?? 3,
+              heap_new_size: mode?.cassandra?.heapNewSize ?? '256M',
+              max_heap_size: mode?.cassandra?.maxHeapSize ?? '1024M',
             },
             resources: {
               requests: {
-                cpu: '0.4',
-                memory: '2045Mi',
+                cpu: mode?.cassandra?.resources?.requests?.cpu ?? '400m',
+                memory: mode?.cassandra?.resources?.requests?.memory ?? '2048Mi',
               },
               limits: {
-                cpu: '0.4',
-                memory: '2045Mi',
+                cpu: mode?.cassandra?.resources?.limits?.cpu ?? '400m',
+                memory: mode?.cassandra?.resources?.limits?.memory ?? '2048Mi',
               },
             },
             persistence: {
-              enabled: true,
-              size: '1Gi',
+              enabled: mode?.persistence?.enabled ?? true,
+              size: `${mode?.persistence?.sizeGB ?? 10}Gi`,
+              storageClass: mode?.persistence?.storageClass,
+            },
+            readinessProbe: {
+              initialDelaySeconds: 10,
+              periodSeconds: 15,
+            },
+            affinity: {
+              podAntiAffinity: {
+                preferredDuringSchedulingIgnoredDuringExecution: [
+                  {
+                    podAffinityTerm: {
+                      topologyKey: 'kubernetes.io/hostname',
+                      labelSelector: {
+                        matchLabels: {
+                          app: 'cassandra',
+                          release: name,
+                        },
+                      },
+                    },
+                    weight: 1,
+                  },
+                ],
+              },
             },
           },
         },
       },
       {
         parent: this,
-      }
+        provider: props.provider,
+      },
     );
   }
 }
