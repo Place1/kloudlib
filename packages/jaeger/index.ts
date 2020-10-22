@@ -27,7 +27,7 @@ export interface JaegerInputs {
    */
   namespace?: pulumi.Input<string>;
   /**
-   * TODO:
+   * The deployment mode for jaeger
    *
    * defaults to kind AllInOne
    */
