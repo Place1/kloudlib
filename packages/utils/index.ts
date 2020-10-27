@@ -1,4 +1,4 @@
-export function removeHelmTests() {
+export function removeHelmHooks() {
   return (obj: any) => {
     if (!obj) {
       return;
@@ -21,6 +21,10 @@ export function removeHelmTests() {
     }
     return;
   };
+}
+
+export function removeHelmTests() {
+  return removeHelmHooks();
 }
 
 export function replaceApiVersion(kind: string, from: string, to: string) {

@@ -17,6 +17,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
 import * as abstractions from '@kloudlib/abstractions';
+import { removeHelmHooks } from '@kloudlib/utils';
 
 export interface MinioInputs {
   /**
@@ -130,8 +131,8 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'minio',
-      version: props?.version ?? '5.0.30',
-      repo: 'https://kubernetes-charts.storage.googleapis.com',
+      version: props?.version ?? '8.0.0',
+      repo: 'https://helm.min.io',
     });
 
     this.accessKey = pulumi.secret(
@@ -163,11 +164,8 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
     );
 
     this.serviceName = pulumi.output(name);
-
     this.servicePort = pulumi.output(80);
-
     this.ingress = props?.ingress;
-
     this.buckets = props?.buckets && pulumi.output(props?.buckets);
 
     const chart = new k8s.helm.v3.Chart(
@@ -180,14 +178,8 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
           repo: this.meta.repo,
         },
         transformations: [
+          removeHelmHooks(),
           (obj) => {
-            if (obj.kind === 'Job') {
-              if (!obj.spec.template.metadata.annotations) {
-                obj.spec.template.metadata.annotations = {};
-              }
-              obj.spec.template.metadata.annotations['linkerd.io/inject'] = 'disabled';
-              obj.spec.template.metadata.annotations['sidecar.istio.io/inject'] = 'false';
-            }
             if (obj.kind === 'Deployment') {
               if (!obj.spec.template.metadata.annotations) {
                 obj.spec.template.metadata.annotations = {};
@@ -241,5 +233,96 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
         provider: props?.provider,
       }
     );
+
+    // Pulumi doesn't correctly support helm hooks yet
+    // and this helm chart makes use of them for the "create-bucket"
+    // post-install job.
+    // We'll instead implement support for ourself.
+    // https://github.com/pulumi/pulumi-kubernetes/issues/1335
+    pulumi.output(props?.buckets).apply((buckets) => {
+      if (buckets?.length) {
+        new k8s.batch.v1.Job(
+          `${name}-make-bucket-job`,
+          {
+            metadata: {
+              name: `${name}-make-bucket-job`,
+              namespace: props?.namespace,
+              labels: {
+                app: 'minio-make-bucket-job',
+                chart: pulumi.interpolate`minio-${this.meta.version}`,
+                release: name,
+                heritage: 'Helm',
+              },
+            },
+            spec: {
+              template: {
+                metadata: {
+                  labels: {
+                    app: 'minio-job',
+                    release: name,
+                  },
+                },
+                spec: {
+                  restartPolicy: 'OnFailure',
+                  serviceAccountName: name,
+                  containers: [
+                    {
+                      name: 'minio-mc',
+                      image: 'minio/mc:RELEASE.2020-10-03T02-54-56Z',
+                      imagePullPolicy: 'IfNotPresent',
+                      command: ['/bin/sh', '/config/initialize'],
+                      env: [
+                        {
+                          name: 'MINIO_ENDPOINT',
+                          value: name,
+                        },
+                        {
+                          name: 'MINIO_PORT',
+                          value: '80',
+                        },
+                      ],
+                      volumeMounts: [
+                        {
+                          name: 'minio-configuration',
+                          mountPath: '/config',
+                        },
+                      ],
+                      resources: {
+                        requests: {
+                          memory: '128Mi',
+                        },
+                      },
+                    },
+                  ],
+                  volumes: [
+                    {
+                      name: 'minio-configuration',
+                      projected: {
+                        sources: [
+                          {
+                            configMap: {
+                              name: name,
+                            },
+                          },
+                          {
+                            secret: {
+                              name: name,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          {
+            provider: props?.provider,
+            dependsOn: chart,
+          }
+        );
+      }
+    });
   }
 }

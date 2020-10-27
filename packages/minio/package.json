@@ -1,7 +1,7 @@
 {
   "name": "@kloudlib/minio",
   "description": "",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,7 +21,8 @@
     "@pulumi/pulumi": "*"
   },
   "dependencies": {
-    "@kloudlib/abstractions": "*"
+    "@kloudlib/abstractions": "*",
+    "@kloudlib/utils": "*"
   },
   "devDependencies": {
     "@pulumi/kubernetes": "*",
