@@ -318,6 +318,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
             },
           },
           {
+            parent: chart,
             provider: props?.provider,
             dependsOn: chart,
           }
