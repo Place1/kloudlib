@@ -49,7 +49,7 @@ export interface MinioInputs {
    * A list of buckets to create after
    * minio is installed.
    */
-  buckets?: pulumi.Input<MinioBucket[]>;
+  buckets?: MinioBucket[];
   /**
    * The minio server mode
    * Defaults to standalone
@@ -239,91 +239,88 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
     // post-install job.
     // We'll instead implement support for ourself.
     // https://github.com/pulumi/pulumi-kubernetes/issues/1335
-    pulumi.output(props?.buckets).apply((buckets) => {
-      if (buckets?.length) {
-        new k8s.batch.v1.Job(
-          `${name}-make-bucket-job`,
-          {
-            metadata: {
-              name: `${name}-make-bucket-job`,
-              namespace: props?.namespace,
-              labels: {
-                app: 'minio-make-bucket-job',
-                chart: pulumi.interpolate`minio-${this.meta.version}`,
-                release: name,
-                heritage: 'Helm',
-              },
+    if (props?.buckets?.length) {
+      new k8s.batch.v1.Job(
+        `${name}-make-bucket-job`,
+        {
+          metadata: {
+            name: `${name}-make-bucket-job`,
+            namespace: props?.namespace,
+            labels: {
+              app: 'minio-make-bucket-job',
+              chart: pulumi.interpolate`minio-${this.meta.version}`,
+              release: name,
+              heritage: 'Helm',
             },
-            spec: {
-              template: {
-                metadata: {
-                  labels: {
-                    app: 'minio-job',
-                    release: name,
+          },
+          spec: {
+            template: {
+              metadata: {
+                labels: {
+                  app: 'minio-job',
+                  release: name,
+                },
+              },
+              spec: {
+                restartPolicy: 'OnFailure',
+                serviceAccountName: name,
+                containers: [
+                  {
+                    name: 'minio-mc',
+                    image: 'minio/mc:RELEASE.2020-10-03T02-54-56Z',
+                    imagePullPolicy: 'IfNotPresent',
+                    command: ['/bin/sh', '/config/initialize'],
+                    env: [
+                      {
+                        name: 'MINIO_ENDPOINT',
+                        value: name,
+                      },
+                      {
+                        name: 'MINIO_PORT',
+                        value: '80',
+                      },
+                    ],
+                    volumeMounts: [
+                      {
+                        name: 'minio-configuration',
+                        mountPath: '/config',
+                      },
+                    ],
+                    resources: {
+                      requests: {
+                        memory: '128Mi',
+                      },
+                    },
                   },
-                },
-                spec: {
-                  restartPolicy: 'OnFailure',
-                  serviceAccountName: name,
-                  containers: [
-                    {
-                      name: 'minio-mc',
-                      image: 'minio/mc:RELEASE.2020-10-03T02-54-56Z',
-                      imagePullPolicy: 'IfNotPresent',
-                      command: ['/bin/sh', '/config/initialize'],
-                      env: [
+                ],
+                volumes: [
+                  {
+                    name: 'minio-configuration',
+                    projected: {
+                      sources: [
                         {
-                          name: 'MINIO_ENDPOINT',
-                          value: name,
+                          configMap: {
+                            name: name,
+                          },
                         },
                         {
-                          name: 'MINIO_PORT',
-                          value: '80',
+                          secret: {
+                            name: name,
+                          },
                         },
                       ],
-                      volumeMounts: [
-                        {
-                          name: 'minio-configuration',
-                          mountPath: '/config',
-                        },
-                      ],
-                      resources: {
-                        requests: {
-                          memory: '128Mi',
-                        },
-                      },
                     },
-                  ],
-                  volumes: [
-                    {
-                      name: 'minio-configuration',
-                      projected: {
-                        sources: [
-                          {
-                            configMap: {
-                              name: name,
-                            },
-                          },
-                          {
-                            secret: {
-                              name: name,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
+                  },
+                ],
               },
             },
           },
-          {
-            parent: chart,
-            provider: props?.provider,
-            dependsOn: chart,
-          }
-        );
-      }
-    });
+        },
+        {
+          parent: chart,
+          provider: props?.provider,
+        }
+      );
+    }
   }
 }
