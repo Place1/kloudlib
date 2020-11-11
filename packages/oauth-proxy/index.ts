@@ -137,7 +137,7 @@ export class OAuthProxy extends pulumi.ComponentResource implements OAuthProxyOu
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'oauth2-proxy',
       version: props.version ?? '2.1.1',
-      repo: 'https://kubernetes-charts.storage.googleapis.com',
+      repo: 'https://charts.helm.sh/stable',
     });
 
     new k8s.helm.v3.Chart(
