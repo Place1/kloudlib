@@ -146,6 +146,9 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
           },
           controller: merge({}, this.controllerValues(props), {
             config: props?.config,
+            labels: {
+              app: 'nginx-ingress',
+            },
             admissionWebhooks: {
               enabled: false,
             },
