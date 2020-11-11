@@ -149,6 +149,9 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
             labels: {
               app: 'nginx-ingress',
             },
+            podLabels: {
+              app: 'nginx-ingress',
+            },
             admissionWebhooks: {
               enabled: false,
             },
