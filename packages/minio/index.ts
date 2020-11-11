@@ -189,6 +189,7 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
           },
         ],
         values: {
+          fullnameOverride: name,
           mode: props?.mode ?? 'standalone',
           replicas: props?.replicas ?? 1,
           zones: props?.zones ?? 1,
