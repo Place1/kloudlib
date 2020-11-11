@@ -46,8 +46,8 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'metallb',
-      version: props?.version ?? '0.12.0',
-      repo: 'https://kubernetes-charts.storage.googleapis.com',
+      version: props?.version ?? '1.0.0',
+      repo: 'https://charts.bitnami.com/bitnami',
     });
 
     const metallb = new k8s.helm.v3.Chart(
@@ -67,9 +67,6 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
               addresses: pool.addresses,
               'avoid-buggy-ips': true,
             })),
-          },
-          prometheus: {
-            scrapeAnnotations: true,
           },
         },
       },
