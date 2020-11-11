@@ -471,6 +471,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#optional-serviceannotations" class="md-nav__link">
+    Optional serviceAnnotations
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -521,11 +528,16 @@
 <td>pulumi.Input‹number›</td>
 <td>how many nginx ingress controller<br>replicas should be deployed.<br><br>defaults to 1</td>
 </tr>
+<tr>
+<td>serviceAnnotations</td>
+<td>pulumi.Input‹Record‹string, pulumi.Input‹string›››</td>
+<td>serviceAnnotations adds the given annotations to the<br>nginx-ingress loadbalancer service</td>
+</tr>
 </tbody>
 </table>
 <h3 id="kind">kind<a class="headerlink" href="#kind" title="Permanent link"> ¶</a></h3>
 <p>• <strong>kind</strong>: <em>"Deployment"</em></p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/4a4463b/packages/nginx-ingress/index.ts#L60">nginx-ingress/index.ts:60</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/nginx-ingress/index.ts#L60">nginx-ingress/index.ts:60</a></em></p>
 <hr />
 <h3 id="optional-loadbalancerip"><code class="codehilite"><span class="err">Optional</span></code> loadBalancerIP<a class="headerlink" href="#optional-loadbalancerip" title="Permanent link"> ¶</a></h3>
 <p>• <strong>loadBalancerIP</strong>? : <em>pulumi.Input‹string›</em></p>
@@ -536,14 +548,20 @@ appropriate cloud resource.</p>
 <p>If this in left blank then kubernetes will assign
 an IP address to the nginx-ingress LoadBalancer Service
 for you (if supported by your cloud provider).</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/4a4463b/packages/nginx-ingress/index.ts#L78">nginx-ingress/index.ts:78</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/nginx-ingress/index.ts#L78">nginx-ingress/index.ts:78</a></em></p>
 <hr />
 <h3 id="optional-replicas"><code class="codehilite"><span class="err">Optional</span></code> replicas<a class="headerlink" href="#optional-replicas" title="Permanent link"> ¶</a></h3>
 <p>• <strong>replicas</strong>? : <em>pulumi.Input‹number›</em></p>
 <p>how many nginx ingress controller
 replicas should be deployed.</p>
 <p>defaults to 1</p>
-<p><em>Defined in <a href="https://github.com/place1/kloudlib/blob/4a4463b/packages/nginx-ingress/index.ts#L67">nginx-ingress/index.ts:67</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/nginx-ingress/index.ts#L67">nginx-ingress/index.ts:67</a></em></p>
+<hr />
+<h3 id="optional-serviceannotations"><code class="codehilite"><span class="err">Optional</span></code> serviceAnnotations<a class="headerlink" href="#optional-serviceannotations" title="Permanent link"> ¶</a></h3>
+<p>• <strong>serviceAnnotations</strong>? : <em>pulumi.Input‹Record‹string, pulumi.Input‹string›››</em></p>
+<p>serviceAnnotations adds the given annotations to the
+nginx-ingress loadbalancer service</p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/nginx-ingress/index.ts#L83">nginx-ingress/index.ts:83</a></em></p>
                 
                   
                 

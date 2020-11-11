@@ -557,7 +557,6 @@ open source software to Kubernetes using Pulumi.</p>
 <p>Kloudlib distributes each service as a seperate package.</p>
 <div class="codehilite"><pre><span></span><code>npm install --save @kloudlib/&lt;package&gt;
 </code></pre></div>
-
 <p>Distributing each service as a seperate NPM package means you only need to
 install what you use and each package is versioned separately.</p>
 <h2 id="what-does-it-look-like">What does it look like?<a class="headerlink" href="#what-does-it-look-like" title="Permanent link"> ¶</a></h2>
@@ -582,7 +581,6 @@ cert-manager for automatic TLS.</p>
   <span class="p">},</span>
 <span class="p">});</span>
 </code></pre></div>
-
 <p>Now you might like some monitoring for this cluster so let's deploy Prometheus/Loki/Grafana
 for an all-in-one logs and metrics solution:</p>
 <div class="codehilite"><pre><span></span><code><span class="kr">import</span> <span class="o">*</span> <span class="kr">as</span> <span class="nx">k8s</span> <span class="nx">from</span> <span class="s1">&#39;@pulumi/kubernetes&#39;</span><span class="p">;</span>
@@ -606,7 +604,6 @@ for an all-in-one logs and metrics solution:</p>
   <span class="p">},</span>
 <span class="p">});</span>
 </code></pre></div>
-
 <h2 id="contributing-a-new-package">Contributing A New Package<a class="headerlink" href="#contributing-a-new-package" title="Permanent link"> ¶</a></h2>
 <p>Contributions are very much welcome. Kloudlib is intended to be a
 library for the community by the community.</p>
