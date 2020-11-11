@@ -91,8 +91,8 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'prometheus',
-      version: props?.version ?? '11.3.0',
-      repo: 'https://kubernetes-charts.storage.googleapis.com',
+      version: props?.version ?? '11.16.8',
+      repo: 'https://prometheus-community.github.io/helm-charts',
     });
 
     // https://github.com/helm/charts/tree/master/stable/prometheus

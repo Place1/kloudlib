@@ -57,7 +57,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'loki-stack',
-      version: props?.version ?? '0.37.3',
+      version: props?.version ?? '2.0.2',
       repo: 'https://grafana.github.io/loki/charts',
     });
 
@@ -80,10 +80,33 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
                   size: pulumi.interpolate`${props?.persistence.sizeGB}Gi`,
                   storageClassName: props?.persistence.storageClass,
                 },
+            readinessProbe: {
+              initialDelaySeconds: 10,
+            },
             config: {
               table_manager: {
                 retention_deletes_enabled: true,
                 retention_period: pulumi.interpolate`${props?.retentionHours || 168}h`,
+              },
+              schema_config: {
+                configs: [{
+                  from: '2018-04-15',
+                  store: 'boltdb',
+                  object_store: 'filesystem',
+                  schema: 'v9',
+                  index: {
+                    prefix: 'index_',
+                    period: '168h',
+                  },
+                }],
+              },
+              storage_config: {
+                boltdb: {
+                  directory: '/data/loki/index',
+                },
+                filesystem: {
+                  directory: '/data/loki/chunks',
+                },
               },
             },
           },

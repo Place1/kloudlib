@@ -127,8 +127,8 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
       chart: 'grafana',
-      version: props?.version ?? '5.1.0',
-      repo: 'https://kubernetes-charts.storage.googleapis.com',
+      version: props?.version ?? '6.1.4',
+      repo: 'https://grafana.github.io/helm-charts',
     });
 
     const grafana = new k8s.helm.v3.Chart(
