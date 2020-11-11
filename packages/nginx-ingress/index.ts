@@ -122,9 +122,9 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
     this.ingressClass = pulumi.output('nginx');
 
     this.meta = pulumi.output<abstractions.HelmMeta>({
-      chart: 'nginx-ingress',
-      version: props?.version ?? '1.29.2',
-      repo: 'https://kubernetes-charts.storage.googleapis.com',
+      chart: 'ingress-nginx',
+      version: props?.version ?? '3.9.0',
+      repo: 'https://kubernetes.github.io/ingress-nginx',
     });
 
     const ingressChart = new k8s.helm.v3.Chart(
@@ -137,6 +137,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
           repo: this.meta.repo,
         },
         values: {
+          fullnameOverride: name,
           rbac: {
             create: true,
           },
@@ -145,6 +146,9 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
           },
           controller: merge({}, this.controllerValues(props), {
             config: props?.config,
+            admissionWebhooks: {
+              enabled: false,
+            },
             metrics: {
               enabled: true,
               service: {
