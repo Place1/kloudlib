@@ -730,21 +730,21 @@
 <h3 id="optional-args"><code class="codehilite"><span class="err">Optional</span></code> args<a class="headerlink" href="#optional-args" title="Permanent link"> ¶</a></h3>
 <p>• <strong>args</strong>? : <em>pulumi.Input‹pulumi.Input‹string›[]›</em></p>
 <p>an optional set of args for the container's entrypoint.</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L39">archetypes/app.ts:39</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L39">archetypes/app.ts:39</a></em></p>
 <hr />
 <h3 id="optional-command"><code class="codehilite"><span class="err">Optional</span></code> command<a class="headerlink" href="#optional-command" title="Permanent link"> ¶</a></h3>
 <p>• <strong>command</strong>? : <em>pulumi.Input‹pulumi.Input‹string›[]›</em></p>
 <p>an optional command for the container to run
 if left empty, the docker image's default CMD
 is used.</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L35">archetypes/app.ts:35</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L35">archetypes/app.ts:35</a></em></p>
 <hr />
 <h3 id="optional-env"><code class="codehilite"><span class="err">Optional</span></code> env<a class="headerlink" href="#optional-env" title="Permanent link"> ¶</a></h3>
 <p>• <strong>env</strong>? : <em>Record‹string, pulumi.Input‹string››</em></p>
 <p>add configuration via environment variables
 some default environment variables are added
 for you, consult the library documentation</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L54">archetypes/app.ts:54</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L54">archetypes/app.ts:54</a></em></p>
 <hr />
 <h3 id="optional-healthcheck"><code class="codehilite"><span class="err">Optional</span></code> healthCheck<a class="headerlink" href="#optional-healthcheck" title="Permanent link"> ¶</a></h3>
 <p>• <strong>healthCheck</strong>? : <em>abstractions.SimpleHealthProbe</em></p>
@@ -752,32 +752,32 @@ for you, consult the library documentation</p>
 if a URL is configured but no port is given then
 the app's httpPort or 80 will be used
 defaults to undefined (no health check)</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L117">archetypes/app.ts:117</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L117">archetypes/app.ts:117</a></em></p>
 <hr />
 <h3 id="optional-httpport"><code class="codehilite"><span class="err">Optional</span></code> httpPort<a class="headerlink" href="#optional-httpport" title="Permanent link"> ¶</a></h3>
 <p>• <strong>httpPort</strong>? : <em>undefined | number</em></p>
 <p>the http port your application listens on
 defaults to 80</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L68">archetypes/app.ts:68</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L68">archetypes/app.ts:68</a></em></p>
 <hr />
 <h3 id="imagename">imageName<a class="headerlink" href="#imagename" title="Permanent link"> ¶</a></h3>
 <p>• <strong>imageName</strong>: <em>pulumi.Input‹string›</em></p>
 <p>a fully qualified docker image name without a tag
 e.g. registry.example.com/group/image-name</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L25">archetypes/app.ts:25</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L25">archetypes/app.ts:25</a></em></p>
 <hr />
 <h3 id="optional-imagepullsecret"><code class="codehilite"><span class="err">Optional</span></code> imagePullSecret<a class="headerlink" href="#optional-imagepullsecret" title="Permanent link"> ¶</a></h3>
 <p>• <strong>imagePullSecret</strong>? : <em>pulumi.Input‹string›</em></p>
 <p>imagePullSecret sets the kubernetes image pull secret
 required to pull the app's container image
 defaults to undefined</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L123">archetypes/app.ts:123</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L123">archetypes/app.ts:123</a></em></p>
 <hr />
 <h3 id="optional-ingress"><code class="codehilite"><span class="err">Optional</span></code> ingress<a class="headerlink" href="#optional-ingress" title="Permanent link"> ¶</a></h3>
 <p>• <strong>ingress</strong>? : <em>abstractions.Ingress</em></p>
 <p>configure ingress traffic for this app
 defaults to undefined (no ingress)</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L73">archetypes/app.ts:73</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L73">archetypes/app.ts:73</a></em></p>
 <hr />
 <h3 id="optional-initcontainers"><code class="codehilite"><span class="err">Optional</span></code> initContainers<a class="headerlink" href="#optional-initcontainers" title="Permanent link"> ¶</a></h3>
 <p>• <strong>initContainers</strong>? : <em>pulumi.Input‹pulumi.Input‹Container›[]›</em></p>
@@ -785,18 +785,18 @@ defaults to undefined (no ingress)</p>
 but it can also have one or more init containers,
 which are run before the app containers are started.
 https://kubernetes.io/docs/concepts/workloads/pods/init-containers/</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L15">archetypes/app.ts:15</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L15">archetypes/app.ts:15</a></em></p>
 <hr />
 <h3 id="optional-metrics"><code class="codehilite"><span class="err">Optional</span></code> metrics<a class="headerlink" href="#optional-metrics" title="Permanent link"> ¶</a></h3>
 <p>• <strong>metrics</strong>? : <em>undefined | object</em></p>
 <p>metrics allows you to configure prometheus scraping
 annotations for pods of this app.
 defaults to undefined</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L89">archetypes/app.ts:89</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L89">archetypes/app.ts:89</a></em></p>
 <hr />
 <h3 id="optional-namespace"><code class="codehilite"><span class="err">Optional</span></code> namespace<a class="headerlink" href="#optional-namespace" title="Permanent link"> ¶</a></h3>
 <p>• <strong>namespace</strong>? : <em>pulumi.Input‹string›</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L8">archetypes/app.ts:8</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L8">archetypes/app.ts:8</a></em></p>
 <hr />
 <h3 id="optional-persistence"><code class="codehilite"><span class="err">Optional</span></code> persistence<a class="headerlink" href="#optional-persistence" title="Permanent link"> ¶</a></h3>
 <p>• <strong>persistence</strong>? : <em>abstractions.Persistence</em></p>
@@ -807,50 +807,50 @@ persistence.mounthPath is provided.
 the volume only supports ReadWriteOnce access mode (currently).
 if persistence is used then only a single replica
 can be created.</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L83">archetypes/app.ts:83</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L83">archetypes/app.ts:83</a></em></p>
 <hr />
 <h3 id="optional-provider"><code class="codehilite"><span class="err">Optional</span></code> provider<a class="headerlink" href="#optional-provider" title="Permanent link"> ¶</a></h3>
 <p>• <strong>provider</strong>? : <em>k8s.Provider</em></p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L7">archetypes/app.ts:7</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L7">archetypes/app.ts:7</a></em></p>
 <hr />
 <h3 id="optional-registry"><code class="codehilite"><span class="err">Optional</span></code> registry<a class="headerlink" href="#optional-registry" title="Permanent link"> ¶</a></h3>
 <p>• <strong>registry</strong>? : <em>pulumi.Input‹ImageRegistry›</em></p>
 <p>docker registry credentials</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L29">archetypes/app.ts:29</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L29">archetypes/app.ts:29</a></em></p>
 <hr />
 <h3 id="optional-replicas"><code class="codehilite"><span class="err">Optional</span></code> replicas<a class="headerlink" href="#optional-replicas" title="Permanent link"> ¶</a></h3>
 <p>• <strong>replicas</strong>? : <em>undefined | number</em></p>
 <p>replicas of your service
 defaults to 1</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L48">archetypes/app.ts:48</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L48">archetypes/app.ts:48</a></em></p>
 <hr />
 <h3 id="optional-resources"><code class="codehilite"><span class="err">Optional</span></code> resources<a class="headerlink" href="#optional-resources" title="Permanent link"> ¶</a></h3>
 <p>• <strong>resources</strong>? : <em>abstractions.ComputeResources</em></p>
 <p>resource requests and limits
 defaults to undefined (no requests or limits)</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L110">archetypes/app.ts:110</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L110">archetypes/app.ts:110</a></em></p>
 <hr />
 <h3 id="optional-secretrefs"><code class="codehilite"><span class="err">Optional</span></code> secretRefs<a class="headerlink" href="#optional-secretrefs" title="Permanent link"> ¶</a></h3>
 <p>• <strong>secretRefs</strong>? : <em>Record‹string, pulumi.Input‹object››</em></p>
 <p>secretRefs adds environment variables to your
 pod by referencing an existing secret.</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L63">archetypes/app.ts:63</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L63">archetypes/app.ts:63</a></em></p>
 <hr />
 <h3 id="optional-secrets"><code class="codehilite"><span class="err">Optional</span></code> secrets<a class="headerlink" href="#optional-secrets" title="Permanent link"> ¶</a></h3>
 <p>• <strong>secrets</strong>? : <em>Record‹string, pulumi.Input‹string››</em></p>
 <p>add secrets to your environment variables</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L58">archetypes/app.ts:58</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L58">archetypes/app.ts:58</a></em></p>
 <hr />
 <h3 id="optional-src"><code class="codehilite"><span class="err">Optional</span></code> src<a class="headerlink" href="#optional-src" title="Permanent link"> ¶</a></h3>
 <p>• <strong>src</strong>? : <em>string | DockerBuild</em></p>
 <p>the path to a folder containing
 a Dockerfile or the path to a docker file</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L20">archetypes/app.ts:20</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L20">archetypes/app.ts:20</a></em></p>
 <hr />
 <h3 id="optional-workingdir"><code class="codehilite"><span class="err">Optional</span></code> workingDir<a class="headerlink" href="#optional-workingdir" title="Permanent link"> ¶</a></h3>
 <p>• <strong>workingDir</strong>? : <em>pulumi.Input‹string›</em></p>
 <p>set the working directory for the container's entrypoint.</p>
-<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/48999e2/packages/archetypes/app.ts#L43">archetypes/app.ts:43</a></em></p>
+<p><em>Defined in <a href="https://github.com/Place1/kloudlib/blob/e5c8d87/packages/archetypes/app.ts#L43">archetypes/app.ts:43</a></em></p>
                 
                   
                 
