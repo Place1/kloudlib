@@ -89,16 +89,18 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
                 retention_period: pulumi.interpolate`${props?.retentionHours || 168}h`,
               },
               schema_config: {
-                configs: [{
-                  from: '2018-04-15',
-                  store: 'boltdb',
-                  object_store: 'filesystem',
-                  schema: 'v9',
-                  index: {
-                    prefix: 'index_',
-                    period: '168h',
+                configs: [
+                  {
+                    from: '2018-04-15',
+                    store: 'boltdb',
+                    object_store: 'filesystem',
+                    schema: 'v9',
+                    index: {
+                      prefix: 'index_',
+                      period: '168h',
+                    },
                   },
-                }],
+                ],
               },
               storage_config: {
                 boltdb: {

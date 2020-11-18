@@ -114,6 +114,10 @@ export interface PostgreSQLOutputs {
   readReplicasHost: pulumi.Output<string>;
   readReplicasPort: pulumi.Output<string>;
   replicationPassword: pulumi.Output<string>;
+  connectionStrings: {
+    uri: pulumi.Output<string>;
+    dotnet: pulumi.Output<string>;
+  };
 }
 
 /**
@@ -129,6 +133,7 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
   readonly readReplicasHost: pulumi.Output<string>;
   readonly readReplicasPort: pulumi.Output<string>;
   readonly replicationPassword: pulumi.Output<string>;
+  readonly connectionStrings: PostgreSQLOutputs['connectionStrings'];
 
   constructor(name: string, props?: PostgreSQLInputs, opts?: pulumi.CustomResourceOptions) {
     super('kloudlib:PostgreSQL', name, props, opts);
@@ -240,5 +245,10 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
         provider: props?.provider,
       }
     );
+
+    this.connectionStrings = {
+      uri: pulumi.interpolate`postgresql://${this.username}:${this.password}@${this.host}/${this.database}?sslmode=disable`,
+      dotnet: pulumi.interpolate`Host=${this.host};Port=${this.port};Database=${this.database};Username=${this.username};Password=${this.password};SSL Mode=Disable`,
+    };
   }
 }
