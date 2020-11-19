@@ -14,6 +14,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as abstractions from '@kloudlib/abstractions';
+import { input } from '@pulumi/kubernetes/types';
 
 export interface PrometheusInputs {
   provider?: k8s.Provider;
@@ -40,6 +41,14 @@ export interface PrometheusInputs {
    * extra cli flags for prometheus
    */
   extraFlags?: string[];
+  /**
+   * extra containers to run within the Prometheus pod
+   */
+  sidecarContainers?: input.core.v1.Container[],
+  /**
+   * external labels adds additional static labels to all metrics
+   */
+  externalLabels?: Record<string, pulumi.Input<string>>;
   /**
    * configure alertmanager
    * defaults to enabled
@@ -95,8 +104,7 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
       repo: 'https://prometheus-community.github.io/helm-charts',
     });
 
-    // https://github.com/helm/charts/tree/master/stable/prometheus
-    const prometheus = new k8s.helm.v3.Chart(
+    new k8s.helm.v3.Chart(
       name,
       {
         namespace: props?.namespace,
@@ -106,17 +114,18 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
           repo: this.meta.repo,
         },
         values: {
-          // https://github.com/helm/charts/blob/master/stable/prometheus/values.yaml
-          global: {
-            scrape_interval: `${props?.scrapeIntervalSeconds ?? 60}s`,
-          },
           server: {
             retention: pulumi.interpolate`${props?.retentionHours || 168}h`,
+            global: {
+              scrape_interval: `${props?.scrapeIntervalSeconds ?? 60}s`,
+              external_labels: props?.externalLabels,
+            },
             strategy: {
               type: 'Recreate',
             },
             extraArgs: props?.extraArgs,
             extraFlags: ['storage.tsdb.wal-compression', ...(props?.extraFlags || [])],
+            sidecarContainers: props?.sidecarContainers,
             persistentVolume: !props?.persistence
               ? { enabled: false }
               : {
