@@ -247,7 +247,7 @@ export class PostgreSQL extends pulumi.ComponentResource implements PostgreSQLOu
     );
 
     this.connectionStrings = {
-      uri: pulumi.interpolate`postgresql://${this.username}:${this.password}@${this.host}/${this.database}?sslmode=disable`,
+      uri: pulumi.interpolate`postgresql://${this.username}:${this.password}@${this.host}:${this.port}/${this.database}?sslmode=disable`,
       dotnet: pulumi.interpolate`Host=${this.host};Port=${this.port};Database=${this.database};Username=${this.username};Password=${this.password};SSL Mode=Disable`,
     };
   }
