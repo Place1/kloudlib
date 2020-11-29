@@ -154,6 +154,11 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
           },
           nodeExporter: {
             enabled: props?.nodeExporter?.enabled ?? true,
+            tolerations: [{
+              key: "node-role.kubernetes.io/master",
+              operator: "Exists",
+              effect: "NoSchedule",
+            }],
           },
           kubeStateMetrics: {
             enabled: props?.kubeStateMetrics?.enabled ?? true,
