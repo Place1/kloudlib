@@ -34,6 +34,10 @@ export interface GrafanaInputs {
    */
   datasources?: GrafanaDataSource[];
   /**
+   * grafana plugins
+   */
+  plugins?: string[];
+  /**
    * allowAnonymousAccess configures grafana so that
    * users can access it without needing to login.
    * defaults to false
@@ -217,6 +221,7 @@ export class Grafana extends pulumi.ComponentResource implements GrafanaOutputs 
                   ],
                 },
               },
+          plugins: props?.plugins,
         },
       },
       {
