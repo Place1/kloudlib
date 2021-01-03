@@ -267,7 +267,6 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
               },
               spec: {
                 restartPolicy: 'OnFailure',
-                serviceAccountName: name,
                 containers: [
                   {
                     name: 'minio-mc',
