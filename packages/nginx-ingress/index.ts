@@ -54,6 +54,11 @@ export interface NginxIngressInputs {
    * configure any L4 UDP services
    */
   udpServices?: Record<number, L4ServiceBackend>;
+  /**
+   * maxmind license key to download GeoLite2 Databases
+   * https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases
+   */
+  maxmindLicenseKey?: string;
 }
 
 export interface NginxIngressDeploymentMode {
@@ -166,6 +171,7 @@ export class NginxIngress extends pulumi.ComponentResource implements NginxIngre
                 },
               },
             },
+            maxmindLicenseKey: props?.maxmindLicenseKey,
           }),
           tcp: this.l4Services(props?.tcpServices ?? {}),
           udp: this.l4Services(props?.udpServices ?? {}),
