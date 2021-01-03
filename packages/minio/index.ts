@@ -227,6 +227,9 @@ export class Minio extends pulumi.ComponentResource implements MinioOutputs {
             initialDelaySeconds: 5,
           },
           resources: props?.resources,
+          serviceAccount: {
+            create: false,
+          },
         },
       },
       {
