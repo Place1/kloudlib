@@ -44,7 +44,7 @@ export interface PrometheusInputs {
   /**
    * extra containers to run within the Prometheus pod
    */
-  sidecarContainers?: input.core.v1.Container[],
+  sidecarContainers?: input.core.v1.Container[];
   /**
    * external labels adds additional static labels to all metrics
    */
@@ -154,11 +154,13 @@ export class Prometheus extends pulumi.ComponentResource implements PrometheusOu
           },
           nodeExporter: {
             enabled: props?.nodeExporter?.enabled ?? true,
-            tolerations: [{
-              key: "node-role.kubernetes.io/master",
-              operator: "Exists",
-              effect: "NoSchedule",
-            }],
+            tolerations: [
+              {
+                key: 'node-role.kubernetes.io/master',
+                operator: 'Exists',
+                effect: 'NoSchedule',
+              },
+            ],
           },
           kubeStateMetrics: {
             enabled: props?.kubeStateMetrics?.enabled ?? true,

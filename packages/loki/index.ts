@@ -29,9 +29,18 @@ export interface LokiInputs {
    */
   retentionHours?: number;
   /**
+   * Enable systemd-journal support.
+   * https://grafana.com/docs/loki/latest/clients/promtail/configuration/#journal
+   */
+  scrapeSystemdJournal?: boolean;
+  /**
    * Data persistence for loki's log database
    */
   persistence?: abstractions.Persistence;
+  /**
+   * Pod resource request/limits
+   */
+  resources?: abstractions.ComputeResources;
 }
 
 export interface LokiOutputs {
@@ -83,6 +92,7 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
             readinessProbe: {
               initialDelaySeconds: 10,
             },
+            resources: props?.resources,
             config: {
               table_manager: {
                 retention_deletes_enabled: true,
@@ -111,6 +121,45 @@ export class Loki extends pulumi.ComponentResource implements LokiOutputs {
                 },
               },
             },
+          },
+          promtail: props?.scrapeSystemdJournal && {
+            extraScrapeConfigs: [
+              {
+                job_name: 'journal',
+                journal: {
+                  path: '/var/log/journal',
+                  max_age: '12h',
+                  labels: {
+                    job: 'systemd-journal',
+                  },
+                },
+                relabel_configs: [
+                  {
+                    source_labels: ['__journal__systemd_unit'],
+                    target_label: 'unit',
+                  },
+                  {
+                    source_labels: ['__journal__hostname'],
+                    target_label: 'hostname',
+                  },
+                ],
+              },
+            ],
+            extraVolumes: [
+              {
+                name: 'journal',
+                hostPath: {
+                  path: '/var/log/journal',
+                },
+              },
+            ],
+            extraVolumeMounts: [
+              {
+                name: 'journal',
+                mountPath: '/var/log/journal',
+                readOnly: true,
+              },
+            ],
           },
         },
       },
