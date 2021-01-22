@@ -13,6 +13,7 @@
 
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
+import * as random from '@pulumi/random';
 import * as abstractions from '@kloudlib/abstractions';
 
 export interface MetalLBInputs {
@@ -50,6 +51,27 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
       repo: 'https://charts.bitnami.com/bitnami',
     });
 
+    const secretKey = new random.RandomString('metallb-memberlist',
+      { length: 256 },
+      { parent: this }
+    )
+
+    const secret = new k8s.core.v1.Secret(
+      name,
+      {
+        metadata: {
+          namespace: props?.namespace,
+        },
+        stringData: {
+          secretkey: secretKey.result
+        }
+      },
+      {
+        parent: this,
+        provider: props?.provider,
+      }
+    )
+
     const metallb = new k8s.helm.v3.Chart(
       name,
       {
@@ -60,6 +82,9 @@ export class MetalLB extends pulumi.ComponentResource implements MetalLBOutputs 
           repo: this.meta.repo,
         },
         values: {
+          speaker: {
+            secretName: secret.metadata.name
+          },
           configInline: {
             'address-pools': props?.addressPools?.map((pool) => ({
               name: pool.name,
