@@ -18,7 +18,8 @@
   },
   "peerDependencies": {
     "@pulumi/kubernetes": "*",
-    "@pulumi/pulumi": "*"
+    "@pulumi/pulumi": "*",
+    "@pulumi/random": "*"
   },
   "dependencies": {
     "@kloudlib/abstractions": "*"
